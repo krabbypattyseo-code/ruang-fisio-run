@@ -47,9 +47,17 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
   const filtered = filterSessions(sessions, filter);
   const summary = summarize(filtered);
   const weekly = weeklySeries(filtered);
-  const trend = trendSeries(filtered);
   const splits = splitByType(filtered);
   const status = readiness();
+
+  // Pace dan cadence hiking beda kelas dari lari; kalau dicampur, skala grafik
+  // tren jadi tidak terbaca. Hiking baru ikut kalau memang hanya itu yang tersisa.
+  const running = filtered.filter((session) => session.type !== "hiking");
+  const hikingExcluded = running.length >= 2 && running.length < filtered.length;
+  const trendSource = running.length >= 2 ? running : filtered;
+  const trend = trendSeries(trendSource);
+  const runSummary = summarize(trendSource);
+  const movingLabel = hikingExcluded ? "saat berlari" : "pada rentang ini";
 
   const weeks = weekly.length || 1;
 
@@ -99,9 +107,13 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
         />
         <StatCard
           label="Pace rata-rata"
-          value={formatPace(summary.paceSecPerKm)}
+          value={formatPace(runSummary.paceSecPerKm)}
           unit="/km"
-          hint={`Terpanjang ${formatNumber(summary.longestKm)} km`}
+          hint={
+            hikingExcluded
+              ? `Road & trail saja · terpanjang ${formatNumber(summary.longestKm)} km`
+              : `Terpanjang ${formatNumber(summary.longestKm)} km`
+          }
           icon={Gauge}
         />
       </section>
@@ -175,6 +187,9 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
             <CardDescription>
               Titik adalah pace tiap sesi, garis putus-putus adalah rata-rata bergerak lima
               sesi. Sumbu dibalik: makin ke atas makin cepat.
+              {hikingExcluded
+                ? " Sesi hiking dikecualikan di sini supaya skalanya tetap terbaca."
+                : ""}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -191,7 +206,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
               Cadence
             </CardTitle>
             <CardDescription>
-              Rata-rata {formatInteger(summary.cadence)} spm pada rentang ini.
+              Rata-rata {formatInteger(runSummary.cadence)} spm {movingLabel}.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -211,7 +226,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
               Panjang langkah
             </CardTitle>
             <CardDescription>
-              Rata-rata {formatNumber(summary.strideM)} m per langkah.
+              Rata-rata {formatNumber(runSummary.strideM)} m per langkah.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -232,7 +247,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
               Denyut jantung
             </CardTitle>
             <CardDescription>
-              Rata-rata {formatInteger(summary.avgHr)} bpm saat bergerak.
+              Rata-rata {formatInteger(runSummary.avgHr)} bpm {movingLabel}.
             </CardDescription>
           </CardHeader>
           <CardContent>
