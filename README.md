@@ -17,7 +17,7 @@ data latihan alih-alih diketik manual.
 | `/event/strategi` | Logistik cairan, karbo, sodium per segmen, aturan pacing, jadwal pagi | Proyeksi + sweat rate pribadi |
 
 Filter di Dashboard menyimpan seluruh state di query string, misalnya
-`/?tipe=trail&dari=2026-07-01&sampai=2026-09-16`, sehingga tautannya bisa di-bookmark dan
+`/dashboard?tipe=trail&dari=2026-07-01&sampai=2026-09-16`, sehingga tautannya bisa di-bookmark dan
 dibagikan apa adanya.
 
 ## Menjalankan secara lokal
@@ -91,7 +91,8 @@ Diambil dari aset Ruang Fisio, dengan dua catatan yang masih perlu keputusan:
 ```
 src/
 ├─ app/
-│  ├─ page.tsx                  # Dashboard + filter bar
+│  ├─ page.tsx                  # Home landing
+│  ├─ dashboard/page.tsx         # Dashboard + filter bar
 │  ├─ sesi/[id]/page.tsx        # Session Detail
 │  ├─ event/layout.tsx          # Header acara + sub-navigasi
 │  ├─ event/page.tsx            # Kesiapan

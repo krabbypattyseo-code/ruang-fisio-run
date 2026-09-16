@@ -34,7 +34,7 @@ export default function ErrorPage({
           <RefreshCw data-icon="inline-start" className="size-4" />
           Coba lagi
         </Button>
-        <Link href="/" className={buttonVariants({ variant: "outline" })}>
+        <Link href="/dashboard" className={buttonVariants({ variant: "outline" })}>
           Ke daftar modul
         </Link>
       </div>

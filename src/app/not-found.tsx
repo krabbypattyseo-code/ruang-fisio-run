@@ -18,7 +18,10 @@ export default function NotFound() {
         dashboard dan pakai filter untuk menemukan sesi yang kamu cari.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
-        <Link href="/" className={buttonVariants()}>
+        <Link href="/" className={buttonVariants({ variant: "outline" })}>
+          Ke home
+        </Link>
+        <Link href="/dashboard" className={buttonVariants()}>
           Ke dashboard
         </Link>
         <Link href="/event" className={buttonVariants({ variant: "outline" })}>

@@ -22,8 +22,18 @@ page.on("console", (message) => {
   }
 });
 
-// 1. Dashboard sebagai halaman depan, dengan chart yang benar-benar terender.
+// 0. Home landing sesuai sketsa: profil, welcome, dua CTA, sosial.
 await page.goto(`${base}/`, { waitUntil: "networkidle" });
+await page.waitForSelector("text=Welcome to My Monitoring Running Dashboard");
+const hasDashboardCta = await page.getByRole("link", { name: "Dashboard Monitoring" }).isVisible();
+const hasEventCta = await page.getByRole("link", { name: "Event Joined" }).isVisible();
+const hasIg = await page.getByRole("link", { name: "Instagram" }).isVisible();
+const hasTt = await page.getByRole("link", { name: "TikTok" }).isVisible();
+check("Home: profil, welcome, CTA, dan sosial tampil", hasDashboardCta && hasEventCta && hasIg && hasTt);
+
+// 1. Dashboard Monitoring membuka dashboard dengan chart.
+await page.getByRole("link", { name: "Dashboard Monitoring" }).click();
+await page.waitForURL(/\/dashboard/);
 await page.waitForSelector("text=Dashboard latihan");
 const chartCount = await page.locator(".recharts-surface").count();
 check("Dashboard: chart terender", chartCount >= 4, `${chartCount} chart`);
@@ -32,7 +42,7 @@ check("Dashboard: chart terender", chartCount >= 4, `${chartCount} chart`);
 const countLabel = () => page.locator("text=/^\\d+ sesi terpilih$/").first().innerText();
 const allCount = Number((await countLabel()).match(/\d+/)[0]);
 await page.getByRole("button", { name: "Trail" }).click();
-await page.waitForURL(/tipe=trail/);
+await page.waitForURL(/\/dashboard\?.*tipe=trail/);
 await page.waitForFunction(
   (previous) => {
     const node = [...document.querySelectorAll("*")].find((element) =>
@@ -61,7 +71,7 @@ const restored = await page
 check("Filter bertahan saat URL dibuka ulang", restored === "true", bookmarkUrl.replace(base, ""));
 
 // 3b. Arsip dimuat bertahap (kartu, bukan tabel — shell selalu 390px).
-await page.goto(`${base}/`, { waitUntil: "networkidle" });
+await page.goto(`${base}/dashboard`, { waitUntil: "networkidle" });
 const cardsBefore = await page.locator("a[href^='/sesi/']").count();
 await page.getByRole("button", { name: /Tampilkan semua/ }).click();
 await page.waitForFunction(
@@ -73,7 +83,7 @@ const cardsAfter = await page.locator("a[href^='/sesi/']").count();
 check("Arsip: muat bertahap bekerja", cardsAfter > cardsBefore, `${cardsBefore} → ${cardsAfter} kartu`);
 
 // 4. Dari daftar ke Session Detail: lap, running dynamics, profil elevasi.
-await page.goto(`${base}/`, { waitUntil: "networkidle" });
+await page.goto(`${base}/dashboard`, { waitUntil: "networkidle" });
 await page.locator("a[href^='/sesi/']").first().click();
 await page.waitForURL(/\/sesi\//);
 await page.waitForSelector("text=Tabel lap");
@@ -81,11 +91,13 @@ const lapRows = await page.locator("table tbody tr").last().isVisible();
 const dynamics = await page.locator("text=Running dynamics").isVisible();
 check("Session Detail: tabel lap & running dynamics tampil", lapRows && dynamics);
 
-// 5. Event: skor kesiapan dihitung dari data.
-await page.goto(`${base}/event`, { waitUntil: "networkidle" });
+// 4b. Event Joined dari home.
+await page.goto(`${base}/`, { waitUntil: "networkidle" });
+await page.getByRole("link", { name: "Event Joined" }).click();
+await page.waitForURL(/\/event$/);
 await page.waitForSelector("text=Skor kesiapan");
 const scoreText = await page.locator("text=/^\\d+\\/100$/").first().innerText();
-check("Event: skor kesiapan terhitung", /^\d+\/100$/.test(scoreText), scoreText);
+check("Event Joined: skor kesiapan terhitung", /^\d+\/100$/.test(scoreText), scoreText);
 
 // 6. Proyeksi: kurva vs cut-off dan pergantian skenario.
 await page.goto(`${base}/event/proyeksi`, { waitUntil: "networkidle" });
@@ -116,15 +128,14 @@ check("Strategi: logistik per segmen terisi", fuelRows >= 5, `${fuelRows} segmen
 const notFound = await page.goto(`${base}/sesi/tidak-ada`, { waitUntil: "networkidle" });
 check("404: sesi tak dikenal ditangani", notFound?.status() === 404);
 
-// 9. Tampilan mobile: menu navigasi terbuka.
-// Shell selalu 390px — uji di viewport desktop lebar tetap terlihat seperti ponsel.
+// 9. Shell 390px + menu di layar dalam.
 const wide = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-await wide.goto(`${base}/`, { waitUntil: "networkidle" });
+await wide.goto(`${base}/dashboard`, { waitUntil: "networkidle" });
 const shellWidth = await wide.locator(".app-shell").evaluate((el) => el.getBoundingClientRect().width);
 check("Desktop: shell tetap 390px", Math.abs(shellWidth - 390) < 2, `${shellWidth}px`);
 await wide.getByRole("button", { name: "Buka menu" }).click();
 const wideNav = wide.locator("header nav").last();
-await wideNav.getByRole("link", { name: "Strategi" }).waitFor({ timeout: 10000 });
+await wideNav.getByRole("link", { name: "Home" }).waitFor({ timeout: 10000 });
 check("Menu navigasi terbuka di shell", await wideNav.isVisible());
 await wide.close();
 

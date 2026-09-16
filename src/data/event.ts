@@ -114,6 +114,13 @@ export const gtrUltra: RaceEvent = {
 /** Profil pelari; nantinya bisa diisi dari halaman pengaturan. */
 export const runnerProfile = {
   name: "Harist",
+  title: "Pelari trail · Ruang Fisio Run",
+  /** Ganti dengan foto profil asli di /public/profile.jpg */
+  photoSrc: "/profile.svg",
+  socials: {
+    instagram: "https://instagram.com/",
+    tiktok: "https://www.tiktok.com/",
+  },
   weightKg: 68,
   /** Liter per jam, hasil uji timbang badan sebelum dan sesudah long run. */
   sweatRateLPerHour: 1.05,

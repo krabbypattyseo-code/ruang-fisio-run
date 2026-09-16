@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Figtree, JetBrains_Mono } from "next/font/google";
 
-import { AppShell } from "@/components/app-shell";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { AppChrome } from "@/components/app-chrome";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
@@ -38,11 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="font-sans text-foreground">
-        <AppShell>
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-        </AppShell>
+        <AppChrome>{children}</AppChrome>
         <Toaster position="bottom-center" />
       </body>
     </html>

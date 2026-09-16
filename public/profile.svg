@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 390" role="img" aria-label="Foto profil">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#139CAB"/>
+      <stop offset="55%" stop-color="#005A64"/>
+      <stop offset="100%" stop-color="#04353b"/>
+    </linearGradient>
+  </defs>
+  <rect width="390" height="390" fill="url(#sky)"/>
+  <!-- Silhouette pelari sebagai placeholder sampai foto asli diunggah. -->
+  <circle cx="195" cy="148" r="58" fill="#f0fbfc" fill-opacity="0.95"/>
+  <path d="M110 350c18-78 52-118 85-118s67 40 85 118" fill="#f0fbfc" fill-opacity="0.95"/>
+  <path d="M168 210l-22 46 18 8 16-38z" fill="#f0fbfc" fill-opacity="0.55"/>
+  <path d="M222 210l22 46-18 8-16-38z" fill="#f0fbfc" fill-opacity="0.55"/>
+</svg>

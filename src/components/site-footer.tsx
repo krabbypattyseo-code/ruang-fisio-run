@@ -22,7 +22,8 @@ export function SiteFooter() {
           </p>
           <ul className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
             {[
-              { href: "/", label: "Dashboard" },
+              { href: "/", label: "Home" },
+              { href: "/dashboard", label: "Dashboard" },
               { href: "/event", label: "Kesiapan" },
               { href: "/event/proyeksi", label: "Proyeksi" },
               { href: "/event/rencana", label: "Rencana" },

@@ -7,6 +7,7 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:43217";
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     "",
+    "/dashboard",
     "/event",
     "/event/proyeksi",
     "/event/rencana",

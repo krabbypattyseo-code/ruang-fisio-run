@@ -83,7 +83,7 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
   return (
     <div className="w-full px-4 py-5">
       <Link
-        href="/"
+        href="/dashboard"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-3.5" />

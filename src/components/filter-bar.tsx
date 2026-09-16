@@ -35,7 +35,7 @@ export function FilterBar({ filter, resultCount }: { filter: SessionFilter; resu
 
   const apply = useCallback(
     (next: SessionFilter) => {
-      router.replace(`/?${filterToQuery(next)}`, { scroll: false });
+      router.replace(`/dashboard?${filterToQuery(next)}`, { scroll: false });
     },
     [router],
   );
@@ -97,7 +97,7 @@ export function FilterBar({ filter, resultCount }: { filter: SessionFilter; resu
             size="icon-sm"
             aria-label="Salin tautan filter ini"
             onClick={() => {
-              const url = `${window.location.origin}/?${filterToQuery(filter)}`;
+              const url = `${window.location.origin}/dashboard?${filterToQuery(filter)}`;
               navigator.clipboard
                 ?.writeText(url)
                 .then(() => toast.success("Tautan filter disalin"))
@@ -111,7 +111,7 @@ export function FilterBar({ filter, resultCount }: { filter: SessionFilter; resu
             size="icon-sm"
             aria-label="Kembalikan filter ke bawaan"
             disabled={isDefault}
-            onClick={() => router.replace("/", { scroll: false })}
+            onClick={() => router.replace("/dashboard", { scroll: false })}
           >
             <RotateCcw />
           </Button>

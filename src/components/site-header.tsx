@@ -9,7 +9,8 @@ import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { href: "/", label: "Dashboard" },
+  { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/event", label: "GTR Ultra 30K" },
   { href: "/event/proyeksi", label: "Proyeksi" },
   { href: "/event/rencana", label: "Rencana" },
@@ -21,7 +22,10 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/" || pathname.startsWith("/sesi");
+    if (href === "/") return pathname === "/";
+    if (href === "/dashboard") {
+      return pathname === "/dashboard" || pathname.startsWith("/sesi");
+    }
     if (href === "/event") return pathname === "/event";
     return pathname.startsWith(href);
   };
