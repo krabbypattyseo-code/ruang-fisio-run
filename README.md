@@ -36,7 +36,19 @@ npm run build      # build produksi
 npm start          # jalankan hasil build di port 43217
 npm run lint       # ESLint
 npm run typecheck  # tsc --noEmit
+npm run test:ui    # uji asap alur utama di browser (butuh dev server hidup)
 ```
+
+`npm run test:ui` memakai Playwright; sekali saja jalankan `npx playwright install chromium`
+sebelum pemakaian pertama. Skripnya menelusuri alur nyata: menandai pelajaran selesai,
+persistensi progres setelah reload, mengerjakan kuis sampai halaman skor, reset progres,
+pencarian glosarium, dan menu navigasi versi mobile.
+
+Dev server sengaja di-bind ke `0.0.0.0` agar bisa dibuka dari luar mesin. Karena itu
+`allowedDevOrigins` di `next.config.ts` mencantumkan `127.0.0.1` dan `localhost` — tanpa
+daftar tersebut Next memblokir aset dev dari origin lain dan halaman tidak akan terhidrasi
+(tampilan terlihat normal, tapi semua interaksi mati). Tambahkan host lain ke daftar itu
+kalau kamu mengakses dev server dari domain atau IP berbeda.
 
 ## Struktur proyek
 
