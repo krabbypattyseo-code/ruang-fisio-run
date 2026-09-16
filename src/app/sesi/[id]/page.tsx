@@ -43,6 +43,7 @@ import {
   formatDate,
   formatDuration,
   formatInteger,
+  formatMinSec,
   formatNumber,
   formatPace,
 } from "@/lib/format";
@@ -264,7 +265,7 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
                     {formatNumber(lap.distanceKm)} km
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
-                    {formatDuration(lap.durationSec)}
+                    {formatMinSec(lap.durationSec)}
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
                     {formatPace(lap.paceSecPerKm)}

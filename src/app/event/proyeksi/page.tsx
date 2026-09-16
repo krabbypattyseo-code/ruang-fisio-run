@@ -127,7 +127,11 @@ export default function ProjectionPage() {
             </li>
             <li className="flex gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-              Eksponen Riegel 1,06 dipakai karena jarak lomba lebih panjang dari sesi acuan.
+              Lomba ini {formatNumber(forecast.stretch)}× lebih panjang dari sesi acuan, jadi
+              eksponen Riegel dinaikkan dari 1,06 ke{" "}
+              {forecast.exponent.toLocaleString("id-ID", { maximumFractionDigits: 2 })}.
+              Melipatgandakan jarak selalu menghasilkan pelemahan lebih besar daripada
+              perbandingan linear.
             </li>
             <li className="flex gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />

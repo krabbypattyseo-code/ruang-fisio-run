@@ -16,7 +16,7 @@ import {
 import { ChartTooltipCard, axisProps, gridProps } from "@/components/charts/chart-kit";
 import type { Lap, Session } from "@/data/types";
 import { brand, metricColor } from "@/lib/colors";
-import { formatDuration, formatInteger, formatPace } from "@/lib/format";
+import { formatDuration, formatInteger, formatMinSec, formatPace } from "@/lib/format";
 
 export function ElevationProfileChart({ laps }: { laps: Lap[] }) {
   const data = [
@@ -115,7 +115,7 @@ export function LapPaceChart({ laps }: { laps: Lap[] }) {
               return (
                 <ChartTooltipCard
                   title={`Lap ${lap.index}`}
-                  subtitle={`${lap.distanceKm.toFixed(2)} km · ${formatDuration(lap.durationSec)}`}
+                  subtitle={`${lap.distanceKm.toFixed(2)} km · ${formatMinSec(lap.durationSec)}`}
                   rows={[
                     {
                       label: "Pace",

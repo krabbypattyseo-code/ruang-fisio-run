@@ -150,6 +150,9 @@ export type Scenario = {
 export type Projection = {
   reference: Session;
   raceGradedKm: number;
+  /** Berapa kali lebih panjang lomba dibanding sesi acuan, dalam km setara datar. */
+  stretch: number;
+  exponent: number;
   scenarios: Scenario[];
   target: Scenario;
 };
@@ -256,10 +259,22 @@ export function projection(
   return {
     reference: referenceSession,
     raceGradedKm: raceGraded,
+    stretch,
+    exponent,
     scenarios,
     target: scenarios.find((scenario) => scenario.key === "target") ?? scenarios[0],
   };
 }
+
+const buildFocus = [
+  "Long run trail dengan profil menyerupai lomba, satu sesi tempo di road.",
+  "Hill repeat 8×90 detik di tanjakan 8–10%, sisanya easy run.",
+  "Long run progresif: 20 menit terakhir di pace lomba.",
+  "Tambah satu sesi power hiking dengan vest terisi 4 kg.",
+  "Long run dua sesi dalam 24 jam untuk melatih kaki yang sudah lelah.",
+  "Latihan turunan teknis 30 menit, fokus langkah pendek dan pandangan jauh.",
+  "Long run dengan fueling penuh: gel, botol, dan elektrolit seperti hari lomba.",
+];
 
 export type PlanWeek = {
   weekStart: string
@@ -307,7 +322,7 @@ export function trainingPlan(
         elevM: Math.round((currentElev + (peakElev - currentElev) * progress) * ramp),
         focus: isDownWeek
           ? "Turunkan volume 25%, pertahankan satu sesi tanjakan pendek."
-          : "Long run trail dengan profil menyerupai lomba, satu sesi tempo di road.",
+          : buildFocus[index % buildFocus.length],
       } satisfies PlanWeek;
     }
 

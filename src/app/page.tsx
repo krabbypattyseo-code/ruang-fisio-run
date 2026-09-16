@@ -15,7 +15,7 @@ import { MetricTrendChart } from "@/components/charts/metric-trend-chart";
 import { PaceTrendChart } from "@/components/charts/pace-trend-chart";
 import { WeeklyVolumeChart } from "@/components/charts/weekly-volume-chart";
 import { FilterBar } from "@/components/filter-bar";
-import { SessionTable } from "@/components/session-table";
+import { SessionArchive } from "@/components/session-archive";
 import { StatCard } from "@/components/stat-card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -31,7 +31,7 @@ import { gtrUltra } from "@/data/event";
 import { sessions } from "@/data/sessions";
 import { workoutTypeLabel } from "@/data/types";
 import { metricColor, typeColor } from "@/lib/colors";
-import { filterSessions, parseFilter } from "@/lib/filters";
+import { filterSessions, filterToQuery, parseFilter } from "@/lib/filters";
 import {
   formatDate,
   formatDuration,
@@ -258,7 +258,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
             {filtered.length} sesi terpilih
           </Badge>
         </div>
-        <SessionTable sessions={filtered} />
+        <SessionArchive key={filterToQuery(filter)} sessions={filtered} />
       </section>
     </div>
   );

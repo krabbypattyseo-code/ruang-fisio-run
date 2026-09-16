@@ -24,6 +24,13 @@ export function formatDuration(totalSec: number) {
   return `${hours}j ${String(minutes).padStart(2, "0")}m`;
 }
 
+/** 444 → "7:24", dipakai untuk durasi pendek seperti lap. */
+export function formatMinSec(totalSec: number) {
+  const minutes = Math.floor(totalSec / 60);
+  const seconds = Math.round(totalSec % 60);
+  return `${minutes}:${String(seconds === 60 ? 0 : seconds).padStart(2, "0")}`;
+}
+
 /** 5076 → "1:24:36" */
 export function formatClock(totalSec: number) {
   const hours = Math.floor(totalSec / 3600);

@@ -60,6 +60,18 @@ const restored = await page
   .getAttribute("aria-pressed");
 check("Filter bertahan saat URL dibuka ulang", restored === "true", bookmarkUrl.replace(base, ""));
 
+// 3b. Arsip dimuat bertahap.
+await page.goto(`${base}/`, { waitUntil: "networkidle" });
+const rowsBefore = await page.locator("table tbody tr").count();
+await page.getByRole("button", { name: /Tampilkan semua/ }).click();
+await page.waitForFunction(
+  (previous) => document.querySelectorAll("table tbody tr").length > previous,
+  rowsBefore,
+  { timeout: 10000 },
+);
+const rowsAfter = await page.locator("table tbody tr").count();
+check("Arsip: muat bertahap bekerja", rowsAfter > rowsBefore, `${rowsBefore} → ${rowsAfter} baris`);
+
 // 4. Dari daftar ke Session Detail: lap, running dynamics, profil elevasi.
 await page.goto(`${base}/`, { waitUntil: "networkidle" });
 await page.locator("table a[href^='/sesi/']").first().click();
