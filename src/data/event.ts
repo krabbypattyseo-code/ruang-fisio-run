@@ -39,7 +39,7 @@ export const gtrUltra: RaceEvent = {
   category: "30K",
   date: "2026-11-22",
   startTime: "05:00",
-  location: "Gunung Tampomas, Sumedang",
+  location: "Gunung Gajah, Semarang",
   distanceKm: 30,
   elevGainM: 1650,
   elevLossM: 1650,

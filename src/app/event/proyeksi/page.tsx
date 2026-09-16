@@ -123,7 +123,7 @@ export default function ProjectionPage() {
             <li className="flex gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
               Setiap 100 m tanjakan dihitung sebagai 0,9 km tambahan—patokan kasar yang
-              cocok untuk trail teknis di Jawa Barat.
+              cocok untuk trail teknis di sekitar Semarang.
             </li>
             <li className="flex gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
