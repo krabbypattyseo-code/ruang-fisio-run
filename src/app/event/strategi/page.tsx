@@ -35,7 +35,7 @@ export default function StrategyPage() {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2">
         <StatCard
           label="Target waktu"
           value={formatMinutes(scenario.finishMin)}
@@ -128,7 +128,7 @@ export default function StrategyPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

@@ -10,7 +10,7 @@ export default function EventLayout({ children }: LayoutProps<"/event">) {
   const status = readiness();
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+    <div className="w-full px-4 py-5">
       <header>
         <div className="flex flex-wrap items-center gap-2">
           <Badge>{gtrUltra.category}</Badge>
@@ -18,7 +18,7 @@ export default function EventLayout({ children }: LayoutProps<"/event">) {
             {status.daysLeft} hari lagi
           </Badge>
         </div>
-        <h1 className="mt-2 font-heading text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-2 font-heading text-xl font-semibold">
           {gtrUltra.name} {gtrUltra.category}
         </h1>
         <dl className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-muted-foreground">

@@ -125,10 +125,21 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
-    @apply font-sans;
+    @apply font-sans h-full;
   }
+  /* Canvas abu-abu di luar frame — pola yang sama dengan Ruang Fisio Pasien. */
+  body {
+    @apply m-0 flex min-h-full min-h-dvh items-start justify-center text-foreground;
+    background-color: #e5e9eb;
+  }
+}
+
+.app-shell {
+  width: 100%;
+  max-width: 390px;
+  min-height: 100dvh;
+  background: var(--background);
+  position: relative;
+  overflow-x: hidden;
 }

@@ -66,6 +66,13 @@ Perhitungan turunan terpisah agar mudah diaudit:
 - `src/lib/race.ts` — skor kesiapan, proyeksi Riegel, rencana pekanan, checklist, dan
   logistik fueling.
 
+## Layout
+
+Seluruh antarmuka dikunci di kolom **390px** (pola yang sama dengan
+[Ruang Fisio Pasien](https://ruang-fisio-pasien.vercel.app/)). Di desktop, kolom itu
+tampil di tengah canvas abu-abu `#e5e9eb`; di ponsel mengisi lebar layar. Lihat
+`src/components/app-shell.tsx` dan aturan `body` / `.app-shell` di `globals.css`.
+
 ## Brand
 
 Diambil dari aset Ruang Fisio, dengan dua catatan yang masih perlu keputusan:

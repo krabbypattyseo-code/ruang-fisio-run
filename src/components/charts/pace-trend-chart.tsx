@@ -30,7 +30,7 @@ export function PaceTrendChart({ data }: { data: TrendPoint[] }) {
 
   return (
     <div className="space-y-3">
-      <div className="h-64 w-full">
+      <div className="h-52 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -6 }}>
             <CartesianGrid {...gridProps} />

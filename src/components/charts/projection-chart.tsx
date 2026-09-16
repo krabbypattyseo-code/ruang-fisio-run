@@ -49,7 +49,7 @@ export function ProjectionChart({
 
   return (
     <div className="space-y-3">
-      <div className="h-72 w-full">
+      <div className="h-56 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 8, right: 10, bottom: 0, left: -8 }}>
             <CartesianGrid {...gridProps} />

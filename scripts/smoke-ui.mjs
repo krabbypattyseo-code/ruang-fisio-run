@@ -31,7 +31,7 @@ check("Dashboard: chart terender", chartCount >= 4, `${chartCount} chart`);
 // 2. Filter tipe menulis state ke URL dan mengubah jumlah sesi.
 const countLabel = () => page.locator("text=/^\\d+ sesi terpilih$/").first().innerText();
 const allCount = Number((await countLabel()).match(/\d+/)[0]);
-await page.getByRole("button", { name: "Trail Running" }).click();
+await page.getByRole("button", { name: "Trail" }).click();
 await page.waitForURL(/tipe=trail/);
 await page.waitForFunction(
   (previous) => {
@@ -56,25 +56,25 @@ await page.waitForURL(/dari=\d{4}-\d{2}-\d{2}/);
 const bookmarkUrl = page.url();
 await page.goto(bookmarkUrl, { waitUntil: "networkidle" });
 const restored = await page
-  .getByRole("button", { name: "Trail Running" })
+  .getByRole("button", { name: "Trail" })
   .getAttribute("aria-pressed");
 check("Filter bertahan saat URL dibuka ulang", restored === "true", bookmarkUrl.replace(base, ""));
 
-// 3b. Arsip dimuat bertahap.
+// 3b. Arsip dimuat bertahap (kartu, bukan tabel — shell selalu 390px).
 await page.goto(`${base}/`, { waitUntil: "networkidle" });
-const rowsBefore = await page.locator("table tbody tr").count();
+const cardsBefore = await page.locator("a[href^='/sesi/']").count();
 await page.getByRole("button", { name: /Tampilkan semua/ }).click();
 await page.waitForFunction(
-  (previous) => document.querySelectorAll("table tbody tr").length > previous,
-  rowsBefore,
+  (previous) => document.querySelectorAll("a[href^='/sesi/']").length > previous,
+  cardsBefore,
   { timeout: 10000 },
 );
-const rowsAfter = await page.locator("table tbody tr").count();
-check("Arsip: muat bertahap bekerja", rowsAfter > rowsBefore, `${rowsBefore} → ${rowsAfter} baris`);
+const cardsAfter = await page.locator("a[href^='/sesi/']").count();
+check("Arsip: muat bertahap bekerja", cardsAfter > cardsBefore, `${cardsBefore} → ${cardsAfter} kartu`);
 
 // 4. Dari daftar ke Session Detail: lap, running dynamics, profil elevasi.
 await page.goto(`${base}/`, { waitUntil: "networkidle" });
-await page.locator("table a[href^='/sesi/']").first().click();
+await page.locator("a[href^='/sesi/']").first().click();
 await page.waitForURL(/\/sesi\//);
 await page.waitForSelector("text=Tabel lap");
 const lapRows = await page.locator("table tbody tr").last().isVisible();
@@ -105,8 +105,8 @@ check("Proyeksi: skenario bisa ditukar", firstRow !== secondRow, `${firstRow} �
 
 // 7. Rencana latihan dan strategi hari-H terisi.
 await page.goto(`${base}/event/rencana`, { waitUntil: "networkidle" });
-const planRows = await page.locator("table tbody tr").count();
-check("Rencana: tabel pekanan terisi", planRows >= 4, `${planRows} pekan`);
+const planRows = await page.locator("text=/^P\\d+/").count();
+check("Rencana: pekanan terisi", planRows >= 4, `${planRows} pekan`);
 
 await page.goto(`${base}/event/strategi`, { waitUntil: "networkidle" });
 const fuelRows = await page.locator("table tbody tr").count();
@@ -117,12 +117,16 @@ const notFound = await page.goto(`${base}/sesi/tidak-ada`, { waitUntil: "network
 check("404: sesi tak dikenal ditangani", notFound?.status() === 404);
 
 // 9. Tampilan mobile: menu navigasi terbuka.
-const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
-await mobile.goto(`${base}/`, { waitUntil: "networkidle" });
-await mobile.getByRole("button", { name: "Buka menu" }).click();
-const mobileNav = mobile.locator("header nav").last();
-await mobileNav.getByRole("link", { name: "Strategi" }).waitFor({ timeout: 10000 });
-check("Mobile: menu navigasi terbuka", await mobileNav.isVisible());
+// Shell selalu 390px — uji di viewport desktop lebar tetap terlihat seperti ponsel.
+const wide = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+await wide.goto(`${base}/`, { waitUntil: "networkidle" });
+const shellWidth = await wide.locator(".app-shell").evaluate((el) => el.getBoundingClientRect().width);
+check("Desktop: shell tetap 390px", Math.abs(shellWidth - 390) < 2, `${shellWidth}px`);
+await wide.getByRole("button", { name: "Buka menu" }).click();
+const wideNav = wide.locator("header nav").last();
+await wideNav.getByRole("link", { name: "Strategi" }).waitFor({ timeout: 10000 });
+check("Menu navigasi terbuka di shell", await wideNav.isVisible());
+await wide.close();
 
 await browser.close();
 

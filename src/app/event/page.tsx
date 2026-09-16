@@ -45,7 +45,7 @@ export default function EventReadinessPage() {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 lg:grid-cols-[1fr_1.25fr]">
+      <div className="grid gap-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

@@ -81,7 +81,7 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
   const graded = gradedKm(session.distanceKm, session.elevGainM);
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
+    <div className="w-full px-4 py-5">
       <Link
         href="/"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -104,7 +104,7 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
             {formatDate(session.date, "weekday")}
           </span>
         </div>
-        <h1 className="mt-2 font-heading text-2xl font-semibold sm:text-3xl">
+        <h1 className="mt-2 font-heading text-xl font-semibold">
           {session.title}
         </h1>
         <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
@@ -120,7 +120,7 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
         </p>
       </header>
 
-      <section className="mt-6 grid gap-3 grid-cols-2 lg:grid-cols-4">
+      <section className="mt-4 grid grid-cols-2 gap-2">
         <StatCard
           label="Jarak"
           value={formatNumber(session.distanceKm)}
@@ -150,7 +150,7 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
         />
       </section>
 
-      <section className="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <section className="mt-3 grid gap-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -180,7 +180,7 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
         </Card>
       </section>
 
-      <section className="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <section className="mt-3 grid gap-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

@@ -13,7 +13,7 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   return (
-    <div className="mx-auto w-full max-w-xl px-4 py-20 text-center sm:px-6">
+    <div className="w-full px-4 py-16 text-center">
       <span className="mx-auto grid size-11 place-items-center rounded-full bg-destructive/10 text-destructive">
         <CircleAlert className="size-5" />
       </span>

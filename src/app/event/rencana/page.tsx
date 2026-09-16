@@ -9,14 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { gtrUltra } from "@/data/event";
 import { formatDate, formatInteger } from "@/lib/format";
 import { readiness, readinessChecklist, trainingPlan } from "@/lib/race";
@@ -68,49 +60,7 @@ export default function PlanPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* Tabel penuh di layar lebar */}
-          <div className="hidden overflow-hidden rounded-xl ring-1 ring-foreground/10 md:block">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Pekan</TableHead>
-                  <TableHead>Fase</TableHead>
-                  <TableHead className="text-right">Volume</TableHead>
-                  <TableHead className="text-right">Long run</TableHead>
-                  <TableHead className="text-right">Elevasi</TableHead>
-                  <TableHead className="w-[42%]">Fokus</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {plan.map((week) => (
-                  <TableRow key={week.weekStart}>
-                    <TableCell className="whitespace-nowrap">
-                      <span className="font-medium">P{week.index}</span>
-                      <span className="ml-1.5 text-xs text-muted-foreground">
-                        {formatDate(week.weekStart)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={phaseTone[week.phase] ?? "secondary"}>{week.phase}</Badge>
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">{week.targetKm} km</TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {week.longRunKm} km
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {formatInteger(week.elevM)} m
-                    </TableCell>
-                    <TableCell className="whitespace-normal text-muted-foreground">
-                      {week.focus}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-
-          {/* Kartu per pekan di layar sempit */}
-          <ul className="space-y-2 md:hidden">
+          <ul className="space-y-2">
             {plan.map((week) => (
               <li key={week.weekStart} className="rounded-xl px-3.5 py-3 ring-1 ring-foreground/10">
                 <div className="flex items-center justify-between gap-2">
@@ -143,7 +93,7 @@ export default function PlanPage() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-3">
         <Card>
           <CardHeader>
             <CardTitle>Checklist kesiapan</CardTitle>

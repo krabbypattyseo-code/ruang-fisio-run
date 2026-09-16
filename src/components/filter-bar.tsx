@@ -13,9 +13,16 @@ import {
   filterToQuery,
   rangePresets,
   rangeToFilter,
-  typeOptions,
   type SessionFilter,
+  type TypeFilter,
 } from "@/lib/filters";
+
+const typeOptions: { key: TypeFilter; label: string; short: string }[] = [
+  { key: "all", label: "Semua", short: "Semua" },
+  { key: "road", label: "Road", short: "Road" },
+  { key: "trail", label: "Trail", short: "Trail" },
+  { key: "hiking", label: "Hiking", short: "Hiking" },
+];
 
 /**
  * Filter bukan halaman tersendiri: barnya menetap di atas Dashboard dan seluruh
@@ -38,10 +45,10 @@ export function FilterBar({ filter, resultCount }: { filter: SessionFilter; resu
   return (
     <section
       aria-label="Filter sesi"
-      className="sticky top-14 z-30 -mx-4 border-b border-foreground/10 bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6"
+      className="sticky top-12 z-30 -mx-4 border-b border-foreground/10 bg-background/95 px-4 py-2.5 backdrop-blur"
     >
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 lg:flex-row lg:items-center">
-        <div className="flex flex-wrap items-center gap-1.5">
+      <div className="flex flex-col gap-2.5">
+        <div className="flex flex-wrap items-center gap-1">
           {typeOptions.map((option) => {
             const isActive = filter.type === option.key;
             return (
@@ -49,20 +56,21 @@ export function FilterBar({ filter, resultCount }: { filter: SessionFilter; resu
                 key={option.key}
                 type="button"
                 aria-pressed={isActive}
+                aria-label={option.label}
                 onClick={() => apply({ ...filter, type: option.key })}
-                className={`rounded-4xl px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`rounded-4xl px-2.5 py-1 text-[11px] font-medium transition-colors ${
                   isActive
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {option.label}
+                {option.short}
               </button>
             );
           })}
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 lg:ml-2">
+        <div className="flex flex-wrap items-center gap-1">
           {rangePresets.map((preset) => {
             const isActive = activeRange === preset.key;
             return (
@@ -71,7 +79,7 @@ export function FilterBar({ filter, resultCount }: { filter: SessionFilter; resu
                 type="button"
                 aria-pressed={isActive}
                 onClick={() => apply(rangeToFilter(preset.key, filter))}
-                className={`rounded-4xl px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`rounded-4xl px-2.5 py-1 text-[11px] font-medium transition-colors ${
                   isActive
                     ? "bg-foreground text-background"
                     : "bg-muted text-muted-foreground hover:text-foreground"
@@ -81,37 +89,7 @@ export function FilterBar({ filter, resultCount }: { filter: SessionFilter; resu
               </button>
             );
           })}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            Dari
-            <Input
-              type="date"
-              value={filter.from}
-              min={dataRange.from}
-              max={filter.to}
-              aria-label="Tanggal mulai"
-              onChange={(event) => apply({ ...filter, from: event.target.value })}
-              className="h-8 w-[9.5rem] text-xs"
-            />
-          </label>
-          <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            Sampai
-            <Input
-              type="date"
-              value={filter.to}
-              min={filter.from}
-              max={dataRange.to}
-              aria-label="Tanggal akhir"
-              onChange={(event) => apply({ ...filter, to: event.target.value })}
-              className="h-8 w-[9.5rem] text-xs"
-            />
-          </label>
-        </div>
-
-        <div className="flex items-center gap-1.5 lg:ml-auto">
-          <span className="text-xs text-muted-foreground tabular-nums">
+          <span className="ml-auto text-[11px] text-muted-foreground tabular-nums">
             {resultCount} sesi
           </span>
           <Button
@@ -137,6 +115,33 @@ export function FilterBar({ filter, resultCount }: { filter: SessionFilter; resu
           >
             <RotateCcw />
           </Button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <label className="space-y-1 text-[11px] text-muted-foreground">
+            <span>Dari</span>
+            <Input
+              type="date"
+              value={filter.from}
+              min={dataRange.from}
+              max={filter.to}
+              aria-label="Tanggal mulai"
+              onChange={(event) => apply({ ...filter, from: event.target.value })}
+              className="h-8 w-full px-2 text-xs"
+            />
+          </label>
+          <label className="space-y-1 text-[11px] text-muted-foreground">
+            <span>Sampai</span>
+            <Input
+              type="date"
+              value={filter.to}
+              min={filter.from}
+              max={dataRange.to}
+              aria-label="Tanggal akhir"
+              onChange={(event) => apply({ ...filter, to: event.target.value })}
+              className="h-8 w-full px-2 text-xs"
+            />
+          </label>
         </div>
       </div>
     </section>

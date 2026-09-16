@@ -8,7 +8,7 @@ export default function NotFound() {
   const recent = sessions.slice(0, 4);
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-20 text-center sm:px-6">
+    <div className="w-full px-4 py-16 text-center">
       <p className="font-mono text-sm text-muted-foreground">404</p>
       <h1 className="mt-2 font-heading text-2xl font-semibold">
         Halaman atau sesi ini tidak ada

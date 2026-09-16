@@ -62,10 +62,10 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
   const weeks = weekly.length || 1;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-      <div className="flex flex-col gap-3 py-6 sm:flex-row sm:items-end sm:justify-between">
+    <div className="w-full px-4">
+      <div className="flex flex-col gap-2 py-4">
         <div>
-          <h1 className="font-heading text-2xl font-semibold sm:text-3xl">
+          <h1 className="font-heading text-xl font-semibold">
             Dashboard latihan
           </h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
@@ -75,16 +75,16 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
         </div>
         <Link
           href="/event"
-          className={buttonVariants({ variant: "outline", size: "sm" })}
+          className={buttonVariants({ variant: "outline", size: "sm" }) + " self-start"}
         >
-          {status.daysLeft} hari ke {gtrUltra.name} {gtrUltra.category}
+          {status.daysLeft} hari ke GTR
           <ArrowRight data-icon="inline-end" className="size-3.5" />
         </Link>
       </div>
 
       <FilterBar filter={filter} resultCount={filtered.length} />
 
-      <section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="mt-4 grid grid-cols-2 gap-2">
         <StatCard
           label="Total jarak"
           value={formatNumber(summary.distanceKm)}
@@ -118,7 +118,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
         />
       </section>
 
-      <section className="mt-4 grid gap-4 lg:grid-cols-[1.35fr_1fr]">
+      <section className="mt-3 grid gap-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -198,7 +198,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/">) {
         </Card>
       </section>
 
-      <section className="mt-4 grid gap-4 md:grid-cols-3">
+      <section className="mt-3 grid gap-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm">

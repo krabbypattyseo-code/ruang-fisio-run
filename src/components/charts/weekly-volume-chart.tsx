@@ -29,7 +29,7 @@ export function WeeklyVolumeChart({ data }: { data: WeeklyPoint[] }) {
 
   return (
     <div className="space-y-3">
-      <div className="h-64 w-full">
+      <div className="h-52 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: -18 }}>
             <CartesianGrid {...gridProps} />
