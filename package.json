@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p 43217",
     "lint": "eslint",
+    "import:sessions": "python3 scripts/import-sessions.py",
     "typecheck": "tsc --noEmit",
     "test:ui": "node scripts/smoke-ui.mjs"
   },

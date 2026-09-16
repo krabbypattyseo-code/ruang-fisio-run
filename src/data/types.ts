@@ -9,21 +9,23 @@ export type Lap = {
   cadence: number;
   elevGainM: number;
   elevLossM: number;
-  /** Elevasi di akhir lap, dipakai untuk profil rute. */
+  /** Elevasi di akhir lap (relatif dari elevasi awal sesi jika tercatat). */
   elevationM: number;
 };
 
 export type Weather = {
-  tempC: number;
-  humidity: number;
-  condition: "Cerah" | "Berawan" | "Gerimis" | "Hujan ringan" | "Berkabut";
+  /** Null kalau sumber data tidak mencatat suhu. */
+  tempC: number | null;
+  humidity: number | null;
+  condition: string | null;
 };
+
+export type SessionSource = "garmin" | "coros";
 
 export type Session = {
   id: string;
   date: string;
   type: WorkoutType;
-  /** Label latihan, misalnya "Long run trail" atau "Tempo 6 km". */
   title: string;
   route: string;
   distanceKm: number;
@@ -32,18 +34,20 @@ export type Session = {
   elevGainM: number;
   elevLossM: number;
   avgHr: number;
-  maxHr: number;
+  /** Null kalau sumber (mis. COROS) tidak menyediakan HR maksimum. */
+  maxHr: number | null;
   cadence: number;
-  /** Panjang langkah rata-rata dalam meter, diturunkan dari pace dan cadence. */
-  strideM: number;
+  /** Null kalau tidak tercatat di sumber. */
+  strideM: number | null;
   calories: number;
-  /** Rate of perceived exertion, skala 1–10. */
-  rpe: number;
+  /** Null kalau RPE tidak tercatat. */
+  rpe: number | null;
   weather: Weather;
   laps: Lap[];
-  /** Detik di zona HR 1–5. */
+  /** Detik di zona HR 1–5; nol semua kalau sumber tidak punya distribusi zona. */
   hrZones: [number, number, number, number, number];
   notes: string;
+  source: SessionSource;
 };
 
 export const workoutTypeLabel: Record<WorkoutType, string> = {
@@ -56,4 +60,9 @@ export const workoutTypeShort: Record<WorkoutType, string> = {
   road: "Road",
   trail: "Trail",
   hiking: "Hiking",
+};
+
+export const sourceLabel: Record<SessionSource, string> = {
+  garmin: "Garmin",
+  coros: "COROS",
 };

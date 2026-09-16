@@ -29,8 +29,9 @@ export function MetricTrendChart({
   unit: string;
   decimals?: number;
 }) {
-  if (data.length < 2) {
-    return <ChartEmpty>Data belum cukup.</ChartEmpty>;
+  const chartData = data.filter((point) => point[metric] != null);
+  if (chartData.length < 2) {
+    return <ChartEmpty>Data belum cukup di sumber yang tersedia.</ChartEmpty>;
   }
 
   const formatter = (value: number) => value.toFixed(decimals);
@@ -40,7 +41,7 @@ export function MetricTrendChart({
   return (
     <div className="h-36 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 6, right: 4, bottom: 0, left: -24 }}>
+        <AreaChart data={chartData} margin={{ top: 6, right: 4, bottom: 0, left: -24 }}>
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={color} stopOpacity={0.35} />

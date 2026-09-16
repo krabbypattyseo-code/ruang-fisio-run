@@ -12,8 +12,8 @@ export function SiteFooter() {
           <p className="font-heading text-sm font-semibold">Ruang Fisio Run</p>
           <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
             Dashboard latihan pribadi menuju {gtrUltra.name} {gtrUltra.category}.{" "}
-            {sessions.length} sesi contoh · {formatDate(dataRange.from)} –{" "}
-            {formatDate(dataRange.to)}.
+            {sessions.length} sesi dari Garmin + COROS · {formatDate(dataRange.from)} –{" "}
+            {formatDate(dataRange.to)}. Tidak ada sesi di luar ekspor itu.
           </p>
         </div>
         <div>

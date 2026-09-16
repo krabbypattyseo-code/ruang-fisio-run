@@ -42,7 +42,8 @@ export function parseFilter(params: Record<string, string | string[] | undefined
 
   return {
     type: isType(type) ? type : "all",
-    from: isValidDate(from) ? from : addDays(today, -89),
+    // Bawaan = seluruh arsip yang ada, bukan rentang di luar data sumber.
+    from: isValidDate(from) ? from : dataRange.from,
     to: isValidDate(to) ? to : dataRange.to,
   } satisfies SessionFilter;
 }
@@ -76,5 +77,10 @@ export function activeRangeKey(filter: SessionFilter) {
 export function rangeToFilter(key: string, filter: SessionFilter): SessionFilter {
   if (key === "all") return { ...filter, from: dataRange.from, to: dataRange.to };
   const days = key === "30" ? 29 : 89;
-  return { ...filter, from: addDays(today, -days), to: dataRange.to };
+  const from = addDays(today, -days);
+  return {
+    ...filter,
+    from: from < dataRange.from ? dataRange.from : from,
+    to: dataRange.to,
+  };
 }

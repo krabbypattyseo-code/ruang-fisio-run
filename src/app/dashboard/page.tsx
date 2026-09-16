@@ -230,7 +230,7 @@ export default async function DashboardPage({
               Panjang langkah
             </CardTitle>
             <CardDescription>
-              Rata-rata {formatNumber(runSummary.strideM)} m per langkah.
+              {runSummary.strideM > 0 ? `Rata-rata ${formatNumber(runSummary.strideM)} m per langkah.` : "Panjang langkah hanya ada di sesi Garmin."}
             </CardDescription>
           </CardHeader>
           <CardContent>

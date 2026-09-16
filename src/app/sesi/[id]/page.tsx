@@ -37,7 +37,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getSession, sessions } from "@/data/sessions";
-import { workoutTypeLabel } from "@/data/types";
+import { sourceLabel, workoutTypeLabel } from "@/data/types";
 import { typeColor } from "@/lib/colors";
 import {
   formatDate,
@@ -99,7 +99,10 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
             />
             {workoutTypeLabel[session.type]}
           </Badge>
-          <Badge variant="secondary">RPE {session.rpe}/10</Badge>
+          {session.rpe != null ? (
+            <Badge variant="secondary">RPE {session.rpe}/10</Badge>
+          ) : null}
+          <Badge variant="outline">{sourceLabel[session.source]}</Badge>
           <span className="text-sm text-muted-foreground">
             {formatDate(session.date, "weekday")}
           </span>
@@ -112,11 +115,16 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
             <Route className="size-3.5" />
             {session.route}
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <CloudSun className="size-3.5" />
-            {session.weather.condition}, {session.weather.tempC}°C · kelembapan{" "}
-            {session.weather.humidity}%
-          </span>
+          {session.weather.tempC != null ? (
+            <span className="inline-flex items-center gap-1.5">
+              <CloudSun className="size-3.5" />
+              {session.weather.tempC}°C
+              {session.weather.condition ? ` · ${session.weather.condition}` : ""}
+              {session.weather.humidity != null
+                ? ` · kelembapan ${session.weather.humidity}%`
+                : ""}
+            </span>
+          ) : null}
         </p>
       </header>
 
@@ -145,7 +153,7 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
           label="HR rata-rata"
           value={`${session.avgHr}`}
           unit="bpm"
-          hint={`Maks ${session.maxHr} bpm`}
+          hint={session.maxHr != null ? `Maks ${session.maxHr} bpm` : "HR maks tidak tercatat"}
           icon={HeartPulse}
         />
       </section>
@@ -166,18 +174,20 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <HeartPulse className="size-4 text-primary" />
-              Distribusi zona HR
-            </CardTitle>
-            <CardDescription>Waktu di setiap zona selama sesi ini.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <HrZoneBars session={session} />
-          </CardContent>
-        </Card>
+        {session.hrZones.some((seconds) => seconds > 0) ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <HeartPulse className="size-4 text-primary" />
+                Distribusi zona HR
+              </CardTitle>
+              <CardDescription>Waktu di setiap zona selama sesi ini.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <HrZoneBars session={session} />
+            </CardContent>
+          </Card>
+        ) : null}
       </section>
 
       <section className="mt-3 grid gap-3">
@@ -208,12 +218,19 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
             <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
               {[
                 { label: "Cadence", value: `${session.cadence} spm` },
-                { label: "Panjang langkah", value: `${formatNumber(session.strideM)} m` },
+                {
+                  label: "Panjang langkah",
+                  value:
+                    session.strideM != null ? `${formatNumber(session.strideM)} m` : "Tidak tercatat",
+                },
                 {
                   label: "Kalori",
                   value: `${formatInteger(session.calories)} kkal`,
                 },
-                { label: "RPE", value: `${session.rpe}/10` },
+                {
+                  label: "RPE",
+                  value: session.rpe != null ? `${session.rpe}/10` : "Tidak tercatat",
+                },
                 {
                   label: "Naik per km",
                   value: `${formatInteger(session.elevGainM / session.distanceKm)} m`,

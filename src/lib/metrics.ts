@@ -38,16 +38,25 @@ export function summarize(sessions: Session[]): Summary {
   const weight = (value: (session: Session) => number) =>
     sum(sessions.map((session) => value(session) * session.distanceKm)) / distanceKm;
 
+  const withStride = sessions.filter((session) => session.strideM != null);
+  const strideDistance = sum(withStride.map((session) => session.distanceKm));
+
   return {
     sessions: sessions.length,
     distanceKm,
     durationSec,
     elevGainM: sum(sessions.map((session) => session.elevGainM)),
-    paceSecPerKm: durationSec / distanceKm,
+    paceSecPerKm: distanceKm ? durationSec / distanceKm : 0,
     avgHr: weight((session) => session.avgHr),
     cadence: weight((session) => session.cadence),
-    strideM: weight((session) => session.strideM),
-    longestKm: Math.max(...sessions.map((session) => session.distanceKm)),
+    strideM:
+      strideDistance > 0
+        ? sum(withStride.map((session) => (session.strideM as number) * session.distanceKm)) /
+          strideDistance
+        : 0,
+    longestKm: sessions.length
+      ? Math.max(...sessions.map((session) => session.distanceKm))
+      : 0,
     activeDays: new Set(sessions.map((session) => session.date)).size,
   };
 }
@@ -109,7 +118,7 @@ export type TrendPoint = {
   type: WorkoutType;
   paceSecPerKm: number;
   cadence: number;
-  strideM: number;
+  strideM: number | null;
   avgHr: number;
   distanceKm: number;
   /** Rata-rata bergerak 5 sesi, memuluskan naik-turun harian. */

@@ -49,22 +49,26 @@ tapi semua interaksi mati.
 
 ## Data
 
-Semua angka di aplikasi ini berasal dari dua modul data, bukan dari basis data:
+Arsip sesi **hanya** dari dua ekspor yang ada di `data/raw/`:
 
-- `src/data/sessions.ts` — 50-an sesi contoh (road, trail, hiking) yang dibangkitkan
-  deterministik untuk blok latihan 13 pekan, lengkap dengan lap, zona HR, dan cuaca. Ganti
-  isi modul ini dengan hasil ekspor Garmin/Strava; seluruh halaman hanya bergantung pada
-  bentuk tipe `Session` di `src/data/types.ts`.
-- `src/data/event.ts` — parameter GTR Ultra 30K (jarak, elevasi, cut-off tiap pos,
-  perlengkapan wajib) dan profil pelari termasuk sweat rate. Perbarui begitu race book
-  resmi keluar.
+- `Garmin_Running_Data_JulAug_2026.xlsx` — Jul–Agu 2026
+- `COROS_Running_26Agu6Sep2026.xlsx` — 26 Agu–6 Sep 2026
 
-Perhitungan turunan terpisah agar mudah diaudit:
+Impor ke TypeScript:
 
-- `src/lib/metrics.ts` — agregat, seri mingguan, tren per sesi, jarak setara datar
-  (100 m tanjakan ≈ 0,9 km).
-- `src/lib/race.ts` — skor kesiapan, proyeksi Riegel, rencana pekanan, checklist, dan
-  logistik fueling.
+```bash
+npm run import:sessions
+# atau: python3 scripts/import-sessions.py
+```
+
+Hasilnya ditulis ke `src/data/sessions.generated.ts`. Field yang tidak ada di sumber
+(mis. HR maks / stride / cuaca di COROS) tetap `null` — tidak digenerate.
+
+Untuk menambah workout baru: ganti/tambah file Excel di `data/raw/`, sesuaikan path di
+`scripts/import-sessions.py` bila nama file berubah, lalu jalankan ulang impor.
+
+Parameter lomba GTR Ultra 30K (Gunung Gajah, Semarang) ada di `src/data/event.ts`.
+
 
 ## Layout
 

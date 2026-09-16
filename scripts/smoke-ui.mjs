@@ -41,8 +41,8 @@ check("Dashboard: chart terender", chartCount >= 4, `${chartCount} chart`);
 // 2. Filter tipe menulis state ke URL dan mengubah jumlah sesi.
 const countLabel = () => page.locator("text=/^\\d+ sesi terpilih$/").first().innerText();
 const allCount = Number((await countLabel()).match(/\d+/)[0]);
-await page.getByRole("button", { name: "Trail" }).click();
-await page.waitForURL(/\/dashboard\?.*tipe=trail/);
+await page.getByRole("button", { name: "Hiking" }).click();
+await page.waitForURL(/\/dashboard\?.*tipe=hiking/);
 await page.waitForFunction(
   (previous) => {
     const node = [...document.querySelectorAll("*")].find((element) =>
@@ -66,7 +66,7 @@ await page.waitForURL(/dari=\d{4}-\d{2}-\d{2}/);
 const bookmarkUrl = page.url();
 await page.goto(bookmarkUrl, { waitUntil: "networkidle" });
 const restored = await page
-  .getByRole("button", { name: "Trail" })
+  .getByRole("button", { name: "Hiking" })
   .getAttribute("aria-pressed");
 check("Filter bertahan saat URL dibuka ulang", restored === "true", bookmarkUrl.replace(base, ""));
 
