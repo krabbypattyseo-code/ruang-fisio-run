@@ -1,45 +1,25 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Figtree, JetBrains_Mono } from "next/font/google";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
-import { ProgressProvider } from "@/lib/progress";
 
 import "./globals.css";
 
-const sans = Plus_Jakarta_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const mono = JetBrains_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Font brand Ruang Fisio adalah Kind Sans, tapi lisensinya "Demo for Personal Use"
+// sehingga tidak bisa di-embed di web. Figtree dipakai sebagai pengganti sementara
+// dengan karakter geometris yang mendekati.
+const sans = Figtree({ variable: "--font-sans", subsets: ["latin"] });
+const mono = JetBrains_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "SEO Learner — Belajar SEO dari dasar sampai bisa dipraktikkan",
-    template: "%s | SEO Learner",
+    default: "Ruang Fisio Run — Dashboard latihan & persiapan GTR Ultra 30K",
+    template: "%s | Ruang Fisio Run",
   },
   description:
-    "Kurikulum SEO berbahasa Indonesia dalam 6 modul: fondasi, riset kata kunci, on-page, teknis, konten, dan analitik. Lengkap dengan kuis dan pelacak progres.",
-  keywords: [
-    "belajar seo",
-    "kursus seo bahasa indonesia",
-    "riset kata kunci",
-    "seo on-page",
-    "seo teknis",
-    "core web vitals",
-  ],
-  openGraph: {
-    title: "SEO Learner — Belajar SEO dari dasar sampai bisa dipraktikkan",
-    description:
-      "Enam modul, 19 pelajaran, dan kuis per modul untuk belajar SEO secara terstruktur dalam bahasa Indonesia.",
-    type: "website",
-    locale: "id_ID",
-  },
+    "Dashboard data lari pribadi: tren pace, cadence, stride, dan denyut jantung per sesi, plus kesiapan, proyeksi waktu, rencana latihan, dan strategi lomba GTR Ultra 30K.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -50,12 +30,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col bg-background">
-        <ProgressProvider>
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-          <Toaster position="bottom-right" />
-        </ProgressProvider>
+        <SiteHeader />
+        <main className="flex-1">{children}</main>
+        <SiteFooter />
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );

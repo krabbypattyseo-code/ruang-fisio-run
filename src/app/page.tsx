@@ -1,121 +1,264 @@
 import Link from "next/link";
-import { BookOpen, Clock, ListChecks, Target } from "lucide-react";
-
-import { ContinueBanner } from "@/components/continue-banner";
-import { ModuleCard } from "@/components/module-card";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
-  modules,
-  totalLessons,
-  totalMinutes,
-  totalQuizQuestions,
-} from "@/content/curriculum";
+  ArrowRight,
+  Activity,
+  Clock,
+  Footprints,
+  Gauge,
+  HeartPulse,
+  Mountain,
+  Route,
+  TrendingUp,
+} from "lucide-react";
 
-const stats = [
-  { label: "Modul", value: `${modules.length}`, icon: Target },
-  { label: "Pelajaran", value: `${totalLessons}`, icon: BookOpen },
-  { label: "Soal kuis", value: `${totalQuizQuestions}`, icon: ListChecks },
-  { label: "Estimasi waktu", value: `${Math.round(totalMinutes / 60)} jam`, icon: Clock },
-];
+import { MetricTrendChart } from "@/components/charts/metric-trend-chart";
+import { PaceTrendChart } from "@/components/charts/pace-trend-chart";
+import { WeeklyVolumeChart } from "@/components/charts/weekly-volume-chart";
+import { FilterBar } from "@/components/filter-bar";
+import { SessionTable } from "@/components/session-table";
+import { StatCard } from "@/components/stat-card";
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { gtrUltra } from "@/data/event";
+import { sessions } from "@/data/sessions";
+import { workoutTypeLabel } from "@/data/types";
+import { metricColor, typeColor } from "@/lib/colors";
+import { filterSessions, parseFilter } from "@/lib/filters";
+import {
+  formatDate,
+  formatDuration,
+  formatInteger,
+  formatNumber,
+  formatPace,
+} from "@/lib/format";
+import { splitByType, summarize, trendSeries, weeklySeries } from "@/lib/metrics";
+import { readiness } from "@/lib/race";
 
-const principles = [
-  {
-    title: "Diagnosis sebelum taktik",
-    body: "Setiap modul dimulai dari cara memeriksa keadaan situsmu, supaya kamu tidak memperbaiki hal yang tidak rusak.",
-  },
-  {
-    title: "Contoh yang bisa ditiru",
-    body: "Ada markup, rumus prioritas, dan template laporan yang bisa langsung kamu pakai di pekerjaan nyata.",
-  },
-  {
-    title: "Kuis untuk mengunci ingatan",
-    body: "Tiap modul ditutup kuis dengan pembahasan jawaban, bukan hanya benar atau salah.",
-  },
-];
+export default async function DashboardPage({ searchParams }: PageProps<"/">) {
+  const filter = parseFilter(await searchParams);
+  const filtered = filterSessions(sessions, filter);
+  const summary = summarize(filtered);
+  const weekly = weeklySeries(filtered);
+  const trend = trendSeries(filtered);
+  const splits = splitByType(filtered);
+  const status = readiness();
 
-export default function HomePage() {
-  const firstLesson = modules[0].lessons[0];
+  const weeks = weekly.length || 1;
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-      <section className="grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:items-center">
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+      <div className="flex flex-col gap-3 py-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-medium tracking-wide text-primary uppercase">
-            Kurikulum SEO berbahasa Indonesia
-          </p>
-          <h1 className="mt-3 font-heading text-3xl leading-tight font-semibold sm:text-4xl">
-            Belajar SEO secara berurutan, dari cara kerja mesin pencari sampai laporan
-            bulanan
+          <h1 className="font-heading text-2xl font-semibold sm:text-3xl">
+            Dashboard latihan
           </h1>
-          <p className="mt-4 max-w-xl text-muted-foreground">
-            Enam modul yang dirancang untuk dikerjakan berurutan. Tidak ada janji peringkat
-            satu dalam seminggu—yang ada kerangka kerja, contoh konkret, dan kuis untuk
-            memastikan kamu benar-benar paham sebelum lanjut.
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            {formatDate(filter.from, "long")} – {formatDate(filter.to, "long")} ·{" "}
+            {filter.type === "all" ? "semua tipe latihan" : workoutTypeLabel[filter.type]}
           </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            <Link
-              href={`/modul/${modules[0].slug}/${firstLesson.slug}`}
-              className={buttonVariants({ size: "lg" })}
-            >
-              Mulai dari modul pertama
-            </Link>
-            <Link
-              href="/glosarium"
-              className={buttonVariants({ variant: "outline", size: "lg" })}
-            >
-              Buka glosarium
-            </Link>
-          </div>
-          <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-xl bg-muted/50 px-3 py-3 ring-1 ring-foreground/5"
-              >
-                <dt className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <stat.icon className="size-3.5" />
-                  {stat.label}
-                </dt>
-                <dd className="mt-1 font-heading text-xl font-semibold tabular-nums">
-                  {stat.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
         </div>
+        <Link
+          href="/event"
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
+          {status.daysLeft} hari ke {gtrUltra.name} {gtrUltra.category}
+          <ArrowRight data-icon="inline-end" className="size-3.5" />
+        </Link>
+      </div>
 
-        <div className="space-y-3">
-          <ContinueBanner />
-          <Card size="sm" className="bg-muted/40">
-            <CardContent className="space-y-3">
-              {principles.map((principle) => (
-                <div key={principle.title}>
-                  <p className="font-heading text-sm font-medium">{principle.title}</p>
-                  <p className="mt-0.5 text-sm text-muted-foreground">{principle.body}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
+      <FilterBar filter={filter} resultCount={filtered.length} />
+
+      <section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          label="Total jarak"
+          value={formatNumber(summary.distanceKm)}
+          unit="km"
+          hint={`${formatNumber(summary.distanceKm / weeks)} km per pekan`}
+          icon={Route}
+        />
+        <StatCard
+          label="Waktu bergerak"
+          value={formatDuration(summary.durationSec)}
+          hint={`${summary.sessions} sesi · ${summary.activeDays} hari aktif`}
+          icon={Clock}
+        />
+        <StatCard
+          label="Elevasi naik"
+          value={formatInteger(summary.elevGainM)}
+          unit="m"
+          hint={`${formatInteger(summary.elevGainM / weeks)} m per pekan`}
+          icon={Mountain}
+        />
+        <StatCard
+          label="Pace rata-rata"
+          value={formatPace(summary.paceSecPerKm)}
+          unit="/km"
+          hint={`Terpanjang ${formatNumber(summary.longestKm)} km`}
+          icon={Gauge}
+        />
       </section>
 
-      <section className="mt-14">
-        <div className="flex flex-wrap items-end justify-between gap-2">
+      <section className="mt-4 grid gap-4 lg:grid-cols-[1.35fr_1fr]">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="size-4 text-primary" />
+              Volume mingguan per tipe
+            </CardTitle>
+            <CardDescription>
+              Kilometer per pekan, ditumpuk menurut tipe latihan. Pekan turun setiap siklus
+              keempat memang disengaja untuk pemulihan.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <WeeklyVolumeChart data={weekly} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="size-4 text-primary" />
+              Komposisi latihan
+            </CardTitle>
+            <CardDescription>
+              Porsi trail menentukan kesiapan medan {gtrUltra.name} {gtrUltra.category}.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {splits.map((split) => (
+              <div key={split.type} className="space-y-1.5">
+                <div className="flex items-baseline justify-between text-sm">
+                  <span className="flex items-center gap-2">
+                    <span
+                      className="size-2.5 rounded-full"
+                      style={{ backgroundColor: typeColor[split.type] }}
+                    />
+                    {workoutTypeLabel[split.type]}
+                  </span>
+                  <span className="tabular-nums">
+                    {formatNumber(split.distanceKm)} km
+                    <span className="ml-1.5 text-muted-foreground">
+                      {Math.round(split.share * 100)}%
+                    </span>
+                  </span>
+                </div>
+                <Progress value={split.share * 100} />
+                <p className="text-xs text-muted-foreground tabular-nums">
+                  {split.sessions} sesi · {formatInteger(split.elevGainM)} m naik
+                </p>
+              </div>
+            ))}
+            <div className="rounded-xl bg-muted/50 px-3 py-2.5 text-xs text-muted-foreground">
+              Angka di kartu ini memakai filter yang sama dengan seluruh halaman, jadi
+              tautannya bisa dibagikan apa adanya.
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="mt-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Gauge className="size-4 text-primary" />
+              Tren pace per sesi
+            </CardTitle>
+            <CardDescription>
+              Titik adalah pace tiap sesi, garis putus-putus adalah rata-rata bergerak lima
+              sesi. Sumbu dibalik: makin ke atas makin cepat.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PaceTrendChart data={trend} />
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="mt-4 grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <Footprints className="size-4" style={{ color: metricColor.cadence }} />
+              Cadence
+            </CardTitle>
+            <CardDescription>
+              Rata-rata {formatInteger(summary.cadence)} spm pada rentang ini.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MetricTrendChart
+              data={trend}
+              metric="cadence"
+              color={metricColor.cadence}
+              unit="Cadence"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <Route className="size-4" style={{ color: metricColor.stride }} />
+              Panjang langkah
+            </CardTitle>
+            <CardDescription>
+              Rata-rata {formatNumber(summary.strideM)} m per langkah.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MetricTrendChart
+              data={trend}
+              metric="strideM"
+              color={metricColor.stride}
+              unit="Stride"
+              decimals={2}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <HeartPulse className="size-4" style={{ color: metricColor.hr }} />
+              Denyut jantung
+            </CardTitle>
+            <CardDescription>
+              Rata-rata {formatInteger(summary.avgHr)} bpm saat bergerak.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <MetricTrendChart
+              data={trend}
+              metric="avgHr"
+              color={metricColor.hr}
+              unit="HR"
+            />
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="mt-8">
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <div>
-            <h2 className="font-heading text-xl font-semibold">Jalur belajar</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Ikuti urutannya kalau kamu baru mulai. Kalau sudah punya pengalaman, langsung
-              lompat ke modul yang paling menghambat situsmu.
+            <h2 className="font-heading text-lg font-semibold">Arsip sesi</h2>
+            <p className="text-sm text-muted-foreground">
+              Klik satu baris untuk melihat lap, running dynamics, profil elevasi, dan cuaca.
             </p>
           </div>
+          <Badge variant="outline" className="tabular-nums">
+            {filtered.length} sesi terpilih
+          </Badge>
         </div>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {modules.map((module, index) => (
-            <ModuleCard key={module.slug} module={module} order={index + 1} />
-          ))}
-        </div>
+        <SessionTable sessions={filtered} />
       </section>
     </div>
   );

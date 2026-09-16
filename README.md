@@ -1,22 +1,24 @@
-# SEO Learner
+# Ruang Fisio Run — Running Dashboard
 
-Platform belajar SEO berbahasa Indonesia: 6 modul berurutan, 19 pelajaran, dan kuis
-bermuatan pembahasan di tiap modul. Progres belajar disimpan di `localStorage` peramban,
-jadi tidak perlu akun, database, atau backend.
+Dashboard data lari pribadi dan pusat persiapan **GTR Ultra 30K**. Dibangun dari sketsa alur
+dan revisinya: Dashboard jadi halaman depan, filter hidup sebagai bar menetap dengan state di
+URL, Session Detail dipisah sebagai layar tersendiri, dan halaman Event menarik angkanya dari
+data latihan alih-alih diketik manual.
 
-## Isi kurikulum
+## Layar
 
-| Modul | Fokus | Pelajaran |
+| Rute | Isi | Sumber data |
 | --- | --- | --- |
-| Fondasi SEO | Crawling, indexing, ranking, tiga pilar SEO, search intent | 3 |
-| Riset Kata Kunci | Sumber ide, metrik, keyword map, kanibalisasi | 3 |
-| SEO On-Page | Title/meta, struktur heading, internal link, gambar | 4 |
-| SEO Teknis | robots.txt & sitemap, Core Web Vitals, data terstruktur | 3 |
-| Konten & E-E-A-T | Brief konten, topic cluster, audit & refresh | 3 |
-| Off-Page & Analitik | Link building, SEO lokal, laporan Search Console & GA4 | 3 |
+| `/` | Tren pace, cadence, stride, HR, volume mingguan per tipe, dan arsip sesi | Agregat semua sesi, difilter |
+| `/sesi/[id]` | Lap, running dynamics, profil elevasi, distribusi zona HR, cuaca | Satu sesi + tabel lap |
+| `/event` | Info acara, hitung mundur, skor kesiapan per komponen, pos & cut-off | Data lomba manual + agregat latihan |
+| `/event/proyeksi` | Tiga skenario waktu finis, kurva waktu vs cut-off, split per pos | Sesi acuan + parameter lomba |
+| `/event/rencana` | Rencana pekanan (bangun → puncak → taper) dan checklist | Turunan dari gap kesiapan |
+| `/event/strategi` | Logistik cairan, karbo, sodium per segmen, aturan pacing, jadwal pagi | Proyeksi + sweat rate pribadi |
 
-Selain modul, ada glosarium 30 istilah SEO yang bisa dicari dan disaring per kategori,
-serta halaman progres yang merangkum pelajaran selesai dan skor kuis per modul.
+Filter di Dashboard menyimpan seluruh state di query string, misalnya
+`/?tipe=trail&dari=2026-07-01&sampai=2026-09-16`, sehingga tautannya bisa di-bookmark dan
+dibagikan apa adanya.
 
 ## Menjalankan secara lokal
 
@@ -29,8 +31,6 @@ npm run dev
 
 Buka [http://localhost:43217](http://localhost:43217).
 
-Perintah lain:
-
 ```bash
 npm run build      # build produksi
 npm start          # jalankan hasil build di port 43217
@@ -39,56 +39,62 @@ npm run typecheck  # tsc --noEmit
 npm run test:ui    # uji asap alur utama di browser (butuh dev server hidup)
 ```
 
-`npm run test:ui` memakai Playwright; sekali saja jalankan `npx playwright install chromium`
-sebelum pemakaian pertama. Skripnya menelusuri alur nyata: menandai pelajaran selesai,
-persistensi progres setelah reload, mengerjakan kuis sampai halaman skor, reset progres,
-pencarian glosarium, dan menu navigasi versi mobile.
+`npm run test:ui` memakai Playwright; jalankan `npx playwright install chromium` sekali
+sebelum pemakaian pertama.
 
-Dev server sengaja di-bind ke `0.0.0.0` agar bisa dibuka dari luar mesin. Karena itu
-`allowedDevOrigins` di `next.config.ts` mencantumkan `127.0.0.1` dan `localhost` — tanpa
-daftar tersebut Next memblokir aset dev dari origin lain dan halaman tidak akan terhidrasi
-(tampilan terlihat normal, tapi semua interaksi mati). Tambahkan host lain ke daftar itu
-kalau kamu mengakses dev server dari domain atau IP berbeda.
+Dev server di-bind ke `0.0.0.0` agar bisa dibuka dari luar mesin, karena itu
+`allowedDevOrigins` di `next.config.ts` mencantumkan `127.0.0.1` dan `localhost`. Tanpa daftar
+tersebut Next memblokir aset dev dan halaman tidak akan terhidrasi—tampilan terlihat normal,
+tapi semua interaksi mati.
 
-## Struktur proyek
+## Data
+
+Semua angka di aplikasi ini berasal dari dua modul data, bukan dari basis data:
+
+- `src/data/sessions.ts` — 50-an sesi contoh (road, trail, hiking) yang dibangkitkan
+  deterministik untuk blok latihan 13 pekan, lengkap dengan lap, zona HR, dan cuaca. Ganti
+  isi modul ini dengan hasil ekspor Garmin/Strava; seluruh halaman hanya bergantung pada
+  bentuk tipe `Session` di `src/data/types.ts`.
+- `src/data/event.ts` — parameter GTR Ultra 30K (jarak, elevasi, cut-off tiap pos,
+  perlengkapan wajib) dan profil pelari termasuk sweat rate. Perbarui begitu race book
+  resmi keluar.
+
+Perhitungan turunan terpisah agar mudah diaudit:
+
+- `src/lib/metrics.ts` — agregat, seri mingguan, tren per sesi, jarak setara datar
+  (100 m tanjakan ≈ 0,9 km).
+- `src/lib/race.ts` — skor kesiapan, proyeksi Riegel, rencana pekanan, checklist, dan
+  logistik fueling.
+
+## Brand
+
+Diambil dari aset Ruang Fisio, dengan dua catatan yang masih perlu keputusan:
+
+- **Warna** `#005A64` teal utama dan `#139CAB` cyan aksen sudah dipakai sebagai warna primer
+  dan aksen, termasuk palet chart (trail cyan, road teal, hiking clay).
+- **Font Kind Sans** belum dipakai karena berkas lisensinya menyebut "Demo for Personal Use",
+  yang umumnya tidak mencakup web embedding. Sementara ini memakai Figtree sebagai pengganti
+  dengan karakter geometris yang mendekati; ganti di `src/app/layout.tsx` setelah lisensi
+  komersial dibeli.
+- **Logo** pintu terbuka dengan figur pelari masih digambar ulang sebagai placeholder di
+  `src/components/brand-mark.tsx`. Ganti dengan `logo-07.svg` dari brand folder.
+
+## Struktur
 
 ```
 src/
 ├─ app/
-│  ├─ page.tsx                          # beranda: jalur belajar + progres
-│  ├─ modul/[slug]/page.tsx             # ikhtisar modul & daftar pelajaran
-│  ├─ modul/[slug]/[lessonSlug]/page.tsx# halaman materi
-│  ├─ kuis/[slug]/page.tsx              # kuis per modul
-│  ├─ glosarium/page.tsx                # glosarium istilah
-│  ├─ progres/page.tsx                  # ringkasan progres & reset
-│  ├─ sitemap.ts, robots.ts             # metadata SEO situs ini sendiri
-│  └─ error.tsx, not-found.tsx          # state error & 404
-├─ components/                          # komponen UI (shadcn/ui di components/ui)
-├─ content/
-│  ├─ modules/*.ts                      # materi tiap modul
-│  ├─ curriculum.ts                     # indeks modul, navigasi, agregat
-│  ├─ glossary.ts                        # daftar istilah
-│  └─ types.ts                           # tipe materi & blok konten
-└─ lib/progress.tsx                     # store progres berbasis localStorage
+│  ├─ page.tsx                  # Dashboard + filter bar
+│  ├─ sesi/[id]/page.tsx        # Session Detail
+│  ├─ event/layout.tsx          # Header acara + sub-navigasi
+│  ├─ event/page.tsx            # Kesiapan
+│  ├─ event/proyeksi/page.tsx   # Proyeksi waktu
+│  ├─ event/rencana/page.tsx    # Rencana latihan
+│  └─ event/strategi/page.tsx   # Strategi hari-H
+├─ components/
+│  ├─ charts/                   # Chart recharts (client component)
+│  ├─ filter-bar.tsx            # Filter dengan state di URL
+│  └─ session-table.tsx         # Tabel arsip + versi kartu untuk mobile
+├─ data/                        # Sesi contoh & parameter lomba
+└─ lib/                         # Format, filter, metrik, perhitungan lomba
 ```
-
-## Menambah atau mengubah materi
-
-Materi berupa data TypeScript, bukan Markdown, supaya tipenya terjaga.
-
-1. Buat berkas baru di `src/content/modules/` yang mengekspor objek `Module`.
-2. Daftarkan di array `modules` pada `src/content/curriculum.ts` — urutan array adalah
-   urutan jalur belajar.
-3. Susun isi pelajaran dari blok yang tersedia di `src/content/types.ts`:
-   `paragraph`, `heading`, `list`, `callout`, `code`, dan `table`.
-
-Rute, sitemap, navigasi antar pelajaran, dan hitungan progres ikut menyesuaikan otomatis.
-
-## Catatan teknis
-
-- Next.js 16 (App Router) + TypeScript, Tailwind CSS 4, komponen shadcn/ui.
-- Semua halaman materi dipra-render statis lewat `generateStaticParams`.
-- Progres dibaca dengan `useSyncExternalStore` supaya aman terhadap hidrasi dan ikut
-  tersinkron antar tab peramban.
-- Setel `NEXT_PUBLIC_SITE_URL` saat deploy agar `sitemap.xml` dan `robots.txt` memakai
-  domain produksi.

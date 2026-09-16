@@ -1,39 +1,43 @@
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
-import { modules } from "@/content/curriculum";
+import { sessions } from "@/data/sessions";
+import { formatDate, formatNumber } from "@/lib/format";
 
 export default function NotFound() {
+  const recent = sessions.slice(0, 4);
+
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-20 text-center sm:px-6">
       <p className="font-mono text-sm text-muted-foreground">404</p>
       <h1 className="mt-2 font-heading text-2xl font-semibold">
-        Halaman ini tidak ada di kurikulum
+        Halaman atau sesi ini tidak ada
       </h1>
       <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-        Mungkin tautannya salah ketik atau materinya sudah dipindahkan. Kembali ke jalur
-        belajar dan lanjutkan dari modul yang kamu butuhkan.
+        Mungkin tautannya salah ketik, atau sesi itu belum masuk ke arsip. Kembali ke
+        dashboard dan pakai filter untuk menemukan sesi yang kamu cari.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
         <Link href="/" className={buttonVariants()}>
-          Ke daftar modul
+          Ke dashboard
         </Link>
-        <Link href="/glosarium" className={buttonVariants({ variant: "outline" })}>
-          Buka glosarium
+        <Link href="/event" className={buttonVariants({ variant: "outline" })}>
+          Kesiapan GTR Ultra
         </Link>
       </div>
       <div className="mt-10 text-left">
         <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-          Modul yang tersedia
+          Sesi terbaru
         </p>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-          {modules.map((module) => (
-            <li key={module.slug}>
+        <ul className="mt-3 space-y-2">
+          {recent.map((session) => (
+            <li key={session.id}>
               <Link
-                href={`/modul/${module.slug}`}
+                href={`/sesi/${session.id}`}
                 className="text-sm text-muted-foreground hover:text-foreground hover:underline"
               >
-                {module.title}
+                {formatDate(session.date)} · {session.title} ·{" "}
+                {formatNumber(session.distanceKm)} km
               </Link>
             </li>
           ))}
