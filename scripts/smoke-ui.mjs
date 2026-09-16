@@ -15,8 +15,10 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1360, height: 950 } });
 
 page.on("console", (message) => {
-  if (message.type() === "error" && !message.text().includes("hmr")) {
-    consoleErrors.push(message.text());
+  // 404 di langkah pemeriksaan halaman not-found memang disengaja.
+  const text = message.text();
+  if (message.type() === "error" && !text.includes("hmr") && !text.includes("404")) {
+    consoleErrors.push(text);
   }
 });
 
@@ -106,8 +108,9 @@ check("404: sesi tak dikenal ditangani", notFound?.status() === 404);
 const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } });
 await mobile.goto(`${base}/`, { waitUntil: "networkidle" });
 await mobile.getByRole("button", { name: "Buka menu" }).click();
-await mobile.waitForSelector("text=Strategi", { timeout: 10000 });
-check("Mobile: menu navigasi terbuka", true);
+const mobileNav = mobile.locator("header nav").last();
+await mobileNav.getByRole("link", { name: "Strategi" }).waitFor({ timeout: 10000 });
+check("Mobile: menu navigasi terbuka", await mobileNav.isVisible());
 
 await browser.close();
 

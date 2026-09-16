@@ -121,7 +121,7 @@ const slots: Record<number, SlotTemplate> = {
     paceRange: [420, 510],
     hrRange: [142, 156],
     cadenceRange: [156, 168],
-    climbPerKm: [42, 68],
+    climbPerKm: [30, 46],
     rpeRange: [6, 9],
     routes: TRAIL_ROUTES,
     notes: [
@@ -139,7 +139,7 @@ const slots: Record<number, SlotTemplate> = {
     paceRange: [690, 840],
     hrRange: [112, 128],
     cadenceRange: [108, 124],
-    climbPerKm: [55, 95],
+    climbPerKm: [48, 82],
     rpeRange: [3, 5],
     routes: HIKING_ROUTES,
     notes: [
@@ -151,7 +151,7 @@ const slots: Record<number, SlotTemplate> = {
 };
 
 /** Faktor volume per pekan: naik 3 pekan, turun 1 pekan untuk pemulihan. */
-const weekVolumeKm = [38, 42, 46, 34, 48, 52, 56, 40, 58, 62, 54, 44, 50];
+const weekVolumeKm = [32, 36, 40, 30, 38, 42, 45, 34, 42, 46, 40, 35, 39];
 
 function makeWeather(type: WorkoutType): Weather {
   const condition =

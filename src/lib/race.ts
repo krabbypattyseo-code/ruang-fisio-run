@@ -212,8 +212,11 @@ export function projection(
 
   const refGraded = gradedKm(referenceSession.distanceKm, referenceSession.elevGainM);
   const raceGraded = gradedKm(event.distanceKm, event.elevGainM);
-  const baseMin =
-    (referenceSession.durationSec / 60) * (raceGraded / refGraded) ** 1.06;
+  // Eksponen Riegel dinaikkan saat lompatan jaraknya jauh: melipatgandakan jarak dari
+  // sesi acuan selalu menghasilkan pelemahan lebih besar daripada 1,06 saja.
+  const stretch = raceGraded / refGraded;
+  const exponent = 1.06 + 0.05 * Math.max(0, stretch - 1.5);
+  const baseMin = (referenceSession.durationSec / 60) * stretch ** exponent;
 
   const definitions: { key: ScenarioKey; label: string; factor: number; description: string }[] = [
     {
