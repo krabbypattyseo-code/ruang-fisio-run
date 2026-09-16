@@ -37,7 +37,7 @@ export const gtrUltra: RaceEvent = {
   slug: "gtr-ultra-30k",
   name: "GTR Ultra",
   category: "30K",
-  date: "2026-11-22",
+  date: "2026-09-27",
   startTime: "05:00",
   location: "Gunung Gajah, Semarang",
   distanceKm: 30,

@@ -3,8 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
-import { gtrUltra, runnerProfile } from "@/data/event";
-import { readiness } from "@/lib/race";
+import { runnerProfile } from "@/data/event";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -32,8 +31,6 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export default function HomePage() {
-  const status = readiness();
-
   return (
     <div className="relative flex min-h-dvh flex-col bg-[linear-gradient(180deg,#f7fbfc_0%,#ffffff_42%,#eef6f7_100%)]">
       <div
@@ -64,8 +61,8 @@ export default function HomePage() {
             Welcome to My Monitoring Running Dashboard
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Halo, {runnerProfile.name}. {status.daysLeft} hari menuju {gtrUltra.name}{" "}
-            {gtrUltra.category} di {gtrUltra.location}.
+            Halo, ini adalah track record workout berlari, hiking, dan trail run yang
+            terdokumentasi.
           </p>
         </div>
 
