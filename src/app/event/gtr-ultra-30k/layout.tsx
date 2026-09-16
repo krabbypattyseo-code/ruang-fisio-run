@@ -6,7 +6,7 @@ import { gtrUltra } from "@/data/event";
 import { formatDate, formatInteger, formatMinutes } from "@/lib/format";
 import { readiness } from "@/lib/race";
 
-export default function EventLayout({ children }: LayoutProps<"/event">) {
+export default function GtrUltraLayout({ children }: { children: React.ReactNode }) {
   const status = readiness();
 
   return (

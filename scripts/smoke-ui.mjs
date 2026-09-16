@@ -94,13 +94,15 @@ check("Session Detail: tabel lap & running dynamics tampil", lapRows && dynamics
 // 4b. Event Joined dari home.
 await page.goto(`${base}/`, { waitUntil: "networkidle" });
 await page.getByRole("link", { name: "Event Joined" }).click();
-await page.waitForURL(/\/event$/);
+await page.waitForURL(/\/event\/?$/);
+await page.getByRole("link", { name: /Buka GTR Ultra/ }).click();
+await page.waitForURL(/\/event\/gtr-ultra-30k\/?$/);
 await page.waitForSelector("text=Skor kesiapan");
 const scoreText = await page.locator("text=/^\\d+\\/100$/").first().innerText();
 check("Event Joined: skor kesiapan terhitung", /^\d+\/100$/.test(scoreText), scoreText);
 
 // 6. Proyeksi: kurva vs cut-off dan pergantian skenario.
-await page.goto(`${base}/event/proyeksi`, { waitUntil: "networkidle" });
+await page.goto(`${base}/event/gtr-ultra-30k/proyeksi`, { waitUntil: "networkidle" });
 await page.waitForSelector("text=Kurva waktu tempuh vs cut-off");
 const firstRow = await page.locator("table tbody tr td").nth(3).innerText();
 await page.getByRole("button", { name: /^Aman ·/ }).click();
@@ -116,11 +118,11 @@ const secondRow = await page.locator("table tbody tr td").nth(3).innerText();
 check("Proyeksi: skenario bisa ditukar", firstRow !== secondRow, `${firstRow} → ${secondRow}`);
 
 // 7. Rencana latihan dan strategi hari-H terisi.
-await page.goto(`${base}/event/rencana`, { waitUntil: "networkidle" });
+await page.goto(`${base}/event/gtr-ultra-30k/rencana`, { waitUntil: "networkidle" });
 const planRows = await page.locator("text=/^P\\d+/").count();
 check("Rencana: pekanan terisi", planRows >= 4, `${planRows} pekan`);
 
-await page.goto(`${base}/event/strategi`, { waitUntil: "networkidle" });
+await page.goto(`${base}/event/gtr-ultra-30k/strategi`, { waitUntil: "networkidle" });
 const fuelRows = await page.locator("table tbody tr").count();
 check("Strategi: logistik per segmen terisi", fuelRows >= 5, `${fuelRows} segmen`);
 
@@ -135,7 +137,11 @@ const shellWidth = await wide.locator(".app-shell").evaluate((el) => el.getBound
 check("Desktop: shell tetap 390px", Math.abs(shellWidth - 390) < 2, `${shellWidth}px`);
 await wide.getByRole("button", { name: "Buka menu" }).click();
 const wideNav = wide.locator("header nav").last();
-await wideNav.getByRole("link", { name: "Home" }).waitFor({ timeout: 10000 });
+await wideNav.getByRole("link", { name: "Event" }).waitFor({ timeout: 10000 });
+await wide.getByRole("button", { name: "Buka Event" }).click();
+await wideNav.getByRole("link", { name: "GTR Ultra 30K" }).waitFor({ timeout: 10000 });
+await wide.getByRole("button", { name: "Buka GTR Ultra 30K" }).click();
+await wideNav.getByRole("link", { name: "Proyeksi" }).waitFor({ timeout: 10000 });
 check("Menu navigasi terbuka di shell", await wideNav.isVisible());
 await wide.close();
 

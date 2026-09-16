@@ -9,9 +9,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/dashboard",
     "/event",
-    "/event/proyeksi",
-    "/event/rencana",
-    "/event/strategi",
+    "/event/gtr-ultra-30k",
+    "/event/gtr-ultra-30k/proyeksi",
+    "/event/gtr-ultra-30k/rencana",
+    "/event/gtr-ultra-30k/strategi",
     ...sessions.map((session) => `/sesi/${session.id}`),
   ];
 

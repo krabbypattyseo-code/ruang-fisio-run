@@ -78,7 +78,7 @@ export default async function DashboardPage({
           </p>
         </div>
         <Link
-          href="/event"
+          href="/event/gtr-ultra-30k"
           className={buttonVariants({ variant: "outline", size: "sm" }) + " self-start"}
         >
           {status.daysLeft} hari ke GTR

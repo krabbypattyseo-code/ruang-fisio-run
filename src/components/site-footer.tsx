@@ -24,10 +24,11 @@ export function SiteFooter() {
             {[
               { href: "/", label: "Home" },
               { href: "/dashboard", label: "Dashboard" },
-              { href: "/event", label: "Kesiapan" },
-              { href: "/event/proyeksi", label: "Proyeksi" },
-              { href: "/event/rencana", label: "Rencana" },
-              { href: "/event/strategi", label: "Strategi" },
+              { href: "/event", label: "Event" },
+              { href: "/event/gtr-ultra-30k", label: "GTR Ultra 30K" },
+              { href: "/event/gtr-ultra-30k/proyeksi", label: "Proyeksi" },
+              { href: "/event/gtr-ultra-30k/rencana", label: "Rencana" },
+              { href: "/event/gtr-ultra-30k/strategi", label: "Strategi" },
             ].map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="text-muted-foreground hover:text-foreground">

@@ -11,10 +11,11 @@ data latihan alih-alih diketik manual.
 | --- | --- | --- |
 | `/` | Tren pace, cadence, stride, HR, volume mingguan per tipe, dan arsip sesi | Agregat semua sesi, difilter |
 | `/sesi/[id]` | Lap, running dynamics, profil elevasi, distribusi zona HR, cuaca | Satu sesi + tabel lap |
-| `/event` | Info acara, hitung mundur, skor kesiapan per komponen, pos & cut-off | Data lomba manual + agregat latihan |
-| `/event/proyeksi` | Tiga skenario waktu finis, kurva waktu vs cut-off, split per pos | Sesi acuan + parameter lomba |
-| `/event/rencana` | Rencana pekanan (bangun → puncak → taper) dan checklist | Turunan dari gap kesiapan |
-| `/event/strategi` | Logistik cairan, karbo, sodium per segmen, aturan pacing, jadwal pagi | Proyeksi + sweat rate pribadi |
+| `/event` | Daftar event yang diikuti |
+| `/event/gtr-ultra-30k` | Info acara, hitung mundur, skor kesiapan per komponen, pos & cut-off | Data lomba manual + agregat latihan |
+| `/event/gtr-ultra-30k/proyeksi` | Tiga skenario waktu finis, kurva waktu vs cut-off, split per pos | Sesi acuan + parameter lomba |
+| `/event/gtr-ultra-30k/rencana` | Rencana pekanan (bangun → puncak → taper) dan checklist | Turunan dari gap kesiapan |
+| `/event/gtr-ultra-30k/strategi` | Logistik cairan, karbo, sodium per segmen, aturan pacing, jadwal pagi | Proyeksi + sweat rate pribadi |
 
 Filter di Dashboard menyimpan seluruh state di query string, misalnya
 `/dashboard?tipe=trail&dari=2026-07-01&sampai=2026-09-16`, sehingga tautannya bisa di-bookmark dan

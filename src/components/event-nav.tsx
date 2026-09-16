@@ -3,11 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { gtrUltra } from "@/data/event";
+
+const base = `/event/${gtrUltra.slug}`;
+
 const items = [
-  { href: "/event", label: "Kesiapan" },
-  { href: "/event/proyeksi", label: "Proyeksi" },
-  { href: "/event/rencana", label: "Rencana" },
-  { href: "/event/strategi", label: "Strategi" },
+  { href: base, label: "Kesiapan" },
+  { href: `${base}/proyeksi`, label: "Proyeksi" },
+  { href: `${base}/rencana`, label: "Rencana" },
+  { href: `${base}/strategi`, label: "Strategi" },
 ];
 
 export function EventNav() {
