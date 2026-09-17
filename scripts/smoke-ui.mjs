@@ -30,13 +30,25 @@ const hasEventCta = await page.getByRole("link", { name: "Event Joined" }).isVis
 const hasIg = await page.getByRole("link", { name: "Instagram" }).isVisible();
 const hasTt = await page.getByRole("link", { name: "TikTok" }).isVisible();
 check("Home: profil, welcome, CTA, dan sosial tampil", hasDashboardCta && hasEventCta && hasIg && hasTt);
+const homeBottomNav = await page.getByRole("navigation", { name: "Navigasi utama" }).count();
+check("Home: tanpa bottom nav", homeBottomNav === 0);
 
-// 1. Dashboard Monitoring membuka dashboard dengan chart.
+// 1. Dashboard Monitoring membuka dashboard dengan chart + bottom nav.
 await page.getByRole("link", { name: "Dashboard Monitoring" }).click();
 await page.waitForURL(/\/dashboard/);
 await page.waitForSelector("text=Dashboard latihan");
 const chartCount = await page.locator(".recharts-surface").count();
 check("Dashboard: chart terender", chartCount >= 4, `${chartCount} chart`);
+const bottomNav = page.getByRole("navigation", { name: "Navigasi utama" });
+check("Dashboard: bottom nav tampil", await bottomNav.isVisible());
+await bottomNav.getByRole("button", { name: "Event" }).click();
+await page.getByRole("link", { name: "GTR Ultra" }).waitFor({ timeout: 5000 });
+check(
+  "Bottom nav Event: dropdown GTR/Proyeksi/Rencana/Strategi",
+  (await page.getByRole("link", { name: "Proyeksi" }).count()) >= 1 &&
+    (await page.getByRole("link", { name: "Rencana" }).count()) >= 1 &&
+    (await page.getByRole("link", { name: "Strategi" }).count()) >= 1,
+);
 
 // 2. Filter tipe menulis state ke URL dan mengubah jumlah sesi.
 const countLabel = () => page.locator("text=/^\\d+ sesi terpilih$/").first().innerText();

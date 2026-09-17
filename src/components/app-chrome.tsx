@@ -3,12 +3,13 @@
 import { usePathname } from "next/navigation";
 
 import { AppShell } from "@/components/app-shell";
+import { BottomNav } from "@/components/bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 /**
- * Home (/) menampilkan landing tanpa chrome, sesuai sketsa.
- * Layar lain memakai header + footer di dalam shell 390px.
+ * Home (/) = landing tanpa chrome (CTA Dashboard Monitoring / Event Joined).
+ * Setelah masuk dashboard/event/sesi: header + bottom nav sesuai sketsa mobile.
  */
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -19,6 +20,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       {isHome ? null : <SiteHeader />}
       <main className="flex flex-1 flex-col">{children}</main>
       {isHome ? null : <SiteFooter />}
+      {isHome ? null : <BottomNav />}
     </AppShell>
   );
 }

@@ -1,13 +1,11 @@
-import Link from "next/link";
-
 import { gtrUltra } from "@/data/event";
 import { dataRange, sessions } from "@/data/sessions";
 import { formatDate } from "@/lib/format";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-10 border-t border-foreground/10 bg-muted/40">
-      <div className="space-y-5 px-4 py-7">
+    <footer className="mt-8 border-t border-foreground/10 bg-muted/40">
+      <div className="space-y-3 px-4 py-5 pb-3">
         <div>
           <p className="font-heading text-sm font-semibold">Ruang Fisio Run</p>
           <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
@@ -16,31 +14,8 @@ export function SiteFooter() {
             {formatDate(dataRange.to)}. Tidak ada sesi di luar ekspor itu.
           </p>
         </div>
-        <div>
-          <p className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
-            Layar
-          </p>
-          <ul className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
-            {[
-              { href: "/", label: "Home" },
-              { href: "/dashboard", label: "Dashboard" },
-              { href: "/event", label: "Event" },
-              { href: "/event/gtr-ultra-30k", label: "GTR Ultra 30K" },
-              { href: "/event/gtr-ultra-30k/proyeksi", label: "Proyeksi" },
-              { href: "/event/gtr-ultra-30k/rencana", label: "Rencana" },
-              { href: "/event/gtr-ultra-30k/strategi", label: "Strategi" },
-            ].map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="text-muted-foreground hover:text-foreground">
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
         <p className="text-[10px] leading-relaxed text-muted-foreground">
-          Frame 390px seperti Ruang Fisio Pasien · #005A64 / #139CAB · Kind Sans menunggu
-          lisensi web.
+          Frame 390px · navigasi bawah Home / Dashboard / Event · #005A64 / #139CAB.
         </p>
       </div>
     </footer>
