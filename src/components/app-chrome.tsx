@@ -19,7 +19,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   return (
     <AppShell>
       {isHome ? null : <SiteHeader />}
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain" data-app-scroll>
         <main className="flex min-h-full flex-col">{children}</main>
         {isHome ? null : <SiteFooter />}
       </div>

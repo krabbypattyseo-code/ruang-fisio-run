@@ -67,7 +67,7 @@ export default async function DashboardPage({
 
   return (
     <div className="w-full px-4">
-      <div className="flex flex-col gap-2 py-4">
+      <div className="flex flex-col gap-2 pt-4 pb-3">
         <div>
           <h1 className="font-heading text-xl font-semibold">
             Dashboard latihan
