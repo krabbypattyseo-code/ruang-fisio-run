@@ -33,7 +33,7 @@ export const gearItems: GearItem[] = [
     nickname: "Hoka Mach 2 Skyward Blue",
     type: "shoes",
     status: "currently-use",
-    images: ["/gear/hoka-mach-2-skyward-blue-1.jpg"],
+    images: ["/gear/hoka-mach-2-skyward-blue-1.webp"],
     notes: "Sepatu road yang sedang dipakai untuk sesi Jakarta.",
   },
 ];

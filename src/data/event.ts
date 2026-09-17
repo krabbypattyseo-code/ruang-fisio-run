@@ -223,8 +223,8 @@ export const gtrUltra: RaceEvent = {
 export const runnerProfile = {
   name: "Harist",
   title: "Pelari trail · Ruang Fisio Run",
-  /** Ganti dengan foto profil asli di /public/profile.jpg */
-  photoSrc: "/profile.jpg",
+  /** Ganti dengan foto profil asli di /public/profile.webp */
+  photoSrc: "/profile.webp",
   socials: {
     instagram: "https://instagram.com/",
     tiktok: "https://www.tiktok.com/",

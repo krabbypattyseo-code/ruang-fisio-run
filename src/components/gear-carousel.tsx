@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 export function GearCarousel({ item }: { item: GearItem }) {
   const [index, setIndex] = useState(0);
-  const images = item.images.length ? item.images : ["/gear/hoka-mach-2-skyward-blue-1.jpg"];
+  const images = item.images.length ? item.images : ["/gear/hoka-mach-2-skyward-blue-1.webp"];
   const current = images[Math.min(index, images.length - 1)];
 
   return (
