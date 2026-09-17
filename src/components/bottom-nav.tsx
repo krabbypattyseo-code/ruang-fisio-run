@@ -68,9 +68,9 @@ export function BottomNav() {
   const eventActive = isEvent(pathname);
 
   return (
-    <div ref={panelRef} className="sticky bottom-0 z-40">
+    <div ref={panelRef} className="relative z-40 shrink-0">
       {eventOpen ? (
-        <div className="border-t border-foreground/10 bg-background/98 px-3 pt-2 pb-1 backdrop-blur">
+        <div className="absolute inset-x-0 bottom-full border-t border-foreground/10 bg-background/98 px-3 pt-2 pb-1 shadow-[0_-8px_24px_rgba(0,90,100,0.08)] backdrop-blur">
           <p className="px-2 pb-1.5 text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
             Event
           </p>
@@ -102,7 +102,7 @@ export function BottomNav() {
 
       <nav
         aria-label="Navigasi utama"
-        className="border-t border-foreground/10 bg-background/98 pb-[max(0.35rem,env(safe-area-inset-bottom))] backdrop-blur"
+        className="border-t border-foreground/10 bg-background pb-[max(0.35rem,env(safe-area-inset-bottom))]"
       >
         <ul className="grid grid-cols-3 px-1 pt-1">
           <li>

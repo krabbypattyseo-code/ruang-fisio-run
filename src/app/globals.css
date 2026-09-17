@@ -138,8 +138,11 @@
 .app-shell {
   width: 100%;
   max-width: 390px;
-  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
   background: var(--background);
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }

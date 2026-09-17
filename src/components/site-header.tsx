@@ -116,7 +116,7 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-foreground/10 bg-background/95 backdrop-blur">
+    <header className="z-40 shrink-0 border-b border-foreground/10 bg-background">
       <div className="flex h-12 items-center gap-2 px-3">
         <Link href="/" className="flex min-w-0 items-center gap-2">
           <BrandMark className="size-7 shrink-0" />

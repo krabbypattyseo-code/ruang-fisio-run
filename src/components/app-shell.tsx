@@ -1,7 +1,7 @@
 /**
  * Kolom aplikasi tetap selebar ponsel, seperti Ruang Fisio Pasien.
- * Lebar dan canvas di luar frame diatur di globals.css (body + .app-shell).
+ * Tinggi dikunci 100dvh di globals.css agar bottom nav bisa di-freeze.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
-  return <div className="app-shell flex flex-col">{children}</div>;
+  return <div className="app-shell">{children}</div>;
 }

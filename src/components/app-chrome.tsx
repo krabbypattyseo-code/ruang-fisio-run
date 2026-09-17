@@ -9,7 +9,8 @@ import { SiteHeader } from "@/components/site-header";
 
 /**
  * Home (/) = landing tanpa chrome (CTA Dashboard Monitoring / Event Joined).
- * Setelah masuk dashboard/event/sesi: header + bottom nav sesuai sketsa mobile.
+ * Setelah masuk dashboard/event/sesi: header + bottom nav fixed di bawah frame.
+ * Konten (main + footer) yang di-scroll — bottom nav tidak ikut turun.
  */
 export function AppChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -18,8 +19,10 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   return (
     <AppShell>
       {isHome ? null : <SiteHeader />}
-      <main className="flex flex-1 flex-col">{children}</main>
-      {isHome ? null : <SiteFooter />}
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <main className="flex min-h-full flex-col">{children}</main>
+        {isHome ? null : <SiteFooter />}
+      </div>
       {isHome ? null : <BottomNav />}
     </AppShell>
   );
