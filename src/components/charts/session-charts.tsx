@@ -19,6 +19,14 @@ import { brand, metricColor } from "@/lib/colors";
 import { formatDuration, formatInteger, formatMinSec, formatPace } from "@/lib/format";
 
 export function ElevationProfileChart({ laps }: { laps: Lap[] }) {
+  if (laps.length === 0) {
+    return (
+      <p className="py-10 text-center text-sm text-muted-foreground">
+        Tidak ada data elevasi per lap.
+      </p>
+    );
+  }
+
   const data = [
     { km: 0, elevationM: Math.max(0, laps[0].elevationM - laps[0].elevGainM) },
     ...laps.map((lap) => ({
@@ -91,6 +99,14 @@ export function ElevationProfileChart({ laps }: { laps: Lap[] }) {
 }
 
 export function LapPaceChart({ laps }: { laps: Lap[] }) {
+  if (laps.length === 0) {
+    return (
+      <p className="py-10 text-center text-sm text-muted-foreground">
+        Tidak ada data pace per lap.
+      </p>
+    );
+  }
+
   const paces = laps.map((lap) => lap.paceSecPerKm);
   const fastest = Math.min(...paces);
 

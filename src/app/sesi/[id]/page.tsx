@@ -72,11 +72,14 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
   const newer = index > 0 ? sessions[index - 1] : undefined;
   const older = index < sessions.length - 1 ? sessions[index + 1] : undefined;
 
-  const fastestLap = session.laps.reduce((best, lap) =>
-    lap.paceSecPerKm < best.paceSecPerKm ? lap : best,
+  const pacedLaps = session.laps.filter((lap) => lap.paceSecPerKm > 0);
+  const fastestLap = pacedLaps.reduce<(typeof session.laps)[number] | undefined>(
+    (best, lap) => (!best || lap.paceSecPerKm < best.paceSecPerKm ? lap : best),
+    undefined,
   );
-  const hardestLap = session.laps.reduce((worst, lap) =>
-    lap.elevGainM > worst.elevGainM ? lap : worst,
+  const hardestLap = session.laps.reduce<(typeof session.laps)[number] | undefined>(
+    (worst, lap) => (!worst || lap.elevGainM > worst.elevGainM ? lap : worst),
+    undefined,
   );
   const graded = gradedKm(session.distanceKm, session.elevGainM);
 
@@ -166,7 +169,11 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
               Profil elevasi
             </CardTitle>
             <CardDescription>
-              Lap terberat ada di km {hardestLap.index} dengan {hardestLap.elevGainM} m naik.
+              {hardestLap
+                ? `Lap terberat ada di km ${hardestLap.index} dengan ${hardestLap.elevGainM} m naik.`
+                : session.laps.length === 0
+                  ? "Sesi ini tidak punya data lap dari sumber."
+                  : "Profil elevasi dari data lap yang tersedia."}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -198,7 +205,11 @@ export default async function SessionDetailPage({ params }: PageProps<"/sesi/[id
               Pace per lap
             </CardTitle>
             <CardDescription>
-              Lap tercepat: lap {fastestLap.index} di {formatPace(fastestLap.paceSecPerKm)} /km.
+              {fastestLap
+                ? `Lap tercepat: lap ${fastestLap.index} di ${formatPace(fastestLap.paceSecPerKm)} /km.`
+                : session.laps.length === 0
+                  ? "Tidak ada lap untuk dianalisis."
+                  : "Pace per lap dari data yang tersedia."}
             </CardDescription>
           </CardHeader>
           <CardContent>
