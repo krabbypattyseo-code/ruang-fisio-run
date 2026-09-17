@@ -50,10 +50,12 @@ tapi semua interaksi mati.
 
 ## Data
 
-Arsip sesi **hanya** dari dua ekspor yang ada di `data/raw/`:
+Arsip sesi dari berkas di `data/raw/`:
 
-- `Garmin_Running_Data_JulAug_2026.xlsx` — Jul–Agu 2026
-- `COROS_Running_26Agu6Sep2026.xlsx` — 26 Agu–6 Sep 2026
+- `5-analisis-lari-gtr.xlsx` — ringkasan 18 aktivitas (11 Jul–14 Sep 2026), sheet Komparatif
+- `Garmin_Running_Data_JulAug_2026.xlsx` — lap & zona HR Garmin
+- `COROS_Running_26Agu6Sep2026.xlsx` — lap COROS 26 Agu–6 Sep
+- `COROS_Running_10-14Sep2026.xlsx` — lap COROS 10 & 14 Sep
 
 Impor ke TypeScript:
 
@@ -63,7 +65,7 @@ npm run import:sessions
 ```
 
 Hasilnya ditulis ke `src/data/sessions.generated.ts`. Field yang tidak ada di sumber
-(mis. HR maks / stride / cuaca di COROS) tetap `null` — tidak digenerate.
+tetap `null` — tidak digenerate.
 
 Untuk menambah workout baru: ganti/tambah file Excel di `data/raw/`, sesuaikan path di
 `scripts/import-sessions.py` bila nama file berubah, lalu jalankan ulang impor.
