@@ -4,7 +4,8 @@ import { GearCatalog } from "@/components/gear-catalog";
 
 export const metadata: Metadata = {
   title: "Gear",
-  description: "Inventori sepatu, jam, dan vest yang dipakai untuk latihan dan lomba.",
+  description:
+    "Inventori sepatu, jam, vest, backpack, tenda, dan aksesoris untuk latihan dan trek.",
 };
 
 export default function GearPage() {

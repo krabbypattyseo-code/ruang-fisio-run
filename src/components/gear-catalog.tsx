@@ -24,6 +24,10 @@ const typeOptions: { key: TypeFilter; label: string }[] = [
   { key: "shoes", label: "Shoes" },
   { key: "watch", label: "Watch" },
   { key: "vest", label: "Vest" },
+  { key: "backpack", label: "Backpack" },
+  { key: "tent", label: "Tent" },
+  { key: "powerbank", label: "Powerbank" },
+  { key: "accessory", label: "Accessory" },
 ];
 
 const statusOptions: { key: StatusFilter; label: string }[] = [
