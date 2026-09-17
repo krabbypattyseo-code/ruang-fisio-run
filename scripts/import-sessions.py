@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Impor sesi dari Excel analisis + ekspor Garmin/COROS ke TypeScript.
+"""Impor sesi dari Excel analisis, hiking/trail Garmin, dan lap COROS.
 
-Sumber utama ringkasan: `5-analisis-lari-gtr.xlsx` (sheet Komparatif).
-Lap & zona HR dilengkapi dari ekspor Garmin/COROS bila ada — field kosong
-tetap null / 0, tidak digenerate.
+Sumber ringkasan road: `5-analisis-lari-gtr.xlsx` (Komparatif).
+Sumber hiking/trail: `Garmin_Hiking_TrailRunning.xlsx` (Wonosobo Garmin di-skip).
+Lap & zona HR dilengkapi dari ekspor Garmin/COROS bila ada.
 
   python3 scripts/import-sessions.py
 """
