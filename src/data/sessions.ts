@@ -2,9 +2,9 @@ import { generatedSessions } from "@/data/sessions.generated";
 import type { Session } from "@/data/types";
 
 /**
- * Arsip sesi = sheet Komparatif di `5-analisis-lari-gtr.xlsx` (11 Jul–14 Sep 2026).
- * Lap / zona HR dilengkapi dari ekspor Garmin & COROS di data/raw/.
- * Untuk menambah workout baru: ganti Excel di data/raw/, lalu:
+ * Arsip sesi = sheet Komparatif di `5-analisis-lari-gtr.xlsx` (road Jul–Sep 2026)
+ * plus `Garmin_Hiking_TrailRunning.xlsx` (hiking/trail Jan 2025–Apr 2026).
+ * Wonosobo Garmin dikeluarkan (data sah dari COROS). Impor ulang:
  * python3 scripts/import-sessions.py
  */
 export const sessions: Session[] = [...generatedSessions];

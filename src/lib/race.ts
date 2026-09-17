@@ -1,4 +1,4 @@
-import { gtrUltra, runnerProfile, type RaceEvent } from "@/data/event";
+import { gtrPlanWeeks, gtrUltra, runnerProfile, type RaceEvent } from "@/data/event";
 import { sessions as allSessions, today } from "@/data/sessions";
 import type { Session } from "@/data/types";
 import { addDays, daysBetween, startOfWeek } from "@/lib/format";
@@ -26,85 +26,86 @@ export type Readiness = {
   daysLeft: number;
 };
 
-/** Status kesiapan dihitung dari data latihan, bukan diisi manual. */
+/** Status kesiapan: kapasitas trail/hiking 12 bulan + volume/konsistensi 4 pekan terakhir. */
 export function readiness(
   sessions: Session[] = allSessions,
   event: RaceEvent = gtrUltra,
   reference: string = today,
 ): Readiness {
   const last28 = recentSessions(sessions, reference, 28);
-  const last42 = recentSessions(sessions, reference, 42);
-  const last42Km = sum(last42.map((session) => session.distanceKm)) || 1;
+  // Kapasitas trail dihitung dari seluruh arsip (Jan 2025+), bukan hanya 12 bulan kalender
+  // dari tanggal sesi terakhir — biar Kerinci / Magelang tetap masuk penilaian.
+  const history = sessions.filter((session) => session.date <= reference);
+  const trailHistory = history.filter((session) => session.type !== "road");
 
   const weeklyKm = sum(last28.map((session) => session.distanceKm)) / 4;
-  const weeklyElev = sum(last28.map((session) => session.elevGainM)) / 4;
-  const longest = last42.length ? Math.max(...last42.map((item) => item.distanceKm)) : 0;
-  const trailShare =
-    sum(
-      last42
-        .filter((session) => session.type !== "road")
-        .map((session) => session.distanceKm),
-    ) / last42Km;
+  const longest = history.length ? Math.max(...history.map((item) => item.distanceKm)) : 0;
+  const maxElev = history.length ? Math.max(...history.map((item) => item.elevGainM)) : 0;
+  const maxDurationMin = history.length
+    ? Math.max(...history.map((item) => item.durationSec)) / 60
+    : 0;
+  const trailSessionCount = trailHistory.length;
   const perWeek = last28.length / 4;
 
   const targets = {
-    weeklyKm: Math.round(event.distanceKm * 1.8),
-    longest: Math.round(event.distanceKm * 0.8),
-    weeklyElev: Math.round(event.elevGainM * 0.75),
-    trailShare: 0.45,
+    weeklyKm: Math.round(event.distanceKm * 1.2),
+    longest: event.distanceKm,
+    maxElev: event.elevGainM,
+    timeOnFeet: event.targetFinishMin,
+    trailSessions: 8,
     perWeek: 4,
   };
 
   const components: ReadinessComponent[] = [
     {
-      key: "volume",
-      label: "Volume mingguan",
-      value: weeklyKm,
-      target: targets.weeklyKm,
-      unit: "km/pekan",
-      weight: 0.25,
-      score: clamp01(weeklyKm / targets.weeklyKm) * 100,
-      hint: "Rata-rata 4 pekan terakhir dibanding 1,8× jarak lomba.",
-    },
-    {
       key: "longrun",
-      label: "Long run terpanjang",
+      label: "Jarak terjauh",
       value: longest,
       target: targets.longest,
       unit: "km",
       weight: 0.25,
       score: clamp01(longest / targets.longest) * 100,
-      hint: "Sesi terpanjang 6 pekan terakhir; patokan 80% jarak lomba.",
+      hint: "Sesi terpanjang 12 bulan terakhir dibanding jarak lomba.",
     },
     {
       key: "elevation",
-      label: "Elevasi mingguan",
-      value: weeklyElev,
-      target: targets.weeklyElev,
-      unit: "m/pekan",
+      label: "Elevasi satu sesi",
+      value: maxElev,
+      target: targets.maxElev,
+      unit: "m",
+      weight: 0.25,
+      score: clamp01(maxElev / targets.maxElev) * 100,
+      hint: "Ascent tertinggi 12 bulan terakhir dibanding elevasi lomba.",
+    },
+    {
+      key: "timeOnFeet",
+      label: "Waktu di kaki",
+      value: maxDurationMin,
+      target: targets.timeOnFeet,
+      unit: "mnt",
       weight: 0.2,
-      score: clamp01(weeklyElev / targets.weeklyElev) * 100,
-      hint: "Rata-rata 4 pekan terakhir dibanding 75% elevasi lomba.",
+      score: clamp01(maxDurationMin / targets.timeOnFeet) * 100,
+      hint: "Durasi terpanjang dibanding target finis 8:30.",
     },
     {
       key: "specificity",
-      label: "Porsi trail & hiking",
-      value: trailShare * 100,
-      target: targets.trailShare * 100,
-      unit: "%",
+      label: "Sesi trail & hiking",
+      value: trailSessionCount,
+      target: targets.trailSessions,
+      unit: "sesi/tahun",
       weight: 0.15,
-      score: clamp01(trailShare / targets.trailShare) * 100,
-      hint: "Kilometer non-road 6 pekan terakhir; lomba ini sepenuhnya trail.",
+      score: clamp01(trailSessionCount / targets.trailSessions) * 100,
+      hint: "Jumlah sesi non-road 12 bulan terakhir; target 8.",
     },
     {
       key: "consistency",
-      label: "Konsistensi",
+      label: "Konsistensi 4 pekan",
       value: perWeek,
       target: targets.perWeek,
       unit: "sesi/pekan",
       weight: 0.15,
       score: clamp01(perWeek / targets.perWeek) * 100,
-      hint: "Jumlah sesi per pekan dalam 4 pekan terakhir.",
+      hint: `Volume jalanan terkini ~${weeklyKm.toFixed(0)} km/pekan; tetap jaga frekuensi.`,
     },
   ];
 
@@ -202,16 +203,22 @@ export function projection(
   event: RaceEvent = gtrUltra,
   reference: string = today,
 ): Projection {
-  const pool = recentSessions(sessions, reference, 42).filter(
-    (session) => session.type !== "hiking",
+  const pool = sessions.filter(
+    (session) =>
+      session.date <= reference &&
+      (session.type === "trail" || (session.type === "road" && session.distanceKm >= 12)),
   );
   const candidates = pool.filter((session) => session.distanceKm >= 12);
+  const longTrails = candidates
+    .filter((session) => session.type === "trail" && session.distanceKm >= 15)
+    .sort((a, b) => b.distanceKm - a.distanceKm);
   const ranked = (candidates.length ? candidates : pool).sort(
     (a, b) =>
       a.durationSec / gradedKm(a.distanceKm, a.elevGainM) -
       b.durationSec / gradedKm(b.distanceKm, b.elevGainM),
   );
-  const referenceSession = ranked[0] ?? sessions[0];
+  // Acuan utama: trail panjang mendekati jarak lomba (mis. Bogor 26,4 km), bukan 5K road.
+  const referenceSession = longTrails[0] ?? ranked[0] ?? sessions[0];
 
   const refGraded = gradedKm(referenceSession.distanceKm, referenceSession.elevGainM);
   const raceGraded = gradedKm(event.distanceKm, event.elevGainM);
@@ -266,100 +273,35 @@ export function projection(
   };
 }
 
-const buildFocus = [
-  "Long run trail dengan profil menyerupai lomba, satu sesi tempo di road.",
-  "Hill repeat 8×90 detik di tanjakan 8–10%, sisanya easy run.",
-  "Long run progresif: 20 menit terakhir di pace lomba.",
-  "Tambah satu sesi power hiking dengan vest terisi 4 kg.",
-  "Long run dua sesi dalam 24 jam untuk melatih kaki yang sudah lelah.",
-  "Latihan turunan teknis 30 menit, fokus langkah pendek dan pandangan jauh.",
-  "Long run dengan fueling penuh: gel, botol, dan elektrolit seperti hari lomba.",
-];
-
 export type PlanWeek = {
-  weekStart: string
+  weekStart: string;
   index: number;
-  phase: "Bangun" | "Pemulihan" | "Puncak" | "Taper" | "Pekan lomba";
+  phase: "Reintroduksi" | "Bangun" | "Pemulihan" | "Puncak" | "Taper" | "Pekan lomba";
   targetKm: number;
   longRunKm: number;
   elevM: number;
+  stopBudget?: string;
   focus: string;
 };
 
-/** Rencana pekanan diturunkan dari volume saat ini menuju target lomba, ditutup taper. */
+/** Rencana 8 minggu dari dokumen Revisi 3; di-anchor ke pekan setelah tanggal acuan. */
 export function trainingPlan(
   sessions: Session[] = allSessions,
   event: RaceEvent = gtrUltra,
   reference: string = today,
 ): PlanWeek[] {
-  const status = readiness(sessions, event, reference);
-  const last28 = recentSessions(sessions, reference, 28);
-  const currentKm = sum(last28.map((session) => session.distanceKm)) / 4;
-  const currentElev = sum(last28.map((session) => session.elevGainM)) / 4;
-  const longest = last28.length ? Math.max(...last28.map((item) => item.distanceKm)) : 12;
-
-  const weeks = Math.max(3, status.weeksLeft);
-  const buildWeeks = weeks - 3;
-  const peakKm = Math.max(currentKm * 1.22, event.distanceKm * 1.8);
-  const peakElev = Math.max(currentElev * 1.25, event.elevGainM * 0.9);
-  const peakLongRun = Math.min(event.distanceKm * 0.95, 28);
-
-  return Array.from({ length: weeks }, (_, index) => {
-    const weekStart = startOfWeek(addDays(reference, 7 * (index + 1)));
-    const progress = buildWeeks > 1 ? index / (buildWeeks - 1) : 1;
-    const isDownWeek = index > 0 && (index + 1) % 4 === 0 && index < buildWeeks;
-
-    if (index < buildWeeks) {
-      const ramp = isDownWeek ? 0.75 : 1;
-      return {
-        weekStart,
-        index: index + 1,
-        phase: isDownWeek ? "Pemulihan" : "Bangun",
-        targetKm: Math.round((currentKm + (peakKm - currentKm) * progress) * ramp),
-        longRunKm: Math.round(
-          (longest + (peakLongRun - longest) * progress) * (isDownWeek ? 0.7 : 1),
-        ),
-        elevM: Math.round((currentElev + (peakElev - currentElev) * progress) * ramp),
-        focus: isDownWeek
-          ? "Turunkan volume 25%, pertahankan satu sesi tanjakan pendek."
-          : buildFocus[index % buildFocus.length],
-      } satisfies PlanWeek;
-    }
-
-    if (index === buildWeeks) {
-      return {
-        weekStart,
-        index: index + 1,
-        phase: "Puncak",
-        targetKm: Math.round(peakKm),
-        longRunKm: Math.round(peakLongRun),
-        elevM: Math.round(peakElev),
-        focus: "Simulasi lomba: pakai vest, sepatu, dan fueling yang akan dipakai hari-H.",
-      } satisfies PlanWeek;
-    }
-
-    if (index === weeks - 1) {
-      return {
-        weekStart,
-        index: index + 1,
-        phase: "Pekan lomba",
-        targetKm: Math.round(peakKm * 0.35),
-        longRunKm: 8,
-        elevM: Math.round(peakElev * 0.2),
-        focus: "Dua sesi ringan plus strides. Tidur dan karbo jadi prioritas utama.",
-      } satisfies PlanWeek;
-    }
-
-    return {
-      weekStart,
-      index: index + 1,
-      phase: "Taper",
-      targetKm: Math.round(peakKm * 0.65),
-      longRunKm: Math.round(peakLongRun * 0.6),
-      elevM: Math.round(peakElev * 0.5),
-      focus: "Volume turun, intensitas dijaga lewat 3×2 km pace lomba di trail landai.",
-    } satisfies PlanWeek;
-  });
+  void sessions;
+  void event;
+  return gtrPlanWeeks.map((week) => ({
+    weekStart: startOfWeek(addDays(reference, 7 * week.index)),
+    index: week.index,
+    phase: week.phase,
+    targetKm: week.targetKm,
+    longRunKm: week.longRunKm,
+    elevM: week.elevM,
+    stopBudget: week.stopBudget,
+    focus: week.focus,
+  }));
 }
 
 export type ChecklistItem = {
@@ -380,60 +322,64 @@ export function readinessChecklist(
 
   const longrun = byKey("longrun");
   const elevation = byKey("elevation");
+  const timeOnFeet = byKey("timeOnFeet");
   const specificity = byKey("specificity");
-  const volume = byKey("volume");
 
   return [
     {
       id: "longrun",
-      label: `Long run minimal ${Math.round(longrun.target)} km`,
+      label: `Jarak terjauh mendekati ${event.distanceKm} km`,
       detail:
-        longrun.value >= longrun.target
-          ? `Sudah tercapai: terpanjang ${longrun.value.toFixed(1)} km dalam 6 pekan terakhir.`
-          : `Terpanjang baru ${longrun.value.toFixed(1)} km. Tambah ${(longrun.target - longrun.value).toFixed(1)} km lagi, idealnya di jalur berprofil mirip lomba.`,
+        longrun.value >= longrun.target * 0.85
+          ? `Sudah ${longrun.value.toFixed(1)} km (Bogor Trail 11 Apr 2026 ≈ 88% jarak lomba).`
+          : `Terpanjang baru ${longrun.value.toFixed(1)} km. Target mendekati ${event.distanceKm} km di medan trail.`,
       status: level(longrun.score),
     },
     {
       id: "elevation",
-      label: `Elevasi ${Math.round(elevation.target)} m per pekan`,
+      label: `Ascent satu sesi menuju ${formatElev(event.elevGainM)} m`,
       detail:
-        elevation.value >= elevation.target
-          ? `Rata-rata ${Math.round(elevation.value)} m per pekan, cukup untuk ${event.elevGainM} m di hari lomba.`
-          : `Baru ${Math.round(elevation.value)} m per pekan. Sisipkan satu sesi hill repeat untuk menutup ${Math.round(elevation.target - elevation.value)} m.`,
+        elevation.value >= elevation.target * 0.8
+          ? `Pernah ${Math.round(elevation.value)} m dalam satu sesi — mendekati elevasi lomba.`
+          : `Ascent tertinggi ${Math.round(elevation.value)} m. Perlu long trail dengan vertikal lebih besar.`,
       status: level(elevation.score),
     },
     {
+      id: "timeOnFeet",
+      label: "Waktu di kaki ≥ target finis",
+      detail:
+        timeOnFeet.value >= timeOnFeet.target
+          ? `Durasi terpanjang ${Math.round(timeOnFeet.value)} menit, sudah melampaui target 8:30.`
+          : `Durasi terpanjang baru ${Math.round(timeOnFeet.value)} menit; target ~${event.targetFinishMin} menit.`,
+      status: level(timeOnFeet.score),
+    },
+    {
       id: "specificity",
-      label: "Minimal 45% kilometer di trail",
+      label: "Minimal 8 sesi trail/hiking / tahun",
       detail:
         specificity.value >= specificity.target
-          ? `Porsi trail ${Math.round(specificity.value)}%, spesifik dengan medan lomba.`
-          : `Porsi trail baru ${Math.round(specificity.value)}%. Pindahkan satu sesi road ke jalur tanah tiap pekan.`,
+          ? `${Math.round(specificity.value)} sesi non-road dalam 12 bulan.`
+          : `Baru ${Math.round(specificity.value)} sesi. Risiko: jeda trail panjang mengikis ketajaman medan.`,
       status: level(specificity.score),
     },
     {
-      id: "volume",
-      label: `Volume ${Math.round(volume.target)} km per pekan`,
+      id: "stops",
+      label: "Disiplin berhenti ≤ 23 menit di lomba",
       detail:
-        volume.value >= volume.target
-          ? `Volume ${Math.round(volume.value)} km per pekan sudah di rentang aman.`
-          : `Volume ${Math.round(volume.value)} km per pekan; naikkan bertahap maksimal 10% tiap pekan.`,
-      status: level(volume.score),
-    },
-    {
-      id: "fueling",
-      label: "Uji fueling 60 g karbo per jam",
-      detail:
-        "Lakukan di dua long run terakhir dengan gel dan minuman yang sama seperti hari lomba.",
-      status: "perlu-kerja",
+        "Latih di tiap long trail: tekan lap setiap berhenti. Target per WS 3–6 menit, bukan istirahat panjang.",
+      status: "kritis",
     },
     {
       id: "gear",
       label: "Cek perlengkapan wajib",
-      detail: `${event.mandatoryGear.length} item wajib menurut panitia; timbang vest penuh sebelum simulasi.`,
+      detail: `${event.mandatoryGear.length} item; uji vest & nutrisi mulai minggu 5.`,
       status: "perlu-kerja",
     },
   ];
+}
+
+function formatElev(meters: number) {
+  return new Intl.NumberFormat("id-ID").format(meters);
 }
 
 export type FuelingSegment = {

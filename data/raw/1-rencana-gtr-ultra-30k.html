@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rencana GTR Ultra 30K</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --rf-teal:#005A64; --rf-cyan:#139CAB;
+  --ink:#222222; --ink-2:#4A4A4A; --ink-3:#77817F;
+  --ground:#EEF2F2; --surface:#FAFBFB; --surface-2:#F0F4F4;
+  --rule:#D9E2E2; --rule-2:#BECACA;
+  --d1:#139CAB; --d2:#C2410C; --d3:#4338CA;
+  --d1-soft:#139CAB1F; --d2-soft:#C2410C1A; --d3-soft:#4338CA17;
+  --ok:#0F7A5A; --ok-soft:#0F7A5A1A; --warn:#C2410C; --warn-soft:#C2410C1A;
+  --shadow:0 1px 3px rgba(0,60,65,.07);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --rf-teal:#0E8A96; --rf-cyan:#23A4B2;
+  --ink:#E8EDEC; --ink-2:#A4AFAD; --ink-3:#77827F;
+  --ground:#0B1214; --surface:#121A1C; --surface-2:#182224;
+  --rule:#26312F; --rule-2:#38423F;
+  --d1:#23A4B2; --d2:#D9722F; --d3:#7C7CE0;
+  --d1-soft:#23A4B224; --d2-soft:#D9722F22; --d3-soft:#7C7CE020;
+  --ok:#2FA57E; --ok-soft:#2FA57E22; --warn:#D9722F; --warn-soft:#D9722F22;
+  --shadow:0 1px 3px rgba(0,0,0,.34);
+}}
+:root[data-theme="dark"]{
+  --rf-teal:#0E8A96; --rf-cyan:#23A4B2;
+  --ink:#E8EDEC; --ink-2:#A4AFAD; --ink-3:#77827F;
+  --ground:#0B1214; --surface:#121A1C; --surface-2:#182224;
+  --rule:#26312F; --rule-2:#38423F;
+  --d1:#23A4B2; --d2:#D9722F; --d3:#7C7CE0;
+  --d1-soft:#23A4B224; --d2-soft:#D9722F22; --d3-soft:#7C7CE020;
+  --ok:#2FA57E; --ok-soft:#2FA57E22; --warn:#D9722F; --warn-soft:#D9722F22;
+  --shadow:0 1px 3px rgba(0,0,0,.34);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:14.5px;line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px 72px}
+
+header{padding:46px 0 24px;border-bottom:3px solid var(--rf-teal);display:flex;
+  align-items:flex-start;gap:18px;flex-wrap:wrap}
+header svg.mark{width:52px;height:52px;border-radius:10px;flex:none}
+.hmain{flex:1;min-width:260px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--rf-cyan);margin:0 0 10px;font-weight:600}
+h1{font-size:clamp(28px,5vw,42px);font-weight:800;letter-spacing:-.03em;margin:0;line-height:1.05}
+.sub{margin:14px 0 0;max-width:62ch;color:var(--ink-2);font-size:15.5px}
+
+.strip{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-top:none;box-shadow:var(--shadow)}
+.st{background:var(--surface);padding:15px 15px 14px}
+.st .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.st .v{font-size:clamp(19px,2.4vw,25px);font-weight:800;letter-spacing:-.02em;line-height:1;
+  font-variant-numeric:tabular-nums}
+.st .v small{font-size:.46em;font-weight:600;color:var(--ink-3)}
+
+section{padding-top:48px}
+.sh{display:flex;align-items:baseline;gap:13px;margin-bottom:6px}
+.sn{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--rf-cyan);flex:none}
+.sh h2{font-size:clamp(19px,2.7vw,25px);font-weight:700;letter-spacing:-.02em;margin:0}
+.lede{margin:0 0 22px;color:var(--ink-2);max-width:68ch;font-size:14.5px}
+
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:18px 20px;
+  box-shadow:var(--shadow)}
+.gr{display:grid;grid-template-columns:170px 1fr 64px;gap:14px;align-items:center;padding:10px 0}
+.gr+.gr{border-top:1px solid var(--rule)}
+.gr .gl{font-size:13.5px;font-weight:600}
+.gr .gs{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-3);display:block;font-weight:400}
+.gbar{height:18px;background:var(--surface-2);border-radius:2px;overflow:hidden}
+.gbar i{display:block;height:100%;border-radius:2px}
+.gr .gv{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:700}
+
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface);
+  box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:12.5px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td.wide{text-align:left;white-space:normal;min-width:200px;
+  font-family:"Plus Jakarta Sans",sans-serif;font-size:12.5px;color:var(--ink-2)}
+thead th{font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+  font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--rule-2)}
+tbody tr:last-child td{border-bottom:none}
+tr.down td{background:var(--surface-2)}
+tr.peak td{background:var(--d1-soft)}
+tr.race td{background:var(--rf-teal);color:#fff;font-weight:700}
+tr.race td.wide{color:rgba(255,255,255,.88)}
+tr.tgt td{background:var(--ok-soft)}
+tr.fail td{background:var(--warn-soft)}
+td.ph{font-family:"Plus Jakarta Sans",sans-serif;font-weight:600;font-size:12px}
+
+.callout{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rf-cyan);
+  border-radius:3px;padding:18px 22px;margin-top:18px;box-shadow:var(--shadow)}
+.callout.warn{border-left-color:var(--warn)}
+.callout.ok{border-left-color:var(--ok)}
+.callout .lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:600;display:block;margin-bottom:7px;color:var(--rf-cyan)}
+.callout.warn .lab{color:var(--warn)}
+.callout.ok .lab{color:var(--ok)}
+.callout p{margin:0 0 10px;font-size:14px;color:var(--ink-2)}
+.callout p:last-child{margin-bottom:0}
+.callout b{color:var(--ink);font-weight:600}
+
+.risks{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:4px;overflow:hidden;box-shadow:var(--shadow)}
+.risk{background:var(--surface);padding:20px 22px}
+.risk .n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.09em;
+  text-transform:uppercase;font-weight:600;color:var(--warn)}
+.risk h4{margin:8px 0 8px;font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+.risk p{margin:0 0 9px;font-size:13.5px;color:var(--ink-2)}
+.risk p:last-child{margin-bottom:0}
+.risk b{color:var(--ink);font-weight:600}
+.risk .ev{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink);
+  background:var(--surface-2);border:1px solid var(--rule);padding:6px 10px;
+  border-radius:2px;display:block;margin-top:10px}
+
+.week-tpl{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:4px;overflow:hidden;box-shadow:var(--shadow)}
+.wt{background:var(--surface);padding:16px 17px}
+.wt .d{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--rf-cyan);font-weight:600}
+.wt h4{margin:7px 0 5px;font-size:14.5px;font-weight:700}
+.wt p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.wt .dose{display:block;margin-top:9px;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  color:var(--ink);font-weight:600}
+
+.check{background:var(--surface);border:1px solid var(--rule);border-radius:4px;overflow:hidden;
+  box-shadow:var(--shadow)}
+.ci{display:flex;gap:12px;align-items:flex-start;padding:11px 16px;border-bottom:1px solid var(--rule)}
+.ci:last-child{border-bottom:none}
+.ci .bx{width:15px;height:15px;border:1.6px solid var(--rule-2);border-radius:3px;flex:none;margin-top:3px}
+.ci .tx{font-size:13.5px}
+.ci .tx b{font-weight:600}
+.ci .tx span{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);margin-top:2px}
+.grp{background:var(--surface-2);padding:8px 16px;font-family:"IBM Plex Mono",monospace;
+  font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+
+.note{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);margin:10px 0 0;line-height:1.65}
+footer{margin-top:52px;padding-top:20px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);line-height:1.8}
+
+@media (max-width:900px){
+  .strip{grid-template-columns:repeat(3,1fr)}
+  .risks{grid-template-columns:1fr}
+  .week-tpl{grid-template-columns:repeat(2,1fr)}
+  .gr{grid-template-columns:1fr;gap:6px}
+  .gr .gv{text-align:left}
+}
+@media (max-width:560px){ .strip{grid-template-columns:repeat(2,1fr)} .week-tpl{grid-template-columns:1fr} }
+@media print{ body{background:#fff} .scroll{overflow:visible} section{page-break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <svg class="mark" viewBox="0 0 296.3 296.3" aria-label="Ruang Fisio">
+    <rect width="296.3" height="296.3" rx="23.6" ry="23.6" fill="#005a64"/>
+    <path fill="#fff" d="M156.7,249.4l-82.3-12.4c-1.2-.2-2.2-1.3-2.2-2.5V66.7c0-1.4,1.1-2.5,2.5-2.5h6.7l75-17.2c1.3-.3,2.5.7,2.5,2v198.6c0,1.2-1.1,2.2-2.3,2Z"/>
+    <path fill="#fff" d="M224.1,222.1v18.3c0,1.1-.9,2-2,2h-63v-13.3h51.8v-7c0-1.1.9-2,2-2h9.2c1.1,0,2,.9,2,2Z"/>
+    <path fill="#fff" d="M224.1,74.2v-18.3c0-1.1-.9-2-2-2h-63v13.3h51.8v7c0,1.1.9,2,2,2h9.2c1.1,0,2-.9,2-2Z"/>
+    <path fill="#005a64" d="M115.3,121.3c0-3.7,3-6.6,6.6-6.6s6.6,3,6.6,6.6-3,6.6-6.6,6.6-6.6-3-6.6-6.6ZM144.3,135.3c-1.1-1.3-3-1.5-4.4-.5l-6.5,5.2-7.3-8.3c-.6-.7-1.5-1.1-2.5-1.1l-8.6.4c-.4,0-.9.1-1.3.3l-13.3,3.6c-1.2.6-1.8,1.9-1.6,3.2l1.5,10.9c.2,1.6,1.5,2.7,3.1,2.7s.3,0,.4,0c1.7-.2,2.9-1.8,2.7-3.5l-1.2-8.8,8.3-1.1-12,27.1-14,15.5c-1.6,1.3-1.8,3.6-.5,5.1.7.9,1.8,1.3,2.8,1.3s1.6-.3,2.3-.8l15-14.1c.7-.5,1.2-1.3,1.7-2.1l6.4-11.3c.3.2.6.4.9.6l7.7,3.6-6.7,14.7c-.8,1.8,0,4,1.8,4.8.5.2,1,.3,1.5.3,1.4,0,2.7-.8,3.3-2.1l8.1-18c.8-1.8,0-4-1.8-4.8l-9.1-5.1,4.6-12.6,4.9,5.6c1.1,1.3,3,1.4,4.3.4l8.8-7.1c1.3-1.1,1.5-3,.5-4.4Z"/>
+  </svg>
+  <div class="hmain">
+    <p class="eyebrow">Revisi 3 · disusun 17 September 2026</p>
+    <h1>Rencana<br>GTR Ultra 30K</h1>
+    <p class="sub">Blok penajaman 8 minggu. Disusun ulang setelah 22 aktivitas hiking dan trail sejak Januari 2025 masuk ke hitungan — kesiapanmu ternyata jauh lebih tinggi dari yang dinilai sebelumnya.</p>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="st"><div class="k">Kesiapan</div><div class="v" style="color:var(--ok)">86<small>%</small></div></div>
+  <div class="st"><div class="k">Jarak</div><div class="v">30<small> km</small></div></div>
+  <div class="st"><div class="k">Elev gain</div><div class="v">1.800<small> m</small></div></div>
+  <div class="st"><div class="k">Kepadatan</div><div class="v">60<small> m/km</small></div></div>
+  <div class="st"><div class="k">Target</div><div class="v" style="color:var(--rf-cyan)">8:30</div></div>
+</div>
+
+<!-- 00 PROFIL LOMBA -->
+<section>
+  <div class="sh"><span class="sn">00</span><h2>Profil lomba</h2></div>
+  <p class="lede">Angka resmi dari penyelenggara, edisi 2025. Elevation gain 1.800 m untuk 30K sekarang terkonfirmasi — sebelumnya itu hanya asumsi kerja.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Kategori</th><th>Elev gain</th><th>Kepadatan</th><th>Keterangan</th></tr></thead>
+      <tbody>
+        <tr><td>7K</td><td>400 m</td><td>57 m/km</td><td class="wide">—</td></tr>
+        <tr><td>12K</td><td>850 m</td><td>71 m/km</td><td class="wide">Kategori terpadat</td></tr>
+        <tr class="tgt"><td><b>30K</b></td><td><b>1.800 m</b></td><td><b>60 m/km</b></td><td class="wide">Kategorimu</td></tr>
+        <tr><td>52K</td><td>2.800 m</td><td>54 m/km</td><td class="wide">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Lokasi start/finish edisi 2025: Lapangan Dusun Kayuwangi, Desa Gedong, Kecamatan Banyubiru, Kabupaten Semarang — kawasan kaki Gunung Telomoyo, dekat Rawa Pening. Tanggal edisi 2025: 5 Oktober.</p>
+
+  <div class="callout">
+    <span class="lab">Kepadatan 60 m/km — sudah pernah kamu lewati</span>
+    <p>Seluruh kategori GTR berkisar 54–71 m tanjakan per kilometer. Ini lintasan yang menanjak terus-menerus, bukan datar dengan satu puncak.</p>
+    <p>Pembanding dari datamu sendiri: <b>11 April 2026 = 46 m/km</b> (1.209 m / 26,41 km) dan <b>17 Januari 2026 = 81 m/km</b> (1.238 m / 15,29 km). Lomba ini persis di antara keduanya — dan kamu sudah menyelesaikan kedua-duanya.</p>
+  </div>
+</section>
+
+<!-- 01 -->
+<section>
+  <div class="sh"><span class="sn">01</span><h2>Posisi sekarang</h2></div>
+  <p class="lede">Penilaian lama (33%) dihitung hanya dari lari jalanan Juli–September. Dengan riwayat trail dan hiking masuk, gambarannya berubah total.</p>
+
+  <div class="panel">
+    <div class="gr">
+      <div class="gl">Jarak terjauh<span class="gs">26,41 km · Bogor Trail, 11 Apr 2026 → 30 km</span></div>
+      <div class="gbar"><i style="width:88%;background:var(--ok)"></i></div>
+      <div class="gv">88%</div>
+    </div>
+    <div class="gr">
+      <div class="gl">Elevation gain<span class="gs">1.488 m · Kerinci, 25 Jan 2025 → 1.800 m</span></div>
+      <div class="gbar"><i style="width:83%;background:var(--ok)"></i></div>
+      <div class="gv">83%</div>
+    </div>
+    <div class="gr">
+      <div class="gl">Waktu di kaki<span class="gs">9:31:50 · Kerinci, 25 Jan 2025 → ~8:30</span></div>
+      <div class="gbar"><i style="width:100%;background:var(--ok)"></i></div>
+      <div class="gv">100%</div>
+    </div>
+    <div class="gr">
+      <div class="gl">Sesi trail<span class="gs">5 sesi dalam 12 bulan → 8</span></div>
+      <div class="gbar"><i style="width:63%;background:var(--d1)"></i></div>
+      <div class="gv">63%</div>
+    </div>
+  </div>
+
+  <div class="callout ok">
+    <span class="lab">Sesi 11 April 2026 hampir setara lomba</span>
+    <p><b>26,41 km dengan 1.209 m pendakian, selesai 8 jam 22 menit, dinilai 6/10 “Hard”.</b> Itu 88% jarak lomba dan 67% elevasinya — dan kamu belum mengerahkan tenaga penuh.</p>
+    <p>Kerinci 25 Januari 2025 membuktikan sisanya: <b>1.488 m dalam satu pendakian</b>, dan <b>9 jam 32 menit di kaki</b> — sudah melampaui perkiraan durasi lombamu.</p>
+  </div>
+</section>
+
+<!-- 02 -->
+<section>
+  <div class="sh"><span class="sn">02</span><h2>Tiga risiko yang tersisa</h2></div>
+  <p class="lede">Kemampuan bukan lagi pertanyaannya. Yang menentukan hasil lomba sekarang tiga hal lain, dan ketiganya bisa dilatih.</p>
+
+  <div class="risks">
+    <article class="risk">
+      <span class="n">Risiko 1 · tertinggi</span>
+      <h4>Waktu berhenti</h4>
+      <p>Di sesi 11 April kamu <b>berhenti 2 jam 1 menit</b> — 24% dari total waktu. Waktu bergeraknya sendiri sangat baik.</p>
+      <p>Kalau kebiasaan itu terbawa ke lomba, margin cut-off tinggal <b>4 menit</b>. Kalau disiplin di 23 menit, margin jadi <b>1 jam 42 menit</b>.</p>
+      <span class="ev">8:22:12 total · 6:20:45 bergerak</span>
+    </article>
+    <article class="risk">
+      <span class="n">Risiko 2</span>
+      <h4>Lima bulan tanpa trail</h4>
+      <p>Sesi trail sungguhan terakhirmu <b>30 April 2026</b>. Sejak itu semuanya 5K aspal Jakarta.</p>
+      <p>Kaki, pergelangan, dan mata untuk membaca jalur kehilangan ketajaman jauh lebih cepat daripada daya tahan aerobik.</p>
+      <span class="ev">Terakhir: 30 Apr · jeda ~20 minggu</span>
+    </article>
+    <article class="risk">
+      <span class="n">Risiko 3</span>
+      <h4>Kerusakan turunan</h4>
+      <p>Lomba ini punya <b>~1.800 m turunan</b> — beban eksentrik yang paling merusak otot.</p>
+      <p>Bukti dari datamu: turunan 681 m di Wonosobo merusak sesi 48 jam berikutnya, pace kolaps ke 10:46/km dan cadence jatuh ke 138.</p>
+      <span class="ev">Turunan 11 Apr: 1.224 m — sudah pernah</span>
+    </article>
+  </div>
+</section>
+
+<!-- 03 -->
+<section>
+  <div class="sh"><span class="sn">03</span><h2>Program 8 minggu</h2></div>
+  <p class="lede">Bukan membangun dari nol — ini penajaman. Kamu sudah pernah menempuh 26 km dengan 1.209 m; tugasnya mengembalikan ketajaman itu dan menambahkan disiplin berhenti.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Mgg</th><th>Fase</th><th>Long trail</th><th>Vertikal</th><th>Target berhenti</th><th>Fokus</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td class="ph">Reintroduksi</td><td>12 km</td><td>400 m</td><td>catat saja</td><td class="wide">Kembali ke medan. Pelan, kenali lagi jalur. ACWR naik dari 0,57 ke ~0,9.</td></tr>
+        <tr><td>2</td><td class="ph">Bangun</td><td>16 km</td><td>650 m</td><td>≤ 30 mnt</td><td class="wide">Mulai latih turunan panjang. Strength tetap 2×.</td></tr>
+        <tr><td>3</td><td class="ph">Bangun</td><td>20 km</td><td>900 m</td><td><b>≤ 20 mnt</b></td><td class="wide">Tes disiplin pertama. Bawa jam, catat tiap berhenti.</td></tr>
+        <tr class="down"><td>4</td><td class="ph">Turun</td><td>12 km</td><td>400 m</td><td>bebas</td><td class="wide">Volume −35%. Checkpoint pertama (bagian 06).</td></tr>
+        <tr><td>5</td><td class="ph">Bangun besar</td><td>24 km</td><td>1.200 m</td><td>≤ 25 mnt</td><td class="wide">Back-to-back: tambah easy 8 km keesokan hari. Uji nutrisi lomba.</td></tr>
+        <tr class="peak"><td>6</td><td class="ph">Puncak</td><td><b>28 km</b></td><td><b>1.500 m</b></td><td><b>≤ 25 mnt</b></td><td class="wide"><b>Gladi bersih penuh.</b> Kit lomba, nutrisi lomba, simulasi water station. Sesi penentu.</td></tr>
+        <tr><td>7</td><td class="ph">Taper</td><td>14 km</td><td>600 m</td><td>≤ 15 mnt</td><td class="wide">Volume −45%, intensitas dipertahankan.</td></tr>
+        <tr class="race"><td>8</td><td class="ph">Lomba</td><td>30 km</td><td>1.800 m</td><td><b>23 mnt</b></td><td class="wide">Dua sesi ringan awal minggu, lalu istirahat total sampai start.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="note">Puncak 28 km / 1.500 m = 93% jarak lomba dan 83% elevasinya. Angka ini aman karena kamu sudah pernah menempuh 26,41 km dan 1.488 m secara terpisah — yang baru hanyalah menggabungkan keduanya.</p>
+
+  <div class="callout warn">
+    <span class="lab">Kalau runway-nya pendek — baca ini dulu</span>
+    <p>Edisi 2025 digelar <b>5 Oktober</b>. Kalau edisi 2026 mengikuti pola yang sama, dari hari ini tinggal <b>sekitar 18 hari</b> — dan program 8 minggu di atas tidak bisa dijalankan.</p>
+    <p><b>Versi 18 hari</b> (kalau itu yang berlaku):</p>
+    <p>• <b>Hari 1–7:</b> satu long trail <b>16 km / 700 m</b>. Tujuannya mengembalikan rasa medan, bukan menguji batas.<br>
+       • <b>Hari 8–12:</b> satu long trail <b>20 km / 900 m</b> — ini sesi terakhir yang berarti. Harus selesai <b>minimal 10 hari sebelum lomba</b>.<br>
+       • <b>Hari 13–18:</b> taper penuh. Satu easy trail 8 km, sisanya istirahat.</p>
+    <p><b>Jangan memaksakan sesi besar di dalam 10 hari terakhir.</b> Aturan pemulihan turunan 4 hari membuat sesi turunan besar menjelang lomba justru merugikan — kamu akan sampai garis start dengan kaki yang belum pulih.</p>
+    <p>Target realistis dengan runway 18 hari: <b>9:00–9:30</b>, bukan 8:30. Basis kebugaranmu cukup untuk finis aman; yang tidak sempat pulih adalah ketajaman trail setelah 5 bulan absen.</p>
+  </div>
+
+  <div class="callout">
+    <span class="lab">Kalau waktu tersisa lebih dari 8 minggu</span>
+    <p>Sisipkan pengulangan minggu 3 dan 5 sebelum masuk puncak. <b>Jangan</b> menaikkan angka puncak melebihi 28 km / 1.500 m — tidak ada manfaat tambahan untuk lomba 30K, dan risikonya naik.</p>
+    <p>Kalau tersisa 5–7 minggu: hapus minggu 1 dan 2, mulai langsung dari minggu 3.</p>
+  </div>
+</section>
+
+<!-- 04 -->
+<section>
+  <div class="sh"><span class="sn">04</span><h2>Disiplin water station</h2></div>
+  <p class="lede">Ini prioritas nomor satu, dan satu-satunya keterampilan lomba yang belum pernah kamu latih. Perbedaan antara margin 1 jam 42 menit dan 4 menit seluruhnya ada di sini.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Skenario berhenti</th><th>Waktu bergerak</th><th>Total finis</th><th>Margin COT</th><th>Baca</th></tr></thead>
+      <tbody>
+        <tr class="tgt"><td><b>Disiplin — 23 menit</b></td><td>7:54:43</td><td><b>8:17:42</b></td><td style="color:var(--ok);font-weight:700">+1:42</td><td class="wide">Target. Berhenti hanya untuk isi botol dan makan.</td></tr>
+        <tr><td>Sedang — 60 menit</td><td>7:54:43</td><td>8:54:43</td><td style="color:var(--ok);font-weight:700">+1:05</td><td class="wide">Masih aman. Ada antrean atau istirahat tambahan.</td></tr>
+        <tr class="fail"><td>Seperti 11 April — 121 menit</td><td>7:54:43</td><td>9:55:39</td><td style="color:var(--warn);font-weight:700">+0:04</td><td class="wide">Lolos, tapi tanpa ruang untuk satu masalah pun.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Waktu bergerak 7:54:43 diproyeksikan dari laju nyatamu di 11 April 2026 (9:53 per kilometer flat-equivalent), diterapkan ke beban lomba 48 km flat-equivalent.</p>
+
+  <div class="callout">
+    <span class="lab">Cara melatihnya</span>
+    <p><b>Mulai minggu 2.</b> Di tiap long trail, bawa jam dan tekan lap setiap kali berhenti — isi botol, makan, foto, ngobrol, apa pun. Di akhir sesi, jumlahkan.</p>
+    <p>Aturan di lapangan: <b>berhenti hanya untuk hal yang tidak bisa dilakukan sambil berjalan.</b> Minum, makan gel, dan buka bungkus semuanya bisa dilakukan sambil bergerak. Yang perlu berhenti cuma isi ulang botol dan ganti kaus kaki.</p>
+    <p>Target per titik: <b>3 menit</b> untuk isi botol, <b>5–6 menit</b> untuk makan padat di titik tengah. Lebih dari itu berarti kamu sedang beristirahat, bukan mengisi bahan bakar.</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section>
+  <div class="sh"><span class="sn">05</span><h2>Struktur satu minggu</h2></div>
+  <p class="lede">Empat sesi lari plus dua strength. Yang berubah tiap minggu hanya angka long trail dari tabel di atas.</p>
+
+  <div class="week-tpl">
+    <div class="wt">
+      <div class="d">Selasa</div>
+      <h4>Easy jalanan</h4>
+      <p>Pertahankan kebugaran 5K yang baru kamu bangun. Cadence 165–168, stride jangan turun di bawah 0,74 m.</p>
+      <span class="dose">5–6 km · HR &lt;150</span>
+    </div>
+    <div class="wt">
+      <div class="d">Kamis</div>
+      <h4>Hill repeats</h4>
+      <p>Ini yang menjaga VAM. Kamu sudah terbukti di 360 m/jam — sesi ini mempertahankannya.</p>
+      <span class="dose">6–8 × 2 mnt naik · jogging turun</span>
+    </div>
+    <div class="wt">
+      <div class="d">Sabtu</div>
+      <h4>Long trail</h4>
+      <p>Sesi utama. Pakai sepatu, tas, dan nutrisi lomba sejak minggu 5. Catat tiap berhenti.</p>
+      <span class="dose">sesuai tabel · HR &lt;150</span>
+    </div>
+    <div class="wt">
+      <div class="d">Minggu</div>
+      <h4>Easy back-to-back</h4>
+      <p>Mulai minggu 5. Berlari di atas kaki yang masih lelah — persis kondisi km 22+ lomba.</p>
+      <span class="dose">6–8 km · sangat pelan</span>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="lab">Turunan — jangan diperlakukan sebagai bonus</span>
+    <p>Lomba punya ~1.800 m turunan. Di minggu 2 ke atas, <b>pilih rute yang turunannya panjang</b>, bukan yang hanya menanjak. Latih mendarat ringan dengan langkah pendek dan cepat — cadence tinggi di turunan mengurangi gaya benturan.</p>
+    <p><b>Aturan pemulihan:</b> setelah sesi dengan turunan &gt;600 m, beri jeda <b>minimal 4 hari</b> sebelum sesi berkualitas berikutnya. Ini pelajaran dari 1 September: turunan Wonosobo merusak sesi 48 jam kemudian.</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section>
+  <div class="sh"><span class="sn">06</span><h2>Checkpoint</h2></div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Kapan</th><th>Harus tercapai</th><th>Kalau tercapai</th><th>Kalau tidak</th></tr></thead>
+      <tbody>
+        <tr><td>Akhir minggu 4</td><td>20 km / 900 m selesai, berhenti ≤ 20 mnt</td><td class="wide" style="color:var(--ok)">Lanjut. Target 8:30 realistis.</td><td class="wide" style="color:var(--warn)">Ulangi minggu 2–3. Target geser ke 9:15.</td></tr>
+        <tr><td>Akhir minggu 6</td><td>28 km / 1.500 m selesai tanpa nyeri, berhenti ≤ 25 mnt</td><td class="wide" style="color:var(--ok)">Siap. Masuk taper dengan percaya diri.</td><td class="wide" style="color:var(--warn)">Taper lebih panjang, target murni finis dalam COT.</td></tr>
+        <tr><td>Minggu 7</td><td>Tidak ada nyeri menetap di lutut, shin, atau pinggul</td><td class="wide" style="color:var(--ok)">Jalan terus sesuai rencana.</td><td class="wide" style="color:var(--warn)">Berhenti latihan kualitas. Prioritaskan sampai di garis start dalam kondisi utuh.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 07 -->
+<section>
+  <div class="sh"><span class="sn">07</span><h2>Strategi hari lomba</h2></div>
+  <p class="lede">Berdasarkan target 8:30. Total berhenti 23 menit: pendek di awal, panjang di titik tengah, pendek lagi menjelang akhir.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Titik</th><th>KM</th><th>Tiba</th><th>Berhenti</th><th>Berangkat</th><th>Batas mundur</th><th>Minum</th><th>Kalori</th><th>Aksi</th></tr></thead>
+      <tbody>
+        <tr><td>WS 1</td><td>6</td><td>1:28</td><td>3 mnt</td><td>1:31</td><td style="color:var(--warn);font-weight:700">1:50</td><td>0,9 L</td><td>350</td><td class="wide">Isi botol · 1 gel · jangan duduk</td></tr>
+        <tr><td>WS 2</td><td>12</td><td>3:06</td><td>5 mnt</td><td>3:11</td><td style="color:var(--warn);font-weight:700">3:50</td><td>1,0 L</td><td>400</td><td class="wide">Makan padat + elektrolit</td></tr>
+        <tr><td>WS 3</td><td>18</td><td>4:52</td><td>6 mnt</td><td>4:58</td><td style="color:var(--warn);font-weight:700">5:50</td><td>1,1 L</td><td>450</td><td class="wide"><b>Titik kritis</b> — makan penuh, cek kaki, ganti kaus kaki kalau basah</td></tr>
+        <tr><td>WS 4</td><td>24</td><td>6:42</td><td>6 mnt</td><td>6:48</td><td style="color:var(--warn);font-weight:700">7:50</td><td>1,1 L</td><td>450</td><td class="wide">Isi penuh terakhir</td></tr>
+        <tr><td>WS 5</td><td>28</td><td>7:54</td><td>3 mnt</td><td>7:57</td><td style="color:var(--warn);font-weight:700">9:10</td><td>0,7 L</td><td>290</td><td class="wide">Top-up saja</td></tr>
+        <tr class="tgt"><td><b>Finish</b></td><td>30</td><td><b>8:30</b></td><td>—</td><td>—</td><td style="color:var(--warn);font-weight:700">10:00</td><td>0,35 L</td><td>150</td><td class="wide">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="lab">Pacing</span>
+    <p><b>Di tanjakan, jangan berlari.</b> Power hiking dengan tangan menekan paha lebih efisien di grade curam, dan VAM-mu yang sudah terbukti 360 m/jam memang dicapai dengan cara itu — bukan dengan jogging.</p>
+    <p><b>Km 1–6 harus terasa terlalu pelan.</b> Data 26 Agu, 3 Sep, dan 14 Sep menunjukkan kamu sudah bisa negative split. Bawa kebiasaan itu.</p>
+    <p><b>Di turunan, jangan mengerem.</b> Langkah pendek dan cepat, biarkan mengalir. Mengerem dengan quadriceps di turunan 1.800 m adalah cara tercepat merusak kaki sebelum km 25.</p>
+  </div>
+</section>
+
+<!-- 08 -->
+<section>
+  <div class="sh"><span class="sn">08</span><h2>Checklist</h2></div>
+  <div class="check">
+    <div class="grp">Sebelum minggu 1</div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Konfirmasi tanggal lomba</b><span>menentukan apakah 8 minggu cukup atau perlu dipadatkan</span></span></div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Konfirmasi tanggal edisi 2026</b><span>edisi 2025 digelar 5 Oktober — kalau polanya sama, runway tinggal ~18 hari</span></span></div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Cari peta rute / GPX resmi</b><span>elevation gain 1.800 m sudah terkonfirmasi; sebaran tanjakannya belum</span></span></div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Pastikan rute trail Bogor masih bisa diakses rutin</b><span>delapan sesi terjadwal di sana</span></span></div>
+
+    <div class="grp">Perlengkapan · uji dari minggu 5</div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Sepatu trail</b><span>cek keausan grip — terakhir dipakai serius 30 April</span></span></div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Hydration vest ≥1,5 L</b><span>segmen terpanjang butuh 1,1 L</span></span></div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Gel &amp; elektrolit merek yang sama dengan hari lomba</b><span>~2.100 kkal dan ~4.500 mg natrium total</span></span></div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Perlengkapan wajib panitia</b><span>jas hujan, headlamp, peluit, P3K — cek regulasi</span></span></div>
+
+    <div class="grp">Minggu lomba</div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Tulis batas mundur di tangan atau jam</b><span>1:50 · 3:50 · 5:50 · 7:50 · 9:10</span></span></div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Set alarm berhenti di jam</b><span>bunyi setelah 3 menit di tiap water station</span></span></div>
+    <div class="ci"><span class="bx"></span><span class="tx"><b>Tidur 7–8 jam pada H−2</b><span>malam H−2 lebih menentukan daripada H−1</span></span></div>
+  </div>
+</section>
+
+<footer>
+  <b style="color:var(--ink-2)">Sumber data.</b> 22 aktivitas hiking &amp; trail running Garmin (Jan 2025 – Apr 2026) dan 18 sesi lari Garmin &amp; COROS (Jul – Sep 2026). Catatan Garmin dari trip Wonosobo dikeluarkan — jam tersebut dipakai orang lain; data Wonosobo yang sah berasal dari COROS.<br>
+  <b style="color:var(--ink-2)">Metode proyeksi.</b> Laju bergerak per kilometer flat-equivalent dari sesi 11 April 2026 (9:53/km-equiv) diterapkan ke beban lomba 48 km flat-equivalent, lalu ditambah waktu berhenti. Naismith: 100 m tanjakan ≈ 1 km datar. Cross-check dengan model VAM segmen memberi hasil sejalan.<br>
+  <b style="color:var(--ink-2)">Rujukan latihan.</b> Napier, <i>Science of Running</i> · Kisner &amp; Colby, <i>Therapeutic Exercise</i> · Brukner &amp; Khan, <i>Clinical Sports Medicine</i> · Malek, <i>Science of Stretch</i> · Burke &amp; Deakin, <i>Clinical Sports Nutrition</i>.<br>
+  <b style="color:var(--ink-2)">Profil lomba.</b> Elevation gain per kategori dan lokasi start/finish berasal dari informasi penyelenggara edisi 2025 (5 Oktober 2025, Banyubiru, Kabupaten Semarang). Angka 1.800 m untuk 30K terkonfirmasi. Sebaran tanjakannya belum diketahui — pembagian 10 km naik / 10 turun / 10 rolling masih asumsi.<br>
+  <b style="color:var(--warn)">Batas keyakinan.</b> Sesi 11 April berjarak 5 bulan dari sekarang; proyeksi mengasumsikan ketajaman itu pulih pada minggu 6. Tanggal edisi 2026 belum dikonfirmasi — kalau kurang dari 8 minggu, pakai versi pendek di bagian 03. Dokumen ini analisis latihan, bukan nasihat medis.
+</footer>
+</div>
+</body>
+</html>

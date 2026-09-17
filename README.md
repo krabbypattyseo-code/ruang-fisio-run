@@ -52,10 +52,11 @@ tapi semua interaksi mati.
 
 Arsip sesi dari berkas di `data/raw/`:
 
-- `5-analisis-lari-gtr.xlsx` — ringkasan 18 aktivitas (11 Jul–14 Sep 2026), sheet Komparatif
-- `Garmin_Running_Data_JulAug_2026.xlsx` — lap & zona HR Garmin
-- `COROS_Running_26Agu6Sep2026.xlsx` — lap COROS 26 Agu–6 Sep
-- `COROS_Running_10-14Sep2026.xlsx` — lap COROS 10 & 14 Sep
+- `5-analisis-lari-gtr.xlsx` — ringkasan 18 aktivitas road (11 Jul–14 Sep 2026)
+- `Garmin_Hiking_TrailRunning.xlsx` — hiking & trail Garmin (Jan 2025–Apr 2026)
+- `Garmin_Running_Data_JulAug_2026.xlsx` — lap & zona HR Garmin road
+- `COROS_Running_26Agu6Sep2026.xlsx` / `COROS_Running_10-14Sep2026.xlsx` — lap COROS
+- `1-rencana-gtr-ultra-30k.html` — sumber parameter lomba & rencana 8 minggu (Revisi 3)
 
 Impor ke TypeScript:
 

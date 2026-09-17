@@ -27,7 +27,7 @@ import { projection, readiness, readinessChecklist } from "@/lib/race";
 export const metadata: Metadata = {
   title: "Kesiapan GTR Ultra 30K",
   description:
-    "Status kesiapan yang dihitung langsung dari data latihan: volume, long run, elevasi, spesifisitas trail, dan konsistensi.",
+    "Status kesiapan dari riwayat hiking/trail 12 bulan dan konsistensi 4 pekan terakhir, sesuai rencana GTR Ultra Revisi 3.",
 };
 
 const levelTone: Record<string, string> = {
@@ -53,7 +53,7 @@ export default function EventReadinessPage() {
               Skor kesiapan
             </CardTitle>
             <CardDescription>
-              Diambil dari sesi 4–6 pekan terakhir, bukan angka yang diketik manual.
+              Kapasitas trail/hiking 12 bulan terakhir + frekuensi 4 pekan terkini (Revisi 3).
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

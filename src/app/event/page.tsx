@@ -17,7 +17,7 @@ import { readiness } from "@/lib/race";
 
 export const metadata: Metadata = {
   title: "Event",
-  description: "Daftar event yang sedang diikuti, termasuk GTR Ultra 30K di Gunung Gajah, Semarang.",
+  description: "Daftar event yang sedang diikuti, termasuk GTR Ultra 30K di Banyubiru, Semarang.",
 };
 
 const joinedEvents = [gtrUltra];

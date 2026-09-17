@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 import math
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, time as dt_time, timedelta
 from pathlib import Path
 
 import pandas as pd
@@ -26,6 +26,7 @@ ANALYSIS_XLSX = RAW / "5-analisis-lari-gtr.xlsx"
 GARMIN_XLSX = RAW / "Garmin_Running_Data_JulAug_2026.xlsx"
 COROS_OLD_XLSX = RAW / "COROS_Running_26Agu6Sep2026.xlsx"
 COROS_NEW_XLSX = RAW / "COROS_Running_10-14Sep2026.xlsx"
+HIKING_XLSX = RAW / "Garmin_Hiking_TrailRunning.xlsx"
 
 MI_TO_KM = 1.609344
 FT_TO_M = 0.3048
@@ -37,8 +38,23 @@ def parse_duration(value) -> int | None:
         return None
     if isinstance(value, timedelta):
         return int(round(value.total_seconds()))
+    if isinstance(value, dt_time):
+        return int(
+            round(
+                value.hour * 3600
+                + value.minute * 60
+                + value.second
+                + value.microsecond / 1e6
+            )
+        )
+    # pandas Timedelta / numpy scalars
+    if hasattr(value, "total_seconds") and not isinstance(value, (int, float)):
+        try:
+            return int(round(value.total_seconds()))
+        except Exception:
+            pass
     text = str(value).strip()
-    if not text or text in {"--", "nan", "NaT"}:
+    if not text or text in {"--", "nan", "NaT", "—", "-", "0"}:
         return None
     if text.startswith("0 days "):
         text = text[len("0 days ") :]
@@ -50,13 +66,28 @@ def parse_duration(value) -> int | None:
     if re.fullmatch(r"\d+:\d{2}:\d{2}(?:\.\d+)?", text):
         hours, minutes, seconds = text.split(":")
         return int(round(int(hours) * 3600 + int(minutes) * 60 + float(seconds)))
-    raise ValueError(f"Format waktu tidak dikenal: {value!r}")
+    # Angka mentah / pace "0 /mi" dll. diabaikan.
+    return None
 
 
 def parse_pace_per_unit(value) -> float | None:
     """Pace sebagai detik per unit jarak (mil atau km)."""
+    if value is None:
+        return None
+    try:
+        if isinstance(value, float) and math.isnan(value):
+            return None
+    except TypeError:
+        pass
+    text = str(value).strip().lower()
+    if not text or text in {"--", "nan", "nat", "—", "-", "0", "0 /mi", "0/mi"}:
+        return None
+    if text.endswith("/mi") or text.endswith("/km"):
+        text = text.split()[0]
+        if text in {"0", "0.0"}:
+            return None
     sec = parse_duration(value)
-    return float(sec) if sec is not None else None
+    return float(sec) if sec is not None and sec > 0 else None
 
 
 def to_iso_date(value) -> str:
@@ -279,6 +310,148 @@ def load_analysis_laps_by_date() -> dict[str, list[dict]]:
     return by_date
 
 
+def load_hiking_laps() -> dict[tuple[str, str], list[dict]]:
+    """Lap hiking/trail diindeks (tanggal, nama)."""
+    if not HIKING_XLSX.exists():
+        return {}
+    laps_df = read_sheet_with_header(HIKING_XLSX, "Detail Lap", "Tanggal")
+    laps_df = laps_df.copy()
+    laps_df["Tanggal"] = laps_df["Tanggal"].ffill()
+    laps_df["Nama Aktivitas"] = laps_df["Nama Aktivitas"].ffill()
+    by_key: dict[tuple[str, str], list[dict]] = {}
+    for _, lap in laps_df.iterrows():
+        date = to_iso_date(lap["Tanggal"])
+        name = str(lap.get("Nama Aktivitas") or "").strip()
+        label = str(lap.get("Lap/Interval") or "").strip()
+        if not date or not name or label.lower() == "summary":
+            continue
+        lap_index = int_or_none(label)
+        if lap_index is None:
+            continue
+        lap_distance = round(num(lap.get("Jarak (km)")) or 0, 3)
+        lap_duration = parse_duration(lap.get("Waktu")) or 0
+        lap_pace = parse_pace_per_unit(lap.get("Avg Moving Pace")) or parse_pace_per_unit(
+            lap.get("Avg Pace (asli)")
+        )
+        if lap_pace is None and lap_distance > 0:
+            lap_pace = lap_duration / lap_distance
+        start_elev = 0
+        by_key.setdefault((date, name), []).append(
+            {
+                "index": lap_index,
+                "distanceKm": lap_distance,
+                "durationSec": lap_duration,
+                "paceSecPerKm": round(lap_pace or 0),
+                "avgHr": int_or_none(lap.get("Avg HR")) or 0,
+                "cadence": int_or_none(lap.get("Cadence")) or 0,
+                "elevGainM": int_or_none(lap.get("Ascent (m)")) or 0,
+                "elevLossM": int_or_none(lap.get("Descent (m)")) or 0,
+                "elevationM": 0,
+            }
+        )
+    for key, laps in by_key.items():
+        by_key[key] = build_elevation_profile(laps, 0 if laps else None)
+    return by_key
+
+
+def load_hiking_hr_zones() -> dict[tuple[str, str], list[int]]:
+    if not HIKING_XLSX.exists():
+        return {}
+    zones_df = read_sheet_with_header(HIKING_XLSX, "Time in Zones", "Tanggal")
+    by_key: dict[tuple[str, str], list[int]] = {}
+    for _, row in zones_df.iterrows():
+        date = to_iso_date(row["Tanggal"])
+        name = str(row.get("Nama Aktivitas") or "").strip()
+        if not date or not name:
+            continue
+        # Array UI: zona 1 (termudah) → zona 5.
+        hr_zones = [
+            parse_duration(row.get("Z1 waktu")) or 0,
+            parse_duration(row.get("Z2 waktu")) or 0,
+            parse_duration(row.get("Z3 waktu")) or 0,
+            parse_duration(row.get("Z4 waktu")) or 0,
+            parse_duration(row.get("Z5 waktu")) or 0,
+        ]
+        if sum(hr_zones) == 0:
+            continue
+        by_key[(date, name)] = hr_zones
+    return by_key
+
+
+def import_hiking_trail() -> list[dict]:
+    """Hiking & trail Garmin (Jan 2025–Sep 2026). Skip Wonosobo — data sah dari COROS."""
+    if not HIKING_XLSX.exists():
+        return []
+    summary = read_sheet_with_header(HIKING_XLSX, "Ringkasan", "No")
+    summary = summary[pd.to_numeric(summary["No"], errors="coerce").notna()].copy()
+    laps_by = load_hiking_laps()
+    zones_by = load_hiking_hr_zones()
+    sessions: list[dict] = []
+    for _, row in summary.iterrows():
+        date = to_iso_date(row["Tanggal"])
+        name = str(row["Nama Aktivitas"]).strip()
+        tipe = str(row["Tipe"]).strip()
+        no = int(row["No"])
+        if "wonosobo" in name.lower():
+            continue
+        distance_km = round(float(row["Jarak (km)"]), 2)
+        duration_sec = parse_duration(row["Waktu"]) or 0
+        pace_sec = parse_pace_per_unit(row.get("Avg Moving Pace /km"))
+        if pace_sec is None and distance_km and duration_sec:
+            pace_sec = duration_sec / distance_km
+        key = (date, name)
+        # Beberapa sesi sama nama di hari yang sama — ambil lap dengan jarak mendekati.
+        laps = laps_by.get(key, [])
+        if not laps:
+            # Fallback: cocokkan tanggal saja kalau hanya satu blok.
+            same_day = [v for (d, _n), v in laps_by.items() if d == date]
+            if len(same_day) == 1:
+                laps = same_day[0]
+        hr_zones = zones_by.get(key, [0, 0, 0, 0, 0])
+        slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+        rpe = parse_rpe(row.get("Perceived Effort"))
+        feel = str(row.get("Self Eval") or "").strip()
+        notes_parts = [f"Sumber: Garmin · {tipe}"]
+        if feel and feel not in {"nan", "None", "--"}:
+            notes_parts.append(f"Feeling: {feel}")
+        if rpe is not None:
+            notes_parts.append(f"RPE {rpe}/10")
+        sessions.append(
+            {
+                "id": f"garmin-ht-{date}-{no}-{slug}",
+                "date": date,
+                "type": map_workout_type(tipe),
+                "title": name,
+                "route": name,
+                "distanceKm": distance_km,
+                "durationSec": duration_sec,
+                "paceSecPerKm": round(pace_sec or 0),
+                "elevGainM": int_or_none(row.get("Ascent (m)")) or 0,
+                "elevLossM": int_or_none(row.get("Descent (m)")) or 0,
+                "avgHr": int_or_none(row.get("Avg HR")) or 0,
+                "maxHr": int_or_none(row.get("Max HR")),
+                "cadence": int_or_none(row.get("Avg Cadence")) or 0,
+                "strideM": None,
+                "calories": int_or_none(row.get("Kalori")) or 0,
+                "rpe": rpe,
+                "weather": {
+                    "tempC": (
+                        None
+                        if num(row.get("Avg Temp (°C)")) is None
+                        else round(float(row["Avg Temp (°C)"]), 1)
+                    ),
+                    "humidity": None,
+                    "condition": None,
+                },
+                "laps": laps,
+                "hrZones": hr_zones,
+                "notes": " · ".join(notes_parts),
+                "source": "garmin",
+            }
+        )
+    return sessions
+
+
 def import_sessions() -> list[dict]:
     summary = read_sheet_with_header(ANALYSIS_XLSX, "Komparatif", "No")
     summary = summary[pd.to_numeric(summary["No"], errors="coerce").notna()].copy()
@@ -422,10 +595,19 @@ def main() -> None:
     if not ANALYSIS_XLSX.exists():
         raise SystemExit(f"Berkas analisis belum ada: {ANALYSIS_XLSX}")
 
-    sessions = import_sessions()
-    OUT.write_text(emit_ts(sessions))
-    print(f"Menulis {len(sessions)} sesi → {OUT.relative_to(ROOT)}")
-    for item in sorted(sessions, key=lambda s: s["date"]):
+    # Road/analisis + arsip hiking/trail. Dedup by id (tidak overlap path).
+    sessions = import_sessions() + import_hiking_trail()
+    seen: set[str] = set()
+    unique: list[dict] = []
+    for item in sessions:
+        if item["id"] in seen:
+            continue
+        seen.add(item["id"])
+        unique.append(item)
+
+    OUT.write_text(emit_ts(unique))
+    print(f"Menulis {len(unique)} sesi → {OUT.relative_to(ROOT)}")
+    for item in sorted(unique, key=lambda s: s["date"]):
         laps_n = len(item["laps"])
         print(
             f"  {item['date']}  {item['source']:6}  {item['type']:6}  "
