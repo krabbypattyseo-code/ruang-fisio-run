@@ -27,9 +27,13 @@ await page.goto(`${base}/`, { waitUntil: "networkidle" });
 await page.waitForSelector("text=Welcome to My Monitoring Running Dashboard");
 const hasDashboardCta = await page.getByRole("link", { name: "Dashboard Monitoring" }).isVisible();
 const hasEventCta = await page.getByRole("link", { name: "Event Joined" }).isVisible();
+const hasGearCta = await page.getByRole("link", { name: "Gear", exact: true }).isVisible();
 const hasIg = await page.getByRole("link", { name: "Instagram" }).isVisible();
 const hasTt = await page.getByRole("link", { name: "TikTok" }).isVisible();
-check("Home: profil, welcome, CTA, dan sosial tampil", hasDashboardCta && hasEventCta && hasIg && hasTt);
+check(
+  "Home: profil, welcome, CTA, dan sosial tampil",
+  hasDashboardCta && hasEventCta && hasGearCta && hasIg && hasTt,
+);
 const homeBottomNav = await page.getByRole("navigation", { name: "Navigasi utama" }).count();
 check("Home: tanpa bottom nav", homeBottomNav === 0);
 
@@ -112,6 +116,20 @@ await page.waitForURL(/\/event\/gtr-ultra-30k\/?$/);
 await page.waitForSelector("text=Skor kesiapan");
 const scoreText = await page.locator("text=/^\\d+\\/100$/").first().innerText();
 check("Event Joined: skor kesiapan terhitung", /^\d+\/100$/.test(scoreText), scoreText);
+
+// 4c. Gear: daftar + detail sepatu Hoka.
+await page.goto(`${base}/`, { waitUntil: "networkidle" });
+await page.getByRole("link", { name: "Gear", exact: true }).click();
+await page.waitForURL(/\/gear\/?$/);
+await page.waitForSelector("text=Hoka Mach 2 Skyward Blue");
+check("Gear: kartu sepatu tampil", await page.getByText("Currently Use").first().isVisible());
+await page.getByRole("link", { name: "Details" }).first().click();
+await page.waitForURL(/\/gear\/hoka-mach-2-skyward-blue/);
+check(
+  "Gear detail: nama & status",
+  (await page.getByRole("heading", { name: "Hoka Mach 2 Skyward Blue" }).isVisible()) &&
+    (await page.getByText("Currently Use").first().isVisible()),
+);
 
 // 6. Proyeksi: kurva vs cut-off dan pergantian skenario.
 await page.goto(`${base}/event/gtr-ultra-30k/proyeksi`, { waitUntil: "networkidle" });

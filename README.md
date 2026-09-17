@@ -71,7 +71,9 @@ tetap `null` — tidak digenerate.
 Untuk menambah workout baru: ganti/tambah file Excel di `data/raw/`, sesuaikan path di
 `scripts/import-sessions.py` bila nama file berubah, lalu jalankan ulang impor.
 
-Parameter lomba GTR Ultra 30K (Gunung Gajah, Semarang) ada di `src/data/event.ts`.
+Inventori gear (sepatu, jam, vest) ada di `src/data/gear.ts` + foto di `public/gear/`.
+
+Parameter lomba GTR Ultra 30K (Kayuwangi, Banyubiru, Semarang) ada di `src/data/event.ts`.
 
 
 ## Layout

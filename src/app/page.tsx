@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Home — Ruang Fisio Run",
   description:
-    "Welcome to my monitoring running dashboard. Buka dashboard latihan atau event yang sedang diikuti.",
+    "Welcome to my monitoring running dashboard. Buka dashboard latihan, event, atau inventori gear.",
 };
 
 function InstagramIcon({ className }: { className?: string }) {
@@ -84,6 +84,15 @@ export default function HomePage() {
             )}
           >
             Event Joined
+          </Link>
+          <Link
+            href="/gear"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-12 rounded-4xl border-[var(--brand-teal)]/25 bg-white/80 text-base text-[var(--brand-teal)] hover:bg-white",
+            )}
+          >
+            Gear
           </Link>
         </div>
 

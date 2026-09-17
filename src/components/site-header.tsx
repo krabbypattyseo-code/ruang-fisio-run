@@ -35,12 +35,14 @@ const navTree: NavNode[] = [
       },
     ],
   },
+  { href: "/gear", label: "Gear" },
 ];
 
 function pathMatches(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   if (href === "/dashboard") return pathname === "/dashboard" || pathname.startsWith("/sesi");
   if (href === "/event") return pathname === "/event" || pathname.startsWith("/event/");
+  if (href === "/gear") return pathname === "/gear" || pathname.startsWith("/gear/");
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -59,7 +61,8 @@ function NavBranch({
   const branchActive = pathMatches(pathname, node.href);
   const selfActive =
     pathname === node.href ||
-    (node.href === "/dashboard" && (pathname === "/dashboard" || pathname.startsWith("/sesi")));
+    (node.href === "/dashboard" && (pathname === "/dashboard" || pathname.startsWith("/sesi"))) ||
+    (node.href === "/gear" && (pathname === "/gear" || pathname.startsWith("/gear/")));
   const [open, setOpen] = useState(branchActive);
 
   return (
