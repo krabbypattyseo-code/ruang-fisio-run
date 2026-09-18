@@ -54,14 +54,22 @@ export default async function DashboardPage({
   const splits = splitByType(filtered);
   const status = readiness();
 
-  // Pace dan cadence hiking beda kelas dari lari; kalau dicampur, skala grafik
-  // tren jadi tidak terbaca. Hiking baru ikut kalau memang hanya itu yang tersisa.
+  // Pace dan cadence hiking/trail beda kelas dari road; jangan campur.
+  // Cadence: road saja. Pace tren: road + trail (tanpa hiking).
   const running = filtered.filter((session) => session.type !== "hiking");
+  const roadOnly = filtered.filter((session) => session.type === "road");
   const hikingExcluded = running.length >= 2 && running.length < filtered.length;
   const trendSource = running.length >= 2 ? running : filtered;
+  const cadenceSource = roadOnly.length >= 2 ? roadOnly : trendSource;
   const trend = trendSeries(trendSource);
+  const cadenceTrend = trendSeries(cadenceSource);
   const runSummary = summarize(trendSource);
+  const cadenceSummary = summarize(cadenceSource);
   const movingLabel = hikingExcluded ? "saat berlari" : "pada rentang ini";
+  const cadenceLabel =
+    cadenceSource === roadOnly && roadOnly.length >= 2
+      ? "saat road running"
+      : movingLabel;
 
   const weeks = weekly.length || 1;
 
@@ -207,15 +215,16 @@ export default async function DashboardPage({
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm">
               <Footprints className="size-4" style={{ color: metricColor.cadence }} />
-              Cadence
+              Cadence road
             </CardTitle>
             <CardDescription>
-              Rata-rata {formatInteger(runSummary.cadence)} spm {movingLabel}.
+              Rata-rata {formatInteger(cadenceSummary.cadence)} spm {cadenceLabel}. Trail/hiking
+              tidak dicampur karena cadence-nya tercemar porsi jalan kaki.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <MetricTrendChart
-              data={trend}
+              data={cadenceTrend}
               metric="cadence"
               color={metricColor.cadence}
               unit="Cadence"

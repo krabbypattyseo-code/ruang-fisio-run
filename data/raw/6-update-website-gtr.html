@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Update Website GTR Ultra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --rf-teal:#005A64; --rf-cyan:#139CAB;
+  --ink:#222222; --ink-2:#4A4A4A; --ink-3:#77817F;
+  --ground:#EEF2F2; --surface:#FAFBFB; --surface-2:#F0F4F4;
+  --rule:#D9E2E2; --rule-2:#BECACA;
+  --ok:#0F7A5A; --ok-soft:#0F7A5A1A;
+  --crit:#B42318; --crit-soft:#B423181A;
+  --warn:#B45309; --warn-soft:#B453091A;
+  --info:#4338CA; --info-soft:#4338CA17;
+  --shadow:0 1px 3px rgba(0,60,65,.07);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --rf-teal:#0E8A96; --rf-cyan:#23A4B2;
+  --ink:#E8EDEC; --ink-2:#A4AFAD; --ink-3:#77827F;
+  --ground:#0B1214; --surface:#121A1C; --surface-2:#182224;
+  --rule:#26312F; --rule-2:#38423F;
+  --ok:#2FA57E; --ok-soft:#2FA57E22;
+  --crit:#F0705F; --crit-soft:#F0705F22;
+  --warn:#E0913F; --warn-soft:#E0913F22;
+  --info:#8A8AEA; --info-soft:#8A8AEA20;
+  --shadow:0 1px 3px rgba(0,0,0,.34);
+}}
+:root[data-theme="dark"]{
+  --rf-teal:#0E8A96; --rf-cyan:#23A4B2;
+  --ink:#E8EDEC; --ink-2:#A4AFAD; --ink-3:#77827F;
+  --ground:#0B1214; --surface:#121A1C; --surface-2:#182224;
+  --rule:#26312F; --rule-2:#38423F;
+  --ok:#2FA57E; --ok-soft:#2FA57E22;
+  --crit:#F0705F; --crit-soft:#F0705F22;
+  --warn:#E0913F; --warn-soft:#E0913F22;
+  --info:#8A8AEA; --info-soft:#8A8AEA20;
+  --shadow:0 1px 3px rgba(0,0,0,.34);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;font-size:14.5px;line-height:1.6;
+  -webkit-font-smoothing:antialiased}
+.mono,code{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+code{font-size:.9em;background:var(--surface-2);border:1px solid var(--rule);padding:1px 5px;border-radius:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px 72px}
+
+header{padding:44px 0 22px;border-bottom:3px solid var(--rf-teal)}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--rf-cyan);margin:0 0 10px;font-weight:600}
+h1{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.03em;margin:0;line-height:1.06}
+.sub{margin:14px 0 0;max-width:66ch;color:var(--ink-2);font-size:15.5px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:16px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3)}
+
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-top:none;box-shadow:var(--shadow)}
+.st{background:var(--surface);padding:15px 16px}
+.st .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+.st .v{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.st .v small{font-size:.44em;font-weight:600;color:var(--ink-3)}
+
+section{padding-top:46px}
+.sh{display:flex;align-items:baseline;gap:13px;margin-bottom:6px}
+.sn{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--rf-cyan);flex:none}
+.sh h2{font-size:clamp(19px,2.7vw,24px);font-weight:700;letter-spacing:-.02em;margin:0}
+.lede{margin:0 0 20px;color:var(--ink-2);max-width:70ch;font-size:14.5px}
+
+.callout{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--rf-cyan);
+  border-radius:3px;padding:17px 21px;box-shadow:var(--shadow)}
+.callout.crit{border-left-color:var(--crit)}
+.callout .lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:600;display:block;margin-bottom:7px;color:var(--rf-cyan)}
+.callout.crit .lab{color:var(--crit)}
+.callout p{margin:0 0 9px;font-size:14px;color:var(--ink-2)}
+.callout p:last-child{margin-bottom:0}
+.callout b{color:var(--ink);font-weight:600}
+
+/* issue cards */
+.issues{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  border-radius:4px;overflow:hidden;box-shadow:var(--shadow)}
+.iss{background:var(--surface);padding:17px 20px;display:grid;grid-template-columns:120px 1fr;gap:6px 22px}
+.iss .side{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.id{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--ink-3)}
+.pri{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;
+  padding:3px 7px;border-radius:2px;font-weight:700}
+.p-c{color:var(--crit);background:var(--crit-soft)}
+.p-w{color:var(--warn);background:var(--warn-soft)}
+.p-i{color:var(--info);background:var(--info-soft)}
+.p-m{color:var(--ink-3);background:var(--surface-2)}
+.page{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--rf-cyan)}
+.iss h3{margin:0 0 8px;font-size:15px;font-weight:700;letter-spacing:-.01em}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 10px}
+.ba div{background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:8px 11px;font-size:13px}
+.ba .t{display:block;font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.09em;
+  text-transform:uppercase;font-weight:600;margin-bottom:3px}
+.ba .now .t{color:var(--crit)}
+.ba .fix .t{color:var(--ok)}
+.iss p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.iss p+p{margin-top:6px}
+.iss b{color:var(--ink);font-weight:600}
+
+.scroll{overflow-x:auto;border:1px solid var(--rule);border-radius:4px;background:var(--surface);
+  box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:13px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--rule-2)}
+tbody tr:last-child td{border-bottom:none}
+td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.hl td{background:var(--ok-soft)}
+tr.race td{background:var(--rf-teal);color:#fff;font-weight:600}
+.y{color:var(--ok);font-weight:700}
+.x{color:var(--crit);font-weight:700}
+.q{color:var(--warn);font-weight:700}
+
+.sub-h{font-size:16px;font-weight:700;margin:30px 0 10px;letter-spacing:-.01em}
+.note{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);margin:9px 0 0;line-height:1.65}
+footer{margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);line-height:1.8}
+
+@media (max-width:820px){
+  .strip{grid-template-columns:repeat(2,1fr)}
+  .iss{grid-template-columns:1fr}
+  .iss .side{flex-direction:row;flex-wrap:wrap}
+  .ba{grid-template-columns:1fr}
+}
+@media print{body{background:#fff}.scroll{overflow:visible}.iss{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Change request · ruang-fisio-run.vercel.app · 18 September 2026</p>
+  <h1>Update Website<br>GTR Ultra 30K</h1>
+  <p class="sub">Audit seluruh halaman terhadap race schedule dan mandatory gear resmi, plus koreksi perhitungan yang membuat website memproyeksikan kamu gagal cut-off. Lomba 9 hari lagi — urutan di bawah sudah sesuai prioritas.</p>
+  <div class="meta">
+    <span>6 halaman diaudit</span>
+    <span>/ · /dashboard · /event · /event/gtr-ultra-30k (+ proyeksi, rencana, strategi) · /gear</span>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="st"><div class="k">Kritis</div><div class="v" style="color:var(--crit)">7</div></div>
+  <div class="st"><div class="k">Penting</div><div class="v" style="color:var(--warn)">9</div></div>
+  <div class="st"><div class="k">Tambahan resmi</div><div class="v" style="color:var(--info)">5</div></div>
+  <div class="st"><div class="k">Minor</div><div class="v" style="color:var(--ink-3)">2</div></div>
+</div>
+
+<!-- 00 -->
+<section>
+  <div class="sh"><span class="sn">00</span><h2>Tiga hal yang harus beres duluan</h2></div>
+  <div class="callout crit">
+    <span class="lab">Website saat ini memberi pesan yang saling bertentangan</span>
+    <p><b>1. Jam start salah.</b> Semua halaman event menulis <b>start 05:00</b>. Jadwal resmi: flag off 30K jam <b>03.00 WIB</b> — 05.00 adalah jam start 12K dan 7K. Kesalahan ini merembet ke jam dinding di Proyeksi dan seluruh jadwal pagi di Strategi.</p>
+    <p><b>2. Proyeksi 10:30 salah metode.</b> Rumus Riegel dihitung dari <b>waktu total</b> sesi 11 April (8:22:12) — yang di dalamnya ada <b>2 jam 1 menit berhenti</b>. Website lalu memperbesarnya 25%, sehingga diam-diam mengasumsikan kamu berhenti ~2,5 jam di lomba. Akibatnya dua dari tiga skenario melewati cut-off, finis diproyeksikan jam 15:30 — padahal halaman yang sama menulis kesiapan <b>86/100 · Siap</b>. Dengan metode yang benar, target <b>8:21</b>.</p>
+    <p><b>3. Rencana latihan dijadwalkan setelah lomba.</b> Halaman Rencana menaruh P1 mulai 21 Sep sampai P8 “pekan lomba” mulai <b>9 November</b>. P2 dimulai 28 September — sehari setelah lomba. Perlu diganti dengan rencana 9 hari menuju 27 September.</p>
+  </div>
+</section>
+
+<!-- 01 -->
+<section>
+  <div class="sh"><span class="sn">01</span><h2>Kritis — salah dan menyesatkan</h2></div>
+  <p class="lede">Harus diperbaiki sebelum 27 September. Semuanya bisa membuatmu mengambil keputusan yang keliru di hari lomba.</p>
+
+  <div class="issues">
+
+    <article class="iss">
+      <div class="side"><span class="id">K1</span><span class="pri p-c">Kritis</span><span class="page">semua halaman event</span></div>
+      <div>
+        <h3>Jam start 30K</h3>
+        <div class="ba">
+          <div class="now"><span class="t">Sekarang</span>27 September 2026, start 05:00</div>
+          <div class="fix"><span class="t">Seharusnya</span>Minggu, 27 September 2026 · flag off <b>03.00 WIB</b></div>
+        </div>
+        <p>Sumber: race schedule resmi. 05.00 adalah flag off 12K &amp; 7K.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">K2</span><span class="pri p-c">Kritis</span><span class="page">/proyeksi · /kesiapan · /strategi</span></div>
+      <div>
+        <h3>Proyeksi waktu dihitung dari waktu total, bukan waktu bergerak</h3>
+        <div class="ba">
+          <div class="now"><span class="t">Sekarang</span>Agresif 9:52 · Target <b>10:30</b> · Aman 11:46</div>
+          <div class="fix"><span class="t">Seharusnya</span>Riegel pada waktu bergerak 6:20:45 → <b>7:58 bergerak</b>, lalu tambah waktu berhenti secara eksplisit</div>
+        </div>
+        <p>Website memakai faktor 0,9 km per 100 m tanjakan — itu tetap boleh dipakai. Yang salah hanya <b>masukan waktunya</b>. Dengan faktor yang sama:</p>
+        <p><code>380,73 mnt × (46,2 ÷ 37,29)^1,06 = 477,8 mnt = 7:57:47</code> waktu bergerak.</p>
+        <p>Skenario pengganti: <b>Disiplin 8:21</b> (berhenti 23 mnt) · <b>Sedang 8:58</b> (60 mnt) · <b>Seperti 11 April 9:59</b> (121 mnt). Ketiganya di dalam COT — beda dengan versi sekarang yang dua di antaranya gagal.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">K3</span><span class="pri p-c">Kritis</span><span class="page">/rencana</span></div>
+      <div>
+        <h3>Rencana 8 pekan terjadwal setelah tanggal lomba</h3>
+        <div class="ba">
+          <div class="now"><span class="t">Sekarang</span>P1 21 Sep → P8 “pekan lomba” 9 Nov</div>
+          <div class="fix"><span class="t">Seharusnya</span>Rencana 9 hari, 18 → 27 September (lihat bagian 05)</div>
+        </div>
+        <p>Teks di atasnya juga keliru: <i>“Sisa 2 pekan … Target realistis 9:00–9:30”</i>. Sisa waktu 9 hari, dan dengan metode proyeksi yang benar target tetap 8:30.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">K4</span><span class="pri p-c">Kritis</span><span class="page">/kesiapan · /proyeksi</span></div>
+      <div>
+        <h3>Format durasi negatif rusak</h3>
+        <div class="ba">
+          <div class="now"><span class="t">Sekarang</span>“masih -1:-30 jam di bawah cut-off” · “-1:-4” · “-2:-46”</div>
+          <div class="fix"><span class="t">Seharusnya</span>“+1:39 sebelum cut-off” atau “0:30 lewat cut-off”</div>
+        </div>
+        <p>Dua masalah sekaligus: tanda minus ikut tercetak di bagian menit, dan kalimatnya terbalik — 10:30 berarti <b>30 menit lewat</b> cut-off, bukan di bawahnya. Pisahkan tanda dari nilai absolut, lalu pilih kata “sebelum” atau “lewat” berdasarkan tandanya.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">K5</span><span class="pri p-c">Kritis</span><span class="page">semua halaman event</span></div>
+      <div>
+        <h3>Hitung mundur beku di 13 hari</h3>
+        <div class="ba">
+          <div class="now"><span class="t">Sekarang</span>“13 hari lagi” (dibuka 18 Sep)</div>
+          <div class="fix"><span class="t">Seharusnya</span>“9 hari lagi” — dan terus berkurang tiap hari</div>
+        </div>
+        <p>Angkanya dihitung di browser, tapi terhadap tanggal acuan yang tetap. 14 → 27 September persis 13 hari, jadi kemungkinan besar acuannya tanggal sesi terakhir. Ganti dengan <code>new Date()</code> di zona waktu Asia/Jakarta.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">K6</span><span class="pri p-c">Kritis</span><span class="page">/kesiapan · /rencana</span></div>
+      <div>
+        <h3>Perlengkapan wajib: 7 item karangan, bukan 10 item resmi</h3>
+        <div class="ba">
+          <div class="now"><span class="t">Sekarang</span>7 item, termasuk “jas hujan ringan” dan “P3K”</div>
+          <div class="fix"><span class="t">Seharusnya</span>10 item resmi panitia — semuanya wajib untuk 30K (bagian 04)</div>
+        </div>
+        <p>Yang belum ada sama sekali: <b>softflask, smartwatch/aplikasi GPX, uang tunai</b>. Yang salah istilah: resmi <b>“personal medications”</b> (obat pribadi), bukan P3K; dan resmi <b>“windproof jacket”</b>, bukan jas hujan — jas hujan tipis belum tentu memenuhi syarat tahan angin.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">K7</span><span class="pri p-c">Kritis</span><span class="page">/strategi</span></div>
+      <div>
+        <h3>Target cairan 8,9 liter — terlalu banyak</h3>
+        <div class="ba">
+          <div class="now"><span class="t">Sekarang</span>840 ml/jam · sweat rate 1,1 L/jam · total 8,9 L</div>
+          <div class="fix"><span class="t">Seharusnya</span>400–600 ml/jam · total ±3,5–5 L · minum mengikuti haus</div>
+        </div>
+        <p>Tiga masalah bertumpuk. Sweat rate diambil dari sesi Jakarta 31 °C, padahal lomba di dataran tinggi dan start <b>tengah malam</b>. Angkanya dikalikan durasi 10:30 yang sudah salah. Dan targetnya mengganti hampir seluruh keringat.</p>
+        <p>Burke &amp; Deakin, <i>Clinical Sports Nutrition</i>: <i>“it is also not apparent that there is an absolute need to replace all fluid losses”</i>; penurunan berat badan hingga 3% bisa ditoleransi di lingkungan sejuk, dan anjurannya menahan penurunan di 1–2%. Buku yang sama memperingatkan <b>hiponatremia akibat asupan cairan berlebih</b> pada latihan panjang.</p>
+        <p>Ada juga kontradiksi internal: segmen ke WS 1 butuh 1.600 ml, tapi isi vest yang ditulis hanya dua botol 500 ml.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- 02 -->
+<section>
+  <div class="sh"><span class="sn">02</span><h2>Penting — tidak akurat atau belum terverifikasi</h2></div>
+  <div class="issues">
+
+    <article class="iss">
+      <div class="side"><span class="id">P1</span><span class="pri p-w">Penting</span><span class="page">/strategi</span></div>
+      <div>
+        <h3>Detail rute ditulis seolah fakta</h3>
+        <p>Bagian <i>Aturan pacing</i> menyebut <i>“Km 7,5–14: tanjakan 860 m”</i>, <i>“Km 21,5–27: turunan teknis”</i>, <i>“Km 27–30: jalan kampung menanjak ringan”</i>. Panitia belum merilis profil atau GPX — angka-angka ini tidak punya sumber. <b>Hapus</b>, atau beri label jelas <i>“asumsi, menunggu GPX resmi”</i>.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">P2</span><span class="pri p-w">Penting</span><span class="page">/kesiapan · /proyeksi</span></div>
+      <div>
+        <h3>“Cut-off” per water station terlihat seperti resmi</h3>
+        <p>Tabel <i>Pos dan batas waktu</i> dan garis <i>“Cut-off panitia”</i> di grafik memakai 1:50 · 3:50 · 5:50 · 7:50 · 9:10. Itu <b>batas mundur pribadi</b> dari analisis kita, bukan cut-off panitia. Panitia hanya merilis satu: <b>COT 30K 13.00 WIB</b>. Posisi WS di km 6/12/18/24/28 dan kolom “Naik” 360 m per segmen juga masih perkiraan. Ganti label jadi <i>“Batas mundur pribadi (estimasi)”</i>.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">P3</span><span class="pri p-w">Penting</span><span class="page">/kesiapan</span></div>
+      <div>
+        <h3>Label “12 bulan terakhir” tidak sesuai datanya</h3>
+        <p>Elevasi <b>1.488 m</b> dan waktu di kaki <b>572 menit</b> sama-sama dari Kerinci <b>25 Januari 2025</b> — sekitar 20 bulan lalu. <i>“24 sesi non-road dalam 12 bulan”</i> juga sebenarnya jumlah sepanjang riwayat; dalam 12 bulan terakhir hanya 9.</p>
+        <p>Pilih salah satu: ganti label jadi <i>“terbaik sepanjang riwayat”</i>, atau terapkan filternya sungguhan. Kalau filternya diterapkan, elevasi terbaik turun ke <b>1.238 m</b> (17 Jan 2026) dan skor ikut turun — itu pilihan yang lebih jujur, tapi keputusannya di kamu.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">P4</span><span class="pri p-w">Penting</span><span class="page">/strategi</span></div>
+      <div>
+        <h3>29 gel dibawa dari garis start</h3>
+        <p><i>“15 gel di saku depan, 14 gel di kantong belakang”</i> — dihitung dari durasi 10:30 yang salah, dan mengabaikan makanan di WS serta <i>snack</i> yang memang item wajib. Cukup bawa untuk <b>dua segmen</b> (±8–10 gel), isi ulang di WS.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">P5</span><span class="pri p-w">Penting</span><span class="page">/proyeksi · /strategi</span></div>
+      <div>
+        <h3>Durasi segmen WS 2 tidak konsisten</h3>
+        <p>Kolom <i>Waktu segmen</i> WS 2 tertulis <b>1:00</b>, padahal total kumulatif melompat dari 1:54 ke 3:54 (<b>2:00</b>). Di halaman Strategi, kebutuhan cairan segmen itu ikut dihitung dari angka yang salah.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">P6</span><span class="pri p-w">Penting</span><span class="page">/proyeksi</span></div>
+      <div>
+        <h3>Dua kalimat penjelasan yang keliru</h3>
+        <p><i>“eksponen Riegel dinaikkan dari 1,06 ke 1,06”</i> — nilainya tidak berubah; template teksnya rusak. <i>“sesi terbaik enam pekan terakhir sebagai acuan”</i> — padahal acuannya 11 April, lima bulan lalu. Samakan teks dengan logika yang benar-benar dipakai.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">P7</span><span class="pri p-w">Penting</span><span class="page">/kesiapan · /rencana</span></div>
+      <div>
+        <h3>Sisa kalimat dari rencana 8 minggu</h3>
+        <p><i>“Sisa 2 pekan efektif sebelum taper dimulai”</i>, <i>“uji vest &amp; nutrisi mulai minggu 5”</i>, <i>“Pakai sepatu, vest, dan nutrisi lomba mulai minggu 5”</i>. Dengan 9 hari tersisa, taper dimulai sekarang dan semua uji perlengkapan terjadi di satu sesi terakhir — Sabtu 19 September.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">P8</span><span class="pri p-w">Penting</span><span class="page">/strategi</span></div>
+      <div>
+        <h3>“Titipkan drop bag” belum terverifikasi</h3>
+        <p>Race schedule dan mandatory gear resmi tidak menyebut layanan drop bag. Tanyakan di technical meeting (Sabtu 26 Sep, 15.00) sebelum dimasukkan ke rencana.</p>
+      </div>
+    </article>
+
+    <article class="iss">
+      <div class="side"><span class="id">P9</span><span class="pri p-w">Penting</span><span class="page">/gear</span></div>
+      <div>
+        <h3>Daftar gear belum menutup perlengkapan wajib</h3>
+        <p>Halaman Gear tidak punya <b>headlamp</b>, <b>softflask</b>, <b>peluit</b>, dan <b>windproof jacket</b>. Satu-satunya sepatu adalah <b>Hoka Mach 2</b> — lini sepatu jalanan Hoka, bukan trail. Satu-satunya vest adalah <b>“BOEVBOO Life Vest Travel”</b>; dari namanya ini tampak seperti rompi perjalanan, bukan running vest hidrasi. Kalau memang begitu, kamu belum punya dua barang wajib. Cek detailnya di bagian 04.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- 03 -->
+<section>
+  <div class="sh"><span class="sn">03</span><h2>Tambahan dari informasi resmi</h2></div>
+  <div class="issues">
+    <article class="iss">
+      <div class="side"><span class="id">T1</span><span class="pri p-i">Tambah</span><span class="page">/event/gtr-ultra-30k</span></div>
+      <div><h3>Race schedule lengkap</h3><p>Belum ada di website. Konten siap pakai di bagian 04.</p></div>
+    </article>
+    <article class="iss">
+      <div class="side"><span class="id">T2</span><span class="pri p-i">Tambah</span><span class="page">header event</span></div>
+      <div><h3>COT dalam jam dinding</h3><p>Sekarang hanya “COT 10:00 jam”. Tambahkan <b>“13.00 WIB”</b> — lebih berguna saat melihat jam di lintasan.</p></div>
+    </article>
+    <article class="iss">
+      <div class="side"><span class="id">T3</span><span class="pri p-i">Tambah</span><span class="page">/strategi</span></div>
+      <div><h3>Start malam hari</h3><p>Start 03.00 berarti sekitar <b>2,5 jam pertama dalam gelap</b> — matahari terbit sekitar 05.30. Tidak disebut di mana pun. Pengaruhnya: pace di tanjakan awal lebih lambat, headlamp jadi kritis, dan WS 1 dicapai sebelum terang.</p></div>
+    </article>
+    <article class="iss">
+      <div class="side"><span class="id">T4</span><span class="pri p-i">Tambah</span><span class="page">/strategi</span></div>
+      <div><h3>Jadwal H−1 dan pola tidur</h3><p>Jadwal pagi sekarang mundur dari 05.00. Harus dibangun ulang dari 03.00, termasuk tidur Sabtu sore — ambil race pack, ikut technical meeting, lalu tidur. Opening MC jam 23.00 sebaiknya dilewati.</p></div>
+    </article>
+    <article class="iss">
+      <div class="side"><span class="id">T5</span><span class="pri p-i">Tambah</span><span class="page">/strategi</span></div>
+      <div><h3>Suhu lomba berbeda dari data latihan</h3><p>Semua acuan panas dan keringat berasal dari Jakarta 30–32 °C. Lomba di dataran tinggi pada dini hari — lebih dingin, dan itulah alasan windproof jacket diwajibkan. Tulis ini supaya hitungan cairan tidak memakai angka Jakarta.</p></div>
+    </article>
+  </div>
+</section>
+
+<!-- 04 -->
+<section>
+  <div class="sh"><span class="sn">04</span><h2>Konten pengganti — siap pakai</h2></div>
+
+  <h3 class="sub-h">Header event</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Field</th><th>Nilai</th></tr></thead>
+      <tbody>
+        <tr><td>Tanggal</td><td>Minggu, 27 September 2026</td></tr>
+        <tr><td>Flag off 30K</td><td class="n"><b>03.00 WIB</b></td></tr>
+        <tr><td>Cut-off</td><td class="n">10 jam · <b>13.00 WIB</b></td></tr>
+        <tr><td>Lokasi start/finish</td><td>Lapangan Dusun Kayuwangi, Desa Gedong, Banyubiru, Kab. Semarang</td></tr>
+        <tr><td>Profil</td><td class="n">30 km · 1.800 m naik · 60 m/km</td></tr>
+        <tr><td>Hitung mundur</td><td>dihitung dari tanggal hari ini, bukan tanggal sesi terakhir</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-h">Race schedule resmi</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Waktu</th><th>Acara</th><th>Lokasi</th></tr></thead>
+      <tbody>
+        <tr><td colspan="3" style="background:var(--surface-2);font-weight:700">Sabtu, 26 September 2026</td></tr>
+        <tr><td class="n">09.00–19.00</td><td>Race pack collection</td><td>Hotel d'Emmerick</td></tr>
+        <tr><td class="n">15.00–16.00</td><td>Technical meeting</td><td>Hotel d'Emmerick</td></tr>
+        <tr><td class="n">21.00</td><td>Open race village</td><td>Lapangan Dusun Kayuwangi</td></tr>
+        <tr><td class="n">23.00</td><td>Opening MC</td><td>Lapangan Dusun Kayuwangi</td></tr>
+        <tr><td colspan="3" style="background:var(--surface-2);font-weight:700">Minggu, 27 September 2026 · Lapangan Dusun Kayuwangi</td></tr>
+        <tr><td class="n">00.00</td><td>Flag off 52K</td><td></td></tr>
+        <tr class="race"><td class="n">03.00</td><td>Flag off 30K</td><td></td></tr>
+        <tr><td class="n">05.00</td><td>Flag off 12K &amp; 7K</td><td></td></tr>
+        <tr><td class="n">07.30</td><td>COT 7K</td><td></td></tr>
+        <tr><td class="n">09.00</td><td>COT 12K</td><td></td></tr>
+        <tr><td class="n">10.30</td><td>Winner ceremony</td><td></td></tr>
+        <tr class="race"><td class="n">13.00</td><td>COT 30K</td><td></td></tr>
+        <tr><td class="n">15.00</td><td>COT 52K</td><td></td></tr>
+        <tr><td class="n">16.00</td><td>Closing event</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-h">Perlengkapan wajib resmi — dan status gear kamu</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>#</th><th>Item resmi</th><th>30K</th><th>Di halaman /gear</th><th>Tindakan</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td>Running vest</td><td class="y">Wajib</td><td class="q">? “Life Vest Travel”</td><td>Pastikan itu running vest hidrasi, bukan rompi perjalanan</td></tr>
+        <tr><td class="n">2</td><td>Softflask</td><td class="y">Wajib</td><td class="x">Tidak ada</td><td>Siapkan minimal 2 × 500 ml</td></tr>
+        <tr><td class="n">3</td><td>Smartwatch / GPX app</td><td class="y">Wajib</td><td class="y">COROS Pace · Garmin</td><td>Muat GPX resmi begitu dirilis</td></tr>
+        <tr><td class="n">4</td><td>Smartphone</td><td class="y">Wajib</td><td>—</td><td>Isi penuh, simpan nomor panitia</td></tr>
+        <tr><td class="n">5</td><td>Whistle</td><td class="y">Wajib</td><td class="x">Tidak ada</td><td>Siapkan</td></tr>
+        <tr><td class="n">6</td><td>Headlamp with battery</td><td class="y">Wajib</td><td class="x">Tidak ada</td><td><b>Kritis — 2,5 jam pertama gelap.</b> Bawa baterai cadangan</td></tr>
+        <tr><td class="n">7</td><td>Personal medications</td><td class="y">Wajib</td><td>—</td><td>Obat pribadi, bukan kotak P3K</td></tr>
+        <tr><td class="n">8</td><td>Snack</td><td class="y">Wajib</td><td>—</td><td>Makanan padat, bukan hanya gel</td></tr>
+        <tr><td class="n">9</td><td>Cash money</td><td class="y">Wajib</td><td>—</td><td>Siapkan uang tunai</td></tr>
+        <tr><td class="n">10</td><td>Windproof jacket</td><td class="y">Wajib</td><td class="x">Tidak ada</td><td>Harus tahan angin — jas hujan tipis belum tentu lolos</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Untuk 30K kesepuluh item wajib. Tidak wajib tapi sangat disarankan: sepatu trail — di halaman /gear hanya ada Hoka Mach 2, sepatu jalanan.</p>
+
+  <h3 class="sub-h">Proyeksi terkoreksi</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Skenario</th><th>Bergerak</th><th>Berhenti</th><th>Total</th><th>Finis (jam dinding)</th><th>Margin ke COT</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td><b>Disiplin — target</b></td><td class="n">7:58</td><td class="n">23 mnt</td><td class="n"><b>8:21</b></td><td class="n"><b>11.21 WIB</b></td><td class="n y">+1:39 sebelum COT</td></tr>
+        <tr><td>Sedang</td><td class="n">7:58</td><td class="n">60 mnt</td><td class="n">8:58</td><td class="n">11.58 WIB</td><td class="n y">+1:02 sebelum COT</td></tr>
+        <tr><td>Seperti 11 April</td><td class="n">7:58</td><td class="n">121 mnt</td><td class="n">9:59</td><td class="n">12.59 WIB</td><td class="n q">+0:01 sebelum COT</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Metode: Riegel (eksponen 1,06) pada waktu bergerak sesi 11 April, faktor 0,9 km per 100 m tanjakan — sama dengan faktor yang sudah dipakai website. Waktu berhenti ditambahkan terpisah, bukan disembunyikan di dalam waktu acuan.</p>
+
+  <h3 class="sub-h">Water station dengan jam dinding</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Titik</th><th>KM*</th><th>Tiba</th><th>Jam</th><th>Berhenti</th><th>Batas mundur pribadi</th><th>Kondisi</th></tr></thead>
+      <tbody>
+        <tr><td>WS 1</td><td class="n">6</td><td class="n">1:28</td><td class="n">04.28</td><td class="n">3 mnt</td><td class="n">04.50</td><td>Gelap — headlamp</td></tr>
+        <tr><td>WS 2</td><td class="n">12</td><td class="n">3:06</td><td class="n">06.06</td><td class="n">5 mnt</td><td class="n">06.50</td><td>Baru terang</td></tr>
+        <tr><td>WS 3</td><td class="n">18</td><td class="n">4:52</td><td class="n">07.52</td><td class="n">6 mnt</td><td class="n">08.50</td><td>Titik kritis — makan penuh</td></tr>
+        <tr><td>WS 4</td><td class="n">24</td><td class="n">6:42</td><td class="n">09.42</td><td class="n">6 mnt</td><td class="n">10.50</td><td>Isi penuh terakhir</td></tr>
+        <tr><td>WS 5</td><td class="n">28</td><td class="n">7:54</td><td class="n">10.54</td><td class="n">3 mnt</td><td class="n">12.10</td><td>Top-up saja</td></tr>
+        <tr class="hl"><td><b>Finish</b></td><td class="n">30</td><td class="n"><b>8:30</b></td><td class="n"><b>11.30</b></td><td>—</td><td class="n"><b>13.00 COT resmi</b></td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">*Posisi WS masih perkiraan — panitia menyebut 4–5 titik dengan jarak 5–8 km. Hanya COT 13.00 yang resmi; batas mundur lainnya estimasi pribadi.</p>
+
+  <h3 class="sub-h">Cairan dan nutrisi</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Item</th><th>Sekarang di website</th><th>Pengganti</th></tr></thead>
+      <tbody>
+        <tr><td>Laju cairan</td><td class="n">840 ml/jam</td><td class="n"><b>400–600 ml/jam</b>, sesuaikan dengan haus dan suhu</td></tr>
+        <tr><td>Total cairan</td><td class="n">8,9 L</td><td class="n"><b>±3,5–5 L</b> selama 8:30</td></tr>
+        <tr><td>Bawa per segmen</td><td class="n">sampai 1.850 ml</td><td class="n">1–1,5 L, isi ulang tiap WS</td></tr>
+        <tr><td>Karbohidrat</td><td class="n">651 g · 29 gel</td><td class="n">±60 g/jam · ±500 g total · campur gel, snack, makanan WS</td></tr>
+        <tr><td>Gel dibawa dari start</td><td class="n">29</td><td class="n">±8–10</td></tr>
+        <tr><td>Aturan pengaman</td><td>—</td><td>Berat badan tidak boleh <b>naik</b> selama lomba; turun sampai 1–2% masih wajar</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 05 -->
+<section>
+  <div class="sh"><span class="sn">05</span><h2>Rencana 9 hari — pengganti halaman Rencana</h2></div>
+  <p class="lede">Tidak ada kebugaran baru yang bisa dibangun dalam 9 hari. Tugasnya tiba di garis start segar, dengan perlengkapan yang sudah pernah dipakai.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Hari</th><th>Tanggal</th><th>Sesi</th><th>Catatan</th></tr></thead>
+      <tbody>
+        <tr><td class="n">H−9</td><td class="n">Jum 18 Sep</td><td>Istirahat</td><td>Siapkan semua perlengkapan wajib untuk dicoba besok</td></tr>
+        <tr class="hl"><td class="n">H−8</td><td class="n">Sab 19 Sep</td><td><b>Long trail terakhir: 12–14 km / ±500 m</b></td><td>Mulai sebelum subuh pakai headlamp — gladi start malam. Kit lomba lengkap. Latih berhenti ≤ 3 mnt per titik</td></tr>
+        <tr><td class="n">H−7</td><td class="n">Min 20 Sep</td><td>Istirahat / jalan santai</td><td>Evaluasi apa yang tidak nyaman kemarin</td></tr>
+        <tr><td class="n">H−6</td><td class="n">Sen 21 Sep</td><td>Easy road 5 km + 4 strides</td><td>Cadence 165–168</td></tr>
+        <tr><td class="n">H−5</td><td class="n">Sel 22 Sep</td><td>Strength ringan</td><td>Beban 50–60%, tanpa deadlift/squat berat. Sesi strength terakhir</td></tr>
+        <tr><td class="n">H−4</td><td class="n">Rab 23 Sep</td><td>Easy road 5 km</td><td>HR &lt; 150</td></tr>
+        <tr><td class="n">H−3</td><td class="n">Kam 24 Sep</td><td>Istirahat</td><td>Mulai perbanyak karbohidrat</td></tr>
+        <tr><td class="n">H−2</td><td class="n">Jum 25 Sep</td><td>Easy 3 km + 4 strides</td><td><b>Tidur 7–8 jam malam ini</b> — lebih menentukan dari malam H−1</td></tr>
+        <tr><td class="n">H−1</td><td class="n">Sab 26 Sep</td><td>Race pack 09.00–19.00 · Technical meeting 15.00–16.00</td><td>Makan malam besar ±17.00. Tidur ±19.00. Lewati Opening MC 23.00</td></tr>
+        <tr class="race"><td class="n">H</td><td class="n">Min 27 Sep</td><td>Flag off 03.00</td><td>COT 13.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="sub-h">Jadwal hari-H — dari start 03.00</h3>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Jam</th><th>Kegiatan</th></tr></thead>
+      <tbody>
+        <tr><td class="n">00.30</td><td>Bangun · sarapan 400–500 kkal rendah serat</td></tr>
+        <tr><td class="n">01.30</td><td>Berangkat ke Lapangan Dusun Kayuwangi · minum 300–500 ml</td></tr>
+        <tr><td class="n">02.15</td><td>Tiba · cek 10 perlengkapan wajib · nyalakan headlamp, cek baterai</td></tr>
+        <tr><td class="n">02.40</td><td>Pemanasan ringan 10 menit · satu gel</td></tr>
+        <tr class="race"><td class="n">03.00</td><td>Flag off 30K — km 1–6 dalam gelap, sengaja pelan</td></tr>
+        <tr><td class="n">±05.30</td><td>Matahari terbit — biasanya antara WS 1 dan WS 2</td></tr>
+        <tr class="hl"><td class="n">11.30</td><td>Target finis</td></tr>
+        <tr><td class="n">13.00</td><td>COT 30K</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Jam berangkat bergantung jarak penginapan ke Kayuwangi — sesuaikan setelah technical meeting.</p>
+</section>
+
+<!-- 06 -->
+<section>
+  <div class="sh"><span class="sn">06</span><h2>Minor</h2></div>
+  <div class="issues">
+    <article class="iss">
+      <div class="side"><span class="id">M1</span><span class="pri p-m">Minor</span><span class="page">/</span></div>
+      <div><h3>Tautan media sosial masih placeholder</h3><p>Ikon Instagram mengarah ke <code>https://instagram.com/</code> dan TikTok ke <code>https://www.tiktok.com/</code> — beranda, bukan profilmu.</p></div>
+    </article>
+    <article class="iss">
+      <div class="side"><span class="id">M2</span><span class="pri p-m">Minor</span><span class="page">/dashboard</span></div>
+      <div><h3>“Cadence rata-rata 112 spm saat berlari” menyesatkan</h3><p>Angka itu mencampur cadence lari jalanan (161–168 spm) dengan cadence trail Garmin (34–99 spm) yang tercemar porsi jalan kaki dan hiking. Tampilkan per tipe latihan, atau road saja.</p></div>
+    </article>
+  </div>
+</section>
+
+<!-- 07 -->
+<section>
+  <div class="sh"><span class="sn">07</span><h2>Catatan teknis untuk implementasi</h2></div>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Masalah</th><th>Perbaikan</th></tr></thead>
+      <tbody>
+        <tr><td>Hitung mundur (K5)</td><td><code>Math.ceil((raceDate - today) / 86400000)</code> dengan <code>today = new Date()</code> di zona Asia/Jakarta, bukan tanggal sesi terakhir</td></tr>
+        <tr><td>Durasi negatif (K4)</td><td>Hitung <code>abs(menit)</code>, format jam:menit dari nilai absolut, lalu tulis “sebelum COT” atau “lewat COT” berdasarkan tanda</td></tr>
+        <tr><td>Proyeksi (K2)</td><td>Masukan Riegel = <b>waktu bergerak</b> sesi acuan. Waktu berhenti jadi parameter terpisah per skenario (23 / 60 / 121 menit)</td></tr>
+        <tr><td>Jam dinding</td><td>Semua jam dinding dihitung dari <code>start = 03:00</code>. Satu konstanta, dipakai di Proyeksi dan Strategi</td></tr>
+        <tr><td>Durasi segmen (P5)</td><td>Durasi segmen = total kumulatif − total kumulatif sebelumnya, bukan dihitung ulang terpisah</td></tr>
+        <tr><td>Satu sumber kebenaran</td><td>Tanggal lomba, jam start, COT, dan daftar gear wajib cukup ditulis sekali di data event, lalu dibaca semua halaman. Kesalahan jam start sekarang muncul di lima tempat karena ditulis berulang</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <b style="color:var(--ink-2)">Sumber.</b> Race schedule dan mandatory gear resmi GTR Ultra 2026 (dikirim 18 Sep 2026). Audit langsung terhadap ruang-fisio-run.vercel.app pada 18 September 2026. Data latihan Garmin &amp; COROS, Juli 2025 – September 2026. Pedoman cairan: Burke &amp; Deakin, <i>Clinical Sports Nutrition</i>, bab 12–13.<br>
+  <b style="color:var(--ink-2)">Estimasi.</b> Posisi WS, sebaran tanjakan, dan batas mundur per titik belum resmi — tunggu GPX dan informasi technical meeting. Waktu matahari terbit perkiraan untuk Kabupaten Semarang akhir September. Jarak penginapan ke lokasi start belum diketahui.
+</footer>
+</div>
+</body>
+</html>

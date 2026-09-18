@@ -21,13 +21,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { gtrUltra } from "@/data/event";
-import { formatInteger, formatMinutes, formatNumber } from "@/lib/format";
+import { formatCutoffMargin, formatInteger, formatMinutes, formatNumber } from "@/lib/format";
 import { projection, readiness, readinessChecklist } from "@/lib/race";
 
 export const metadata: Metadata = {
   title: "Kesiapan GTR Ultra 30K",
   description:
-    "Status kesiapan dari riwayat hiking/trail 12 bulan dan konsistensi 4 pekan terakhir, sesuai rencana GTR Ultra Revisi 3.",
+    "Status kesiapan dari riwayat hiking/trail sepanjang arsip dan konsistensi 4 pekan terakhir menuju GTR Ultra 30K.",
 };
 
 const levelTone: Record<string, string> = {
@@ -53,7 +53,7 @@ export default function EventReadinessPage() {
               Skor kesiapan
             </CardTitle>
             <CardDescription>
-              Kapasitas trail/hiking 12 bulan terakhir + frekuensi 4 pekan terkini (Revisi 3).
+              Kapasitas trail/hiking terbaik sepanjang riwayat + frekuensi 4 pekan terkini.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -66,12 +66,11 @@ export default function EventReadinessPage() {
             </div>
             <Progress value={status.score} />
             <p className="text-sm text-muted-foreground">
-              Sisa {status.weeksLeft} pekan efektif sebelum taper dimulai. Proyeksi waktu
-              saat ini{" "}
+              Sisa {status.daysLeft} hari menuju lomba — taper sudah dimulai. Proyeksi disiplin{" "}
               <span className="font-medium text-foreground">
                 {formatMinutes(forecast.target.finishMin)} jam
               </span>
-              , masih {formatMinutes(forecast.target.marginMin)} jam di bawah cut-off.
+              , {formatCutoffMargin(forecast.target.marginMin, "COT")}.
             </p>
             <Link
               href="/event/gtr-ultra-30k/proyeksi"
@@ -120,7 +119,7 @@ export default function EventReadinessPage() {
               {gaps.length} hal yang masih perlu dikerjakan
             </CardTitle>
             <CardDescription>
-              Daftar ini ikut berubah begitu data latihan baru masuk.
+              Fokus 9 hari terakhir: kit wajib, disiplin berhenti, dan tidur.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -143,7 +142,7 @@ export default function EventReadinessPage() {
               href="/event/gtr-ultra-30k/rencana"
               className={`${buttonVariants({ variant: "outline", size: "sm" })} mt-4`}
             >
-              Buka rencana latihan
+              Buka rencana 9 hari
               <ArrowRight data-icon="inline-end" className="size-3.5" />
             </Link>
           </CardContent>
@@ -154,9 +153,12 @@ export default function EventReadinessPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Flag className="size-4 text-primary" />
-            Pos dan batas waktu
+            Pos dan batas mundur pribadi
           </CardTitle>
-          <CardDescription>{gtrUltra.terrain}</CardDescription>
+          <CardDescription>
+            {gtrUltra.terrain} Posisi WS dan kolom naik masih estimasi — tunggu GPX resmi.
+            COT panitia hanya di finish: {gtrUltra.cutoffClock} WIB.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto rounded-xl ring-1 ring-foreground/10">
@@ -164,9 +166,9 @@ export default function EventReadinessPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Pos</TableHead>
-                  <TableHead className="text-right">Km</TableHead>
-                  <TableHead className="text-right">Naik</TableHead>
-                  <TableHead className="text-right">Cut-off</TableHead>
+                  <TableHead className="text-right">Km*</TableHead>
+                  <TableHead className="text-right">Naik*</TableHead>
+                  <TableHead className="text-right">Batas mundur</TableHead>
                   <TableHead>Fasilitas</TableHead>
                   <TableHead>Catatan</TableHead>
                 </TableRow>
@@ -196,10 +198,13 @@ export default function EventReadinessPage() {
               </TableBody>
             </Table>
           </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            *Estimasi pribadi. Panitia menyebut 4–5 titik dengan jarak 5–8 km.
+          </p>
 
           <div className="mt-4">
             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-              Perlengkapan wajib
+              Perlengkapan wajib resmi (10 item)
             </p>
             <ul className="mt-2 grid gap-1.5 text-sm sm:grid-cols-2">
               {gtrUltra.mandatoryGear.map((item) => (
@@ -212,6 +217,39 @@ export default function EventReadinessPage() {
               ))}
             </ul>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Race schedule resmi</CardTitle>
+          <CardDescription>
+            Sabtu 26 – Minggu 27 September 2026. Flag off 30K jam {gtrUltra.startTime} WIB.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2 text-sm">
+            {gtrUltra.schedule.map((item) => (
+              <li
+                key={`${item.day}-${item.time}-${item.title}`}
+                className={`flex gap-3 rounded-lg px-2.5 py-2 ${
+                  item.highlight ? "bg-primary/10 font-medium" : ""
+                }`}
+              >
+                <span className="w-[7.5rem] shrink-0 font-mono text-xs text-muted-foreground tabular-nums">
+                  {item.day} · {item.time}
+                </span>
+                <span>
+                  {item.title}
+                  {item.location ? (
+                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                      {item.location}
+                    </span>
+                  ) : null}
+                </span>
+              </li>
+            ))}
+          </ul>
         </CardContent>
       </Card>
     </div>

@@ -61,7 +61,8 @@ export default function EventIndexPage() {
                   <div className="flex items-center gap-1.5">
                     <CalendarDays className="size-3.5 shrink-0" />
                     <dd>
-                      {formatDate(event.date, "long")}, start {event.startTime}
+                      {formatDate(event.date, "weekday")}, flag off {event.startTime} WIB · COT{" "}
+                      {event.cutoffClock}
                     </dd>
                   </div>
                   <div className="flex items-center gap-1.5">

@@ -131,11 +131,11 @@ check(
     (await page.getByText("Currently Use").first().isVisible()),
 );
 
-// 6. Proyeksi: kurva vs cut-off dan pergantian skenario.
+// 6. Proyeksi: kurva vs batas mundur dan pergantian skenario.
 await page.goto(`${base}/event/gtr-ultra-30k/proyeksi`, { waitUntil: "networkidle" });
-await page.waitForSelector("text=Kurva waktu tempuh vs cut-off");
+await page.waitForSelector("text=Kurva waktu tempuh vs batas mundur");
 const firstRow = await page.locator("table tbody tr td").nth(3).innerText();
-await page.getByRole("button", { name: /^Aman ·/ }).click();
+await page.getByRole("button", { name: /^Sedang ·/ }).click();
 await page.waitForFunction(
   (previous) => {
     const cell = document.querySelectorAll("table tbody tr td")[3];
@@ -147,14 +147,17 @@ await page.waitForFunction(
 const secondRow = await page.locator("table tbody tr td").nth(3).innerText();
 check("Proyeksi: skenario bisa ditukar", firstRow !== secondRow, `${firstRow} → ${secondRow}`);
 
-// 7. Rencana latihan dan strategi hari-H terisi.
+// 7. Rencana 9 hari dan strategi hari-H terisi.
 await page.goto(`${base}/event/gtr-ultra-30k/rencana`, { waitUntil: "networkidle" });
-const planRows = await page.locator("text=/^P\\d+/").count();
-check("Rencana: pekanan terisi", planRows >= 4, `${planRows} pekan`);
+await page.waitForSelector("text=Rencana 9 hari");
+const planRows = await page.getByText("Long trail terakhir").count();
+check("Rencana: countdown harian terisi", planRows >= 1 && (await page.getByText("Flag off 03.00").isVisible()), `long trail + race day`);
 
 await page.goto(`${base}/event/gtr-ultra-30k/strategi`, { waitUntil: "networkidle" });
 const fuelRows = await page.locator("table tbody tr").count();
 check("Strategi: logistik per segmen terisi", fuelRows >= 5, `${fuelRows} segmen`);
+await page.waitForSelector("text=03:00");
+check("Strategi: start 03:00", await page.getByText("Flag off 30K").first().isVisible());
 
 // 8. Halaman 404 untuk sesi yang tidak ada.
 const notFound = await page.goto(`${base}/sesi/tidak-ada`, { waitUntil: "networkidle" });

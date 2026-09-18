@@ -22,12 +22,12 @@ import { formatMinutes } from "@/lib/format";
 import type { Scenario } from "@/lib/race";
 
 const scenarioColor: Record<string, string> = {
-  agresif: typeColor.trail,
-  target: typeColor.road,
-  aman: brand.clay,
+  disiplin: typeColor.trail,
+  sedang: typeColor.road,
+  april: brand.clay,
 };
 
-/** Kurva waktu tempuh tiap skenario dibanding garis cut-off panitia. */
+/** Kurva waktu tempuh tiap skenario dibanding batas mundur pribadi + COT finish. */
 export function ProjectionChart({
   scenarios,
   event,
@@ -36,14 +36,14 @@ export function ProjectionChart({
   event: RaceEvent;
 }) {
   const data = [
-    { km: 0, cutoff: 0, agresif: 0, target: 0, aman: 0, name: "Start" },
+    { km: 0, cutoff: 0, disiplin: 0, sedang: 0, april: 0, name: "Start" },
     ...event.checkpoints.map((checkpoint, index) => ({
       km: checkpoint.km,
       name: checkpoint.name,
       cutoff: checkpoint.cutoffMin,
-      agresif: scenarios.find((item) => item.key === "agresif")!.splits[index].elapsedMin,
-      target: scenarios.find((item) => item.key === "target")!.splits[index].elapsedMin,
-      aman: scenarios.find((item) => item.key === "aman")!.splits[index].elapsedMin,
+      disiplin: scenarios.find((item) => item.key === "disiplin")!.splits[index].elapsedMin,
+      sedang: scenarios.find((item) => item.key === "sedang")!.splits[index].elapsedMin,
+      april: scenarios.find((item) => item.key === "april")!.splits[index].elapsedMin,
     })),
   ];
 
@@ -69,22 +69,22 @@ export function ProjectionChart({
                     subtitle={`Km ${point.km}`}
                     rows={[
                       {
-                        label: "Agresif",
-                        value: formatMinutes(point.agresif),
-                        color: scenarioColor.agresif,
+                        label: "Disiplin",
+                        value: formatMinutes(point.disiplin),
+                        color: scenarioColor.disiplin,
                       },
                       {
-                        label: "Target",
-                        value: formatMinutes(point.target),
-                        color: scenarioColor.target,
+                        label: "Sedang",
+                        value: formatMinutes(point.sedang),
+                        color: scenarioColor.sedang,
                       },
                       {
-                        label: "Aman",
-                        value: formatMinutes(point.aman),
-                        color: scenarioColor.aman,
+                        label: "Seperti 11 April",
+                        value: formatMinutes(point.april),
+                        color: scenarioColor.april,
                       },
                       {
-                        label: "Cut-off",
+                        label: "Batas mundur pribadi",
                         value: formatMinutes(point.cutoff),
                         color: metricColor.cutoff,
                       },
@@ -103,22 +103,22 @@ export function ProjectionChart({
             />
             <Line
               type="monotone"
-              dataKey="agresif"
-              stroke={scenarioColor.agresif}
-              strokeWidth={2}
-              dot={{ r: 3 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="target"
-              stroke={scenarioColor.target}
+              dataKey="disiplin"
+              stroke={scenarioColor.disiplin}
               strokeWidth={2.5}
               dot={{ r: 3.5 }}
             />
             <Line
               type="monotone"
-              dataKey="aman"
-              stroke={scenarioColor.aman}
+              dataKey="sedang"
+              stroke={scenarioColor.sedang}
+              strokeWidth={2}
+              dot={{ r: 3 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="april"
+              stroke={scenarioColor.april}
               strokeWidth={2}
               dot={{ r: 3 }}
             />
@@ -127,15 +127,15 @@ export function ProjectionChart({
       </div>
       <ChartLegend
         items={[
-          { label: "Agresif", color: scenarioColor.agresif },
-          { label: "Target", color: scenarioColor.target },
-          { label: "Aman", color: scenarioColor.aman },
-          { label: "Cut-off panitia", color: metricColor.cutoff, dashed: true },
+          { label: "Disiplin", color: scenarioColor.disiplin },
+          { label: "Sedang", color: scenarioColor.sedang },
+          { label: "Seperti 11 April", color: scenarioColor.april },
+          { label: "Batas mundur pribadi (estimasi)", color: metricColor.cutoff, dashed: true },
         ]}
       />
       <p className="text-xs text-muted-foreground">
-        Garis apa pun yang menyentuh garis cut-off berarti berhenti di pos itu. Jaga jarak
-        minimal 20 menit dari garis merah di setiap water station.
+        Garis putus-putus adalah batas mundur pribadi, bukan cut-off panitia. COT resmi hanya
+        di finish: {event.cutoffClock} WIB ({formatMinutes(event.cutoffMin)} dari start).
       </p>
     </div>
   );

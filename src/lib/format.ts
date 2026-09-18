@@ -86,17 +86,42 @@ export function startOfWeek(iso: string) {
   return date.toISOString().slice(0, 10);
 }
 
-/** "4:02" untuk menit total, dipakai pada proyeksi waktu finis. */
+/** "4:02" untuk menit total (nilai absolut); tanda negatif ditangani terpisah. */
 export function formatMinutes(totalMin: number) {
-  const hours = Math.floor(totalMin / 60);
-  const minutes = Math.round(totalMin % 60);
-  return `${hours}:${String(minutes === 60 ? 0 : minutes).padStart(2, "0")}`;
+  const abs = Math.abs(totalMin);
+  let hours = Math.floor(abs / 60);
+  let minutes = Math.round(abs % 60);
+  if (minutes === 60) {
+    hours += 1;
+    minutes = 0;
+  }
+  return `${hours}:${String(minutes).padStart(2, "0")}`;
 }
 
-/** Waktu jam dinding, misalnya start 05:00 + 245 menit → "09:05". */
+/**
+ * Margin ke cut-off: "+1:39 sebelum cut-off" atau "0:30 lewat cut-off".
+ * Margin positif = masih di bawah / sebelum COT.
+ */
+export function formatCutoffMargin(marginMin: number, label = "cut-off") {
+  const clock = formatMinutes(Math.abs(marginMin));
+  if (marginMin >= 0) return `+${clock} sebelum ${label}`;
+  return `${clock} lewat ${label}`;
+}
+
+/** Tanggal kalender hari ini di zona Asia/Jakarta (YYYY-MM-DD). */
+export function todayInJakarta() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+/** Waktu jam dinding, misalnya start 03:00 + 245 menit → "07:05". */
 export function clockFromStart(startTime: string, offsetMin: number) {
   const [hour, minute] = startTime.split(":").map(Number);
   const total = hour * 60 + minute + Math.round(offsetMin);
   const hours = Math.floor(total / 60) % 24;
-  return `${String(hours).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
+  return `${String(hours).padStart(2, "0")}:${String(((total % 60) + 60) % 60).padStart(2, "0")}`;
 }

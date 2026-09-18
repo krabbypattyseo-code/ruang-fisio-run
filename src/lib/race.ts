@@ -1,11 +1,22 @@
-import { gtrPlanWeeks, gtrUltra, runnerProfile, type RaceEvent } from "@/data/event";
-import { sessions as allSessions, today } from "@/data/sessions";
+import {
+  gtrCountdownDays,
+  gtrUltra,
+  runnerProfile,
+  type CountdownDay,
+  type RaceEvent,
+} from "@/data/event";
+import { sessions as allSessions } from "@/data/sessions";
 import type { Session } from "@/data/types";
-import { addDays, daysBetween, startOfWeek } from "@/lib/format";
+import { addDays, daysBetween, todayInJakarta } from "@/lib/format";
 import { gradedKm, recentSessions } from "@/lib/metrics";
 
 const sum = (values: number[]) => values.reduce((total, value) => total + value, 0);
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+
+/** Sesi acuan proyeksi: Bogor Trail 11 Apr 2026. */
+const PROJECTION_REF_ID = "garmin-ht-2026-04-11-21-bogor-trail-running";
+/** Waktu bergerak resmi sesi itu (total 8:22:13 − berhenti ~2:01:28). */
+const PROJECTION_MOVING_SEC = 6 * 3600 + 20 * 60 + 45; // 6:20:45
 
 export type ReadinessComponent = {
   key: string;
@@ -26,17 +37,17 @@ export type Readiness = {
   daysLeft: number;
 };
 
-/** Status kesiapan: kapasitas trail/hiking 12 bulan + volume/konsistensi 4 pekan terakhir. */
+/** Status kesiapan: kapasitas trail/hiking sepanjang riwayat + volume 4 pekan terakhir. */
 export function readiness(
   sessions: Session[] = allSessions,
   event: RaceEvent = gtrUltra,
-  reference: string = today,
+  reference: string = todayInJakarta(),
 ): Readiness {
   const last28 = recentSessions(sessions, reference, 28);
-  // Kapasitas trail dihitung dari seluruh arsip (Jan 2025+), bukan hanya 12 bulan kalender
-  // dari tanggal sesi terakhir — biar Kerinci / Magelang tetap masuk penilaian.
   const history = sessions.filter((session) => session.date <= reference);
   const trailHistory = history.filter((session) => session.type !== "road");
+  const yearAgo = addDays(reference, -365);
+  const trailLast12 = trailHistory.filter((session) => session.date >= yearAgo);
 
   const weeklyKm = sum(last28.map((session) => session.distanceKm)) / 4;
   const longest = history.length ? Math.max(...history.map((item) => item.distanceKm)) : 0;
@@ -44,7 +55,7 @@ export function readiness(
   const maxDurationMin = history.length
     ? Math.max(...history.map((item) => item.durationSec)) / 60
     : 0;
-  const trailSessionCount = trailHistory.length;
+  const trailSessionCount = trailLast12.length;
   const perWeek = last28.length / 4;
 
   const targets = {
@@ -65,7 +76,7 @@ export function readiness(
       unit: "km",
       weight: 0.25,
       score: clamp01(longest / targets.longest) * 100,
-      hint: "Sesi terpanjang 12 bulan terakhir dibanding jarak lomba.",
+      hint: "Sesi terpanjang sepanjang riwayat dibanding jarak lomba.",
     },
     {
       key: "elevation",
@@ -75,7 +86,7 @@ export function readiness(
       unit: "m",
       weight: 0.25,
       score: clamp01(maxElev / targets.maxElev) * 100,
-      hint: "Ascent tertinggi 12 bulan terakhir dibanding elevasi lomba.",
+      hint: "Ascent tertinggi sepanjang riwayat dibanding elevasi lomba.",
     },
     {
       key: "timeOnFeet",
@@ -85,14 +96,14 @@ export function readiness(
       unit: "mnt",
       weight: 0.2,
       score: clamp01(maxDurationMin / targets.timeOnFeet) * 100,
-      hint: "Durasi terpanjang dibanding target finis 8:30.",
+      hint: "Durasi terpanjang sepanjang riwayat dibanding target finis 8:21.",
     },
     {
       key: "specificity",
       label: "Sesi trail & hiking",
       value: trailSessionCount,
       target: targets.trailSessions,
-      unit: "sesi/tahun",
+      unit: "sesi/12 bln",
       weight: 0.15,
       score: clamp01(trailSessionCount / targets.trailSessions) * 100,
       hint: "Jumlah sesi non-road 12 bulan terakhir; target 8.",
@@ -112,7 +123,7 @@ export function readiness(
   const score = Math.round(
     sum(components.map((component) => component.score * component.weight)),
   );
-  const daysLeft = daysBetween(reference, event.date);
+  const daysLeft = Math.max(0, daysBetween(reference, event.date));
 
   return {
     score,
@@ -123,7 +134,7 @@ export function readiness(
   };
 }
 
-export type ScenarioKey = "agresif" | "target" | "aman";
+export type ScenarioKey = "disiplin" | "sedang" | "april";
 
 export type Split = {
   name: string;
@@ -142,6 +153,8 @@ export type Scenario = {
   label: string;
   description: string;
   finishMin: number;
+  movingMin: number;
+  stopMin: number;
   paceSecPerKm: number;
   gradedPaceSecPerKm: number;
   marginMin: number;
@@ -150,7 +163,9 @@ export type Scenario = {
 
 export type Projection = {
   reference: Session;
+  movingSec: number;
   raceGradedKm: number;
+  refGradedKm: number;
   /** Berapa kali lebih panjang lomba dibanding sesi acuan, dalam km setara datar. */
   stretch: number;
   exponent: number;
@@ -165,7 +180,6 @@ function buildSplits(finishMin: number, event: RaceEvent, startTime: string): Sp
     return {
       checkpoint,
       segmentKm,
-      // Segmen belakang diberi bobot lebih besar: pace melambat saat lelah.
       weight: gradedKm(segmentKm, checkpoint.gainFromPrevM) * (1 + index * 0.05),
     };
   });
@@ -175,7 +189,10 @@ function buildSplits(finishMin: number, event: RaceEvent, startTime: string): Sp
 
   return segments.map(({ checkpoint, segmentKm, weight }) => {
     const segmentMin = (weight / totalWeight) * finishMin;
+    const previousElapsed = elapsed;
     elapsed += segmentMin;
+    // Durasi segmen = kumulatif − kumulatif sebelumnya (satu sumber).
+    const derivedSegment = elapsed - previousElapsed;
     const [hour, minute] = startTime.split(":").map(Number);
     const clockTotal = hour * 60 + minute + Math.round(elapsed);
     return {
@@ -184,78 +201,71 @@ function buildSplits(finishMin: number, event: RaceEvent, startTime: string): Sp
       segmentKm: Math.round(segmentKm * 10) / 10,
       gainFromPrevM: checkpoint.gainFromPrevM,
       elapsedMin: elapsed,
-      segmentMin,
+      segmentMin: derivedSegment,
       cutoffMin: checkpoint.cutoffMin,
       marginMin: checkpoint.cutoffMin - elapsed,
       arrivalClock: `${String(Math.floor(clockTotal / 60) % 24).padStart(2, "0")}:${String(
-        clockTotal % 60,
+        ((clockTotal % 60) + 60) % 60,
       ).padStart(2, "0")}`,
     };
   });
 }
 
 /**
- * Proyeksi waktu finis memakai rumus Riegel di atas jarak setara datar, dengan sesi
- * terbaik 6 pekan terakhir sebagai acuan. Bukan ramalan—alat untuk menguji skenario.
+ * Proyeksi waktu finis: Riegel (eksponen 1,06) pada waktu bergerak sesi Bogor 11 Apr,
+ * faktor 0,9 km / 100 m tanjakan. Waktu berhenti ditambahkan per skenario.
  */
 export function projection(
   sessions: Session[] = allSessions,
   event: RaceEvent = gtrUltra,
-  reference: string = today,
 ): Projection {
-  const pool = sessions.filter(
-    (session) =>
-      session.date <= reference &&
-      (session.type === "trail" || (session.type === "road" && session.distanceKm >= 12)),
-  );
-  const candidates = pool.filter((session) => session.distanceKm >= 12);
-  const longTrails = candidates
-    .filter((session) => session.type === "trail" && session.distanceKm >= 15)
-    .sort((a, b) => b.distanceKm - a.distanceKm);
-  const ranked = (candidates.length ? candidates : pool).sort(
-    (a, b) =>
-      a.durationSec / gradedKm(a.distanceKm, a.elevGainM) -
-      b.durationSec / gradedKm(b.distanceKm, b.elevGainM),
-  );
-  // Acuan utama: trail panjang mendekati jarak lomba (mis. Bogor 26,4 km), bukan 5K road.
-  const referenceSession = longTrails[0] ?? ranked[0] ?? sessions[0];
+  const referenceSession =
+    sessions.find((session) => session.id === PROJECTION_REF_ID) ??
+    sessions.find((session) => session.date === "2026-04-11" && session.type === "trail") ??
+    sessions[0];
 
+  const movingSec = PROJECTION_MOVING_SEC;
   const refGraded = gradedKm(referenceSession.distanceKm, referenceSession.elevGainM);
   const raceGraded = gradedKm(event.distanceKm, event.elevGainM);
-  // Eksponen Riegel dinaikkan saat lompatan jaraknya jauh: melipatgandakan jarak dari
-  // sesi acuan selalu menghasilkan pelemahan lebih besar daripada 1,06 saja.
   const stretch = raceGraded / refGraded;
-  const exponent = 1.06 + 0.05 * Math.max(0, stretch - 1.5);
-  const baseMin = (referenceSession.durationSec / 60) * stretch ** exponent;
+  const exponent = 1.06;
+  const movingMin = (movingSec / 60) * stretch ** exponent;
 
-  const definitions: { key: ScenarioKey; label: string; factor: number; description: string }[] = [
+  const definitions: {
+    key: ScenarioKey;
+    label: string;
+    stopMin: number;
+    description: string;
+  }[] = [
     {
-      key: "agresif",
-      label: "Agresif",
-      factor: 0.94,
-      description: "Semua berjalan mulus: cuaca sejuk, perut aman, turunan dihajar.",
+      key: "disiplin",
+      label: "Disiplin",
+      stopMin: 23,
+      description: "Target utama: berhenti total 23 menit di water station.",
     },
     {
-      key: "target",
-      label: "Target",
-      factor: 1,
-      description: "Proyeksi dari kebugaran saat ini lewat rumus Riegel.",
+      key: "sedang",
+      label: "Sedang",
+      stopMin: 60,
+      description: "Berhenti lebih longgar (±60 menit total), tetap di dalam COT.",
     },
     {
-      key: "aman",
-      label: "Aman",
-      factor: 1.12,
-      description: "Ada kram, antre di pos, atau jalur becek—tetap finis nyaman.",
+      key: "april",
+      label: "Seperti 11 April",
+      stopMin: 121,
+      description: "Pola berhenti seperti sesi Bogor (≈2 jam) — margin COT tipis.",
     },
   ];
 
-  const scenarios = definitions.map(({ key, label, factor, description }) => {
-    const finishMin = baseMin * factor;
+  const scenarios = definitions.map(({ key, label, stopMin, description }) => {
+    const finishMin = movingMin + stopMin;
     return {
       key,
       label,
       description,
       finishMin,
+      movingMin,
+      stopMin,
       paceSecPerKm: (finishMin * 60) / event.distanceKm,
       gradedPaceSecPerKm: (finishMin * 60) / raceGraded,
       marginMin: event.cutoffMin - finishMin,
@@ -265,18 +275,20 @@ export function projection(
 
   return {
     reference: referenceSession,
+    movingSec,
     raceGradedKm: raceGraded,
+    refGradedKm: refGraded,
     stretch,
     exponent,
     scenarios,
-    target: scenarios.find((scenario) => scenario.key === "target") ?? scenarios[0],
+    target: scenarios.find((scenario) => scenario.key === "disiplin") ?? scenarios[0],
   };
 }
 
 export type PlanWeek = {
   weekStart: string;
   index: number;
-  phase: "Reintroduksi" | "Bangun" | "Pemulihan" | "Puncak" | "Taper" | "Pekan lomba";
+  phase: string;
   targetKm: number;
   longRunKm: number;
   elevM: number;
@@ -284,24 +296,15 @@ export type PlanWeek = {
   focus: string;
 };
 
-/** Rencana 8 minggu dari dokumen Revisi 3; di-anchor ke pekan setelah tanggal acuan. */
-export function trainingPlan(
-  sessions: Session[] = allSessions,
-  event: RaceEvent = gtrUltra,
-  reference: string = today,
-): PlanWeek[] {
-  void sessions;
+/** @deprecated Gunakan raceCountdown(). */
+export function trainingPlan(): PlanWeek[] {
+  return [];
+}
+
+/** Rencana harian 9 hari menuju lomba. */
+export function raceCountdown(event: RaceEvent = gtrUltra): CountdownDay[] {
   void event;
-  return gtrPlanWeeks.map((week) => ({
-    weekStart: startOfWeek(addDays(reference, 7 * week.index)),
-    index: week.index,
-    phase: week.phase,
-    targetKm: week.targetKm,
-    longRunKm: week.longRunKm,
-    elevM: week.elevM,
-    stopBudget: week.stopBudget,
-    focus: week.focus,
-  }));
+  return gtrCountdownDays;
 }
 
 export type ChecklistItem = {
@@ -340,7 +343,7 @@ export function readinessChecklist(
       label: `Ascent satu sesi menuju ${formatElev(event.elevGainM)} m`,
       detail:
         elevation.value >= elevation.target * 0.8
-          ? `Pernah ${Math.round(elevation.value)} m dalam satu sesi — mendekati elevasi lomba.`
+          ? `Pernah ${Math.round(elevation.value)} m dalam satu sesi (terbaik sepanjang riwayat).`
           : `Ascent tertinggi ${Math.round(elevation.value)} m. Perlu long trail dengan vertikal lebih besar.`,
       status: level(elevation.score),
     },
@@ -349,31 +352,31 @@ export function readinessChecklist(
       label: "Waktu di kaki ≥ target finis",
       detail:
         timeOnFeet.value >= timeOnFeet.target
-          ? `Durasi terpanjang ${Math.round(timeOnFeet.value)} menit, sudah melampaui target 8:30.`
+          ? `Durasi terpanjang ${Math.round(timeOnFeet.value)} menit, sudah melampaui target 8:21.`
           : `Durasi terpanjang baru ${Math.round(timeOnFeet.value)} menit; target ~${event.targetFinishMin} menit.`,
       status: level(timeOnFeet.score),
     },
     {
       id: "specificity",
-      label: "Minimal 8 sesi trail/hiking / tahun",
+      label: "Minimal 8 sesi trail/hiking / 12 bulan",
       detail:
         specificity.value >= specificity.target
-          ? `${Math.round(specificity.value)} sesi non-road dalam 12 bulan.`
-          : `Baru ${Math.round(specificity.value)} sesi. Risiko: jeda trail panjang mengikis ketajaman medan.`,
+          ? `${Math.round(specificity.value)} sesi non-road dalam 12 bulan terakhir.`
+          : `Baru ${Math.round(specificity.value)} sesi non-road dalam 12 bulan. Jaga kaki tetap segar sampai start.`,
       status: level(specificity.score),
     },
     {
       id: "stops",
       label: "Disiplin berhenti ≤ 23 menit di lomba",
       detail:
-        "Latih di tiap long trail: tekan lap setiap berhenti. Target per WS 3–6 menit, bukan istirahat panjang.",
+        "Latih di long trail terakhir (Sab 19 Sep): tekan lap setiap berhenti. Target per WS 3–6 menit.",
       status: "kritis",
     },
     {
       id: "gear",
-      label: "Cek perlengkapan wajib",
-      detail: `${event.mandatoryGear.length} item; uji vest & nutrisi mulai minggu 5.`,
-      status: "perlu-kerja",
+      label: "Cek 10 perlengkapan wajib resmi",
+      detail: `${event.mandatoryGear.length} item panitia. Uji kit lengkap di satu sesi terakhir — Sabtu 19 September.`,
+      status: "kritis",
     },
   ];
 }
@@ -401,34 +404,40 @@ export type FuelingPlan = {
   totalCarbG: number;
   totalSodiumMg: number;
   totalGels: number;
+  /** Gel yang dibawa dari garis start (± dua segmen). */
+  gelsFromStart: number;
   perHourFluidMl: number;
   perHourCarbG: number;
+  fluidNote: string;
   segments: FuelingSegment[];
 };
 
 const GEL_CARB_G = 22;
 
-/** Logistik cairan dan kalori memakai sweat rate pribadi dan proyeksi waktu. */
+/**
+ * Logistik cairan/kalori untuk start malam dataran tinggi.
+ * Target 400–600 ml/jam (bukan ganti seluruh keringat Jakarta).
+ */
 export function fuelingPlan(
   scenario = projection().target,
   event: RaceEvent = gtrUltra,
   profile = runnerProfile,
 ): FuelingPlan {
-  // Target realistis: ganti 80% kehilangan cairan, sisanya toleransi tubuh.
-  const fluidPerHourMl = profile.sweatRateLPerHour * 1000 * 0.8;
+  const fluidPerHourMl = profile.raceFluidMlPerHour;
+  const carbPerHour = profile.carbTolerancePerHour;
 
   const segments = scenario.splits.map((split, index) => {
     const checkpoint = event.checkpoints[index];
     const segmentHours = split.segmentMin / 60;
-    const carbG = profile.carbTolerancePerHour * segmentHours;
-    const fluidMl = fluidPerHourMl * segmentHours;
+    const carbG = carbPerHour * segmentHours;
+    const fluidMl = Math.min(1500, fluidPerHourMl * segmentHours);
     return {
       name: split.name,
       km: split.km,
       durationMin: split.segmentMin,
       fluidMl: Math.round(fluidMl / 50) * 50,
       carbG: Math.round(carbG),
-      sodiumMg: Math.round((fluidMl / 1000) * profile.sodiumMgPerLiter * 0.7),
+      sodiumMg: Math.round((fluidMl / 1000) * profile.sodiumMgPerLiter * 0.5),
       gels: Math.max(1, Math.round(carbG / GEL_CARB_G)),
       hasWater: checkpoint.hasWater,
       hasFood: checkpoint.hasFood,
@@ -436,16 +445,25 @@ export function fuelingPlan(
     } satisfies FuelingSegment;
   });
 
+  const totalGels = sum(segments.map((segment) => segment.gels));
+  const gelsFromStart = Math.min(10, Math.max(8, Math.round(totalGels * 0.35)));
+
   return {
     finishMin: scenario.finishMin,
     totalFluidMl: sum(segments.map((segment) => segment.fluidMl)),
     totalCarbG: sum(segments.map((segment) => segment.carbG)),
     totalSodiumMg: sum(segments.map((segment) => segment.sodiumMg)),
-    totalGels: sum(segments.map((segment) => segment.gels)),
+    totalGels,
+    gelsFromStart,
     perHourFluidMl: Math.round(fluidPerHourMl),
-    perHourCarbG: profile.carbTolerancePerHour,
+    perHourCarbG: carbPerHour,
+    fluidNote:
+      "400–600 ml/jam di dataran tinggi dini hari; minum mengikuti haus. Jangan pakai sweat rate Jakarta.",
     segments,
   };
 }
 
-export const hoursLabel = (minutes: number) => `${Math.floor(minutes / 60)} jam ${Math.round(minutes % 60)} menit`;
+export const hoursLabel = (minutes: number) => {
+  const abs = Math.abs(minutes);
+  return `${Math.floor(abs / 60)} jam ${Math.round(abs % 60)} menit`;
+};

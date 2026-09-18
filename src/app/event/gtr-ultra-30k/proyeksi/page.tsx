@@ -15,19 +15,20 @@ import {
 import { gtrUltra } from "@/data/event";
 import { workoutTypeLabel } from "@/data/types";
 import {
+  formatClock,
+  formatCutoffMargin,
   formatDate,
   formatInteger,
   formatMinutes,
   formatNumber,
   formatPace,
 } from "@/lib/format";
-import { gradedKm } from "@/lib/metrics";
 import { projection } from "@/lib/race";
 
 export const metadata: Metadata = {
   title: "Proyeksi waktu GTR Ultra 30K",
   description:
-    "Tiga skenario waktu finis yang dihitung dari sesi terbaik terakhir, dibandingkan dengan cut-off setiap pos.",
+    "Tiga skenario waktu finis dari Riegel pada waktu bergerak Bogor 11 April, dibanding COT 13.00 WIB.",
 };
 
 export default function ProjectionPage() {
@@ -42,24 +43,23 @@ export default function ProjectionPage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground">Skenario {scenario.label}</p>
-                {scenario.key === "target" ? <Badge>utama</Badge> : null}
+                {scenario.key === "disiplin" ? <Badge>target</Badge> : null}
               </div>
               <p className="mt-1 font-heading text-2xl font-semibold tabular-nums">
                 {formatMinutes(scenario.finishMin)}
                 <span className="ml-1 text-sm font-normal text-muted-foreground">jam</span>
               </p>
               <p className="mt-1 text-xs text-muted-foreground tabular-nums">
-                {formatPace(scenario.paceSecPerKm)} /km di medan · setara{" "}
-                {formatPace(scenario.gradedPaceSecPerKm)} /km datar
+                Bergerak {formatMinutes(scenario.movingMin)} + berhenti {scenario.stopMin} mnt ·
+                pace {formatPace(scenario.paceSecPerKm)} /km
               </p>
               <p className="mt-2 text-xs tabular-nums">
-                Sisa ke cut-off:{" "}
                 <span
                   className={
-                    scenario.marginMin < 45 ? "font-medium text-destructive" : "font-medium"
+                    scenario.marginMin < 30 ? "font-medium text-amber-600 dark:text-amber-400" : "font-medium"
                   }
                 >
-                  {formatMinutes(scenario.marginMin)} jam
+                  {formatCutoffMargin(scenario.marginMin, "COT")}
                 </span>
               </p>
             </CardContent>
@@ -71,11 +71,11 @@ export default function ProjectionPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <LineChart className="size-4 text-primary" />
-            Kurva waktu tempuh vs cut-off
+            Kurva waktu tempuh vs batas mundur
           </CardTitle>
           <CardDescription>
             {gtrUltra.distanceKm} km dengan {formatInteger(gtrUltra.elevGainM)} m naik setara{" "}
-            {formatNumber(forecast.raceGradedKm)} km di jalan datar.
+            {formatNumber(forecast.raceGradedKm)} km di jalan datar. Start {gtrUltra.startTime} WIB.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -87,8 +87,8 @@ export default function ProjectionPage() {
         <CardHeader>
           <CardTitle>Split per pos</CardTitle>
           <CardDescription>
-            Segmen belakang sengaja diberi bobot waktu lebih besar karena pace melambat saat
-            lelah.
+            Durasi segmen = total kumulatif − total sebelumnya. Jam dinding dari flag off{" "}
+            {gtrUltra.startTime}.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -100,8 +100,9 @@ export default function ProjectionPage() {
         <CardHeader>
           <CardTitle>Dari mana angkanya</CardTitle>
           <CardDescription>
-            Proyeksi memakai rumus Riegel di atas jarak setara datar, dengan sesi terbaik
-            enam pekan terakhir sebagai acuan.
+            Riegel (eksponen {forecast.exponent.toLocaleString("id-ID", { maximumFractionDigits: 2 })})
+            pada waktu bergerak sesi acuan, faktor 0,9 km per 100 m tanjakan. Waktu berhenti
+            ditambahkan terpisah per skenario (23 / 60 / 121 menit).
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
@@ -114,36 +115,34 @@ export default function ProjectionPage() {
             </p>
             <p className="mt-1 text-muted-foreground tabular-nums">
               {formatNumber(reference.distanceKm)} km · {formatInteger(reference.elevGainM)} m
-              naik · pace {formatPace(reference.paceSecPerKm)} /km · setara{" "}
-              {formatNumber(gradedKm(reference.distanceKm, reference.elevGainM))} km datar ·{" "}
-              {workoutTypeLabel[reference.type]}
+              naik · waktu bergerak {formatClock(forecast.movingSec)} (bukan total elapsed{" "}
+              {formatClock(reference.durationSec)}) · setara{" "}
+              {formatNumber(forecast.refGradedKm)} km datar · {workoutTypeLabel[reference.type]}
             </p>
           </div>
           <ul className="space-y-2 text-muted-foreground">
             <li className="flex gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-              Setiap 100 m tanjakan dihitung sebagai 0,9 km tambahan—patokan kasar yang
-              cocok untuk trail teknis di sekitar Semarang.
+              Setiap 100 m tanjakan dihitung sebagai 0,9 km tambahan — sama dengan faktor yang
+              sudah dipakai sebelumnya.
             </li>
             <li className="flex gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-              Lomba ini {formatNumber(forecast.stretch)}× lebih panjang dari sesi acuan, jadi
-              eksponen Riegel dinaikkan dari 1,06 ke{" "}
-              {forecast.exponent.toLocaleString("id-ID", { maximumFractionDigits: 2 })}.
-              Melipatgandakan jarak selalu menghasilkan pelemahan lebih besar daripada
-              perbandingan linear.
+              Lomba {formatNumber(forecast.stretch)}× lebih panjang dari sesi acuan (km setara
+              datar). Eksponen tetap 1,06; yang diubah hanya masukan: waktu bergerak, bukan
+              waktu total.
             </li>
             <li className="flex gap-2">
               <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />
-              Cuaca, antrean di pos, dan kondisi jalur belum masuk hitungan; itulah gunanya
-              skenario aman.
+              Ketiga skenario berada di dalam COT 10 jam ({gtrUltra.cutoffClock} WIB). Target
+              disiplin finis {formatMinutes(forecast.target.finishMin)}.
             </li>
           </ul>
           <div className="flex gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/5 px-3.5 py-3">
             <TriangleAlert className="mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-400" />
             <p className="text-muted-foreground">
-              Angka ini alat uji skenario, bukan janji. Perbarui setelah setiap long run
-              besar supaya acuannya tetap mencerminkan kebugaran terbaru.
+              Angka ini alat uji skenario, bukan janji. Posisi water station masih estimasi —
+              sesuaikan setelah GPX dan technical meeting.
             </p>
           </div>
         </CardContent>

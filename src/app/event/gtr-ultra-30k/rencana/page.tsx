@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CalendarRange, CircleCheckBig, CircleAlert, CircleDot } from "lucide-react";
+import { CalendarRange, CircleAlert, CircleCheckBig, CircleDot } from "lucide-react";
 
 import {
   Card,
@@ -10,22 +10,13 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { gtrUltra } from "@/data/event";
-import { formatDate, formatInteger, formatMinutes } from "@/lib/format";
-import { readiness, readinessChecklist, trainingPlan } from "@/lib/race";
+import { formatDate, formatMinutes } from "@/lib/format";
+import { raceCountdown, readiness, readinessChecklist } from "@/lib/race";
 
 export const metadata: Metadata = {
-  title: "Rencana latihan menuju GTR Ultra 30K",
+  title: "Rencana 9 hari menuju GTR Ultra 30K",
   description:
-    "Program penajaman 8 minggu dari Rencana GTR Ultra Revisi 3: long trail, vertikal, disiplin berhenti, dan checklist kesiapan.",
-};
-
-const phaseTone: Record<string, "default" | "secondary" | "outline"> = {
-  Reintroduksi: "secondary",
-  Bangun: "default",
-  Pemulihan: "secondary",
-  Puncak: "default",
-  Taper: "outline",
-  "Pekan lomba": "outline",
+    "Countdown harian 18–27 September: long trail terakhir, taper, race pack, dan flag off 03.00.",
 };
 
 const statusIcon = {
@@ -42,10 +33,8 @@ const statusTone = {
 
 export default function PlanPage() {
   const status = readiness();
-  const plan = trainingPlan();
+  const days = raceCountdown();
   const checklist = readinessChecklist(status, gtrUltra);
-  const peak = plan.find((week) => week.phase === "Puncak") ?? plan[plan.length - 3];
-  const shortRunway = status.weeksLeft < 8;
 
   return (
     <div className="space-y-4">
@@ -53,53 +42,59 @@ export default function PlanPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CalendarRange className="size-4 text-primary" />
-            {plan.length} pekan penajaman
+            Rencana 9 hari
           </CardTitle>
           <CardDescription>
-            Bukan bangun dari nol — kamu sudah pernah 26,4 km / 1.209 m. Target finis{" "}
-            {formatMinutes(gtrUltra.targetFinishMin)}, COT {formatMinutes(gtrUltra.cutoffMin)}.
-            Puncak di P{peak.index}: {peak.longRunKm} km / {formatInteger(peak.elevM)} m.
+            Tidak ada kebugaran baru yang bisa dibangun dalam {status.daysLeft} hari. Tugasnya
+            tiba di garis start segar, dengan perlengkapan yang sudah pernah dipakai. Target
+            finis {formatMinutes(gtrUltra.targetFinishMin)} · COT {formatMinutes(gtrUltra.cutoffMin)}{" "}
+            ({gtrUltra.cutoffClock} WIB).
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          {shortRunway ? (
-            <p className="rounded-xl bg-amber-500/10 px-3 py-2.5 text-sm text-amber-800 dark:text-amber-200">
-              Sisa {status.weeksLeft} pekan — lebih pendek dari 8 minggu penuh. Prioritaskan satu
-              long trail 16–20 km lebih dulu, lalu taper; jangan paksa puncak 28 km di dalam 10
-              hari terakhir. Target realistis 9:00–9:30.
-            </p>
-          ) : null}
+          <p className="rounded-xl bg-primary/10 px-3 py-2.5 text-sm">
+            Taper dimulai sekarang. Semua uji perlengkapan terjadi di satu sesi terakhir —
+            Sabtu 19 September (long trail + headlamp sebelum subuh).
+          </p>
           <ul className="space-y-2">
-            {plan.map((week) => (
-              <li key={week.weekStart} className="rounded-xl px-3.5 py-3 ring-1 ring-foreground/10">
+            {days.map((day) => (
+              <li
+                key={day.date}
+                className={`rounded-xl px-3.5 py-3 ring-1 ring-foreground/10 ${
+                  day.raceDay
+                    ? "bg-primary text-primary-foreground ring-primary"
+                    : day.highlight
+                      ? "bg-primary/5"
+                      : ""
+                }`}
+              >
                 <div className="flex items-center justify-between gap-2">
                   <p className="font-medium">
-                    P{week.index}
-                    <span className="ml-1.5 text-xs font-normal text-muted-foreground">
-                      mulai {formatDate(week.weekStart)}
+                    H{day.offset === 0 ? "" : day.offset}
+                    <span
+                      className={`ml-1.5 text-xs font-normal ${
+                        day.raceDay ? "text-primary-foreground/80" : "text-muted-foreground"
+                      }`}
+                    >
+                      {formatDate(day.date, "weekday")}
                     </span>
                   </p>
-                  <Badge variant={phaseTone[week.phase] ?? "secondary"}>{week.phase}</Badge>
+                  {day.raceDay ? (
+                    <Badge variant="secondary">Lomba</Badge>
+                  ) : day.highlight ? (
+                    <Badge>Kunci</Badge>
+                  ) : null}
                 </div>
-                <dl className="mt-2.5 grid grid-cols-2 gap-2 text-xs tabular-nums sm:grid-cols-4">
-                  <div>
-                    <dt className="text-muted-foreground">Volume</dt>
-                    <dd>{week.targetKm} km</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted-foreground">Long trail</dt>
-                    <dd>{week.longRunKm} km</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted-foreground">Vertikal</dt>
-                    <dd>{formatInteger(week.elevM)} m</dd>
-                  </div>
-                  <div>
-                    <dt className="text-muted-foreground">Berhenti</dt>
-                    <dd>{week.stopBudget ?? "—"}</dd>
-                  </div>
-                </dl>
-                <p className="mt-2 text-sm text-muted-foreground">{week.focus}</p>
+                <p className={`mt-1.5 text-sm font-medium ${day.raceDay ? "" : ""}`}>
+                  {day.session}
+                </p>
+                <p
+                  className={`mt-1 text-sm ${
+                    day.raceDay ? "text-primary-foreground/85" : "text-muted-foreground"
+                  }`}
+                >
+                  {day.note}
+                </p>
               </li>
             ))}
           </ul>
@@ -111,7 +106,7 @@ export default function PlanPage() {
           <CardHeader>
             <CardTitle>Checklist kesiapan</CardTitle>
             <CardDescription>
-              Mengikuti gap kapasitas trail + disiplin water station dari rencana Revisi 3.
+              Fokus kit wajib, disiplin water station, dan tidur H−2.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -134,20 +129,20 @@ export default function PlanPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Aturan main saat rencana ini dijalankan</CardTitle>
+            <CardTitle>Aturan main 9 hari terakhir</CardTitle>
             <CardDescription>
-              Tiga risiko tersisa: waktu berhenti, jeda trail, dan kerusakan turunan.
+              Segar di garis start lebih berharga daripada volume tambahan.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               {[
                 "Berhenti hanya untuk hal yang tidak bisa dilakukan sambil berjalan; target total berhenti lomba 23 menit.",
-                "Setelah turunan >600 m, beri jeda minimal 4 hari sebelum sesi berkualitas berikutnya.",
-                "Di tanjakan: power hiking lebih efisien daripada memaksa berlari (VAM ~360 m/jam).",
-                "Pilih rute dengan turunan panjang sejak minggu 2 — lomba punya ~1.800 m turun.",
-                "Pakai sepatu, vest, dan nutrisi lomba mulai minggu 5.",
-                "Km 1–6 harus terasa terlalu pelan; bawa kebiasaan negative split dari sesi road terakhir.",
+                "Sabtu 19 Sep: uji kit lengkap + headlamp sebelum subuh — gladi start malam.",
+                "Di tanjakan: power hiking lebih efisien daripada memaksa berlari.",
+                "Jangan paksa long run baru setelah H−8; fokus tidur dan karbohidrat.",
+                "Km 1–6 dalam gelap harus terasa terlalu pelan; headlamp wajib.",
+                "Lewati Opening MC 23.00 — tidur H−1 lebih penting.",
               ].map((rule) => (
                 <li key={rule} className="flex gap-2">
                   <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-primary" />

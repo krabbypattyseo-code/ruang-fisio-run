@@ -12,10 +12,10 @@ data latihan alih-alih diketik manual.
 | `/` | Tren pace, cadence, stride, HR, volume mingguan per tipe, dan arsip sesi | Agregat semua sesi, difilter |
 | `/sesi/[id]` | Lap, running dynamics, profil elevasi, distribusi zona HR, cuaca | Satu sesi + tabel lap |
 | `/event` | Daftar event yang diikuti |
-| `/event/gtr-ultra-30k` | Info acara, hitung mundur, skor kesiapan per komponen, pos & cut-off | Data lomba manual + agregat latihan |
-| `/event/gtr-ultra-30k/proyeksi` | Tiga skenario waktu finis, kurva waktu vs cut-off, split per pos | Sesi acuan + parameter lomba |
-| `/event/gtr-ultra-30k/rencana` | Rencana pekanan (bangun → puncak → taper) dan checklist | Turunan dari gap kesiapan |
-| `/event/gtr-ultra-30k/strategi` | Logistik cairan, karbo, sodium per segmen, aturan pacing, jadwal pagi | Proyeksi + sweat rate pribadi |
+| `/event/gtr-ultra-30k` | Info acara, hitung mundur, skor kesiapan, race schedule, gear wajib | Data lomba resmi + agregat latihan |
+| `/event/gtr-ultra-30k/proyeksi` | Tiga skenario (disiplin / sedang / seperti 11 Apr), kurva vs batas mundur | Riegel pada waktu bergerak Bogor |
+| `/event/gtr-ultra-30k/rencana` | Countdown 9 hari + checklist | `gtrCountdownDays` |
+| `/event/gtr-ultra-30k/strategi` | Cairan 400–600 ml/jam, pacing malam, jadwal dari flag off 03.00 | Proyeksi + profil cairan lomba |
 
 Filter di Dashboard menyimpan seluruh state di query string, misalnya
 `/dashboard?tipe=trail&dari=2026-07-01&sampai=2026-09-16`, sehingga tautannya bisa di-bookmark dan
@@ -56,7 +56,8 @@ Arsip sesi dari berkas di `data/raw/`:
 - `Garmin_Hiking_TrailRunning.xlsx` — hiking & trail Garmin (Jan 2025–Apr 2026)
 - `Garmin_Running_Data_JulAug_2026.xlsx` — lap & zona HR Garmin road
 - `COROS_Running_26Agu6Sep2026.xlsx` / `COROS_Running_10-14Sep2026.xlsx` — lap COROS
-- `1-rencana-gtr-ultra-30k.html` — sumber parameter lomba & rencana 8 minggu (Revisi 3)
+- `1-rencana-gtr-ultra-30k.html` — brief awal parameter lomba (Revisi 3)
+- `6-update-website-gtr.html` — audit & konten pengganti resmi (18 Sep 2026): start 03.00, COT 13.00, gear 10 item, proyeksi terkoreksi, rencana 9 hari
 
 Impor ke TypeScript:
 

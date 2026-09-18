@@ -26,7 +26,7 @@ export default function GtrUltraLayout({ children }: { children: React.ReactNode
             <CalendarDays className="size-3.5" />
             <dt className="sr-only">Tanggal</dt>
             <dd>
-              {formatDate(gtrUltra.date, "long")}, start {gtrUltra.startTime}
+              {formatDate(gtrUltra.date, "weekday")}, flag off {gtrUltra.startTime} WIB
             </dd>
           </div>
           <div className="inline-flex items-center gap-1.5">
@@ -44,7 +44,9 @@ export default function GtrUltraLayout({ children }: { children: React.ReactNode
           <div className="inline-flex items-center gap-1.5">
             <Timer className="size-3.5" />
             <dt className="sr-only">Cut-off</dt>
-            <dd>COT {formatMinutes(gtrUltra.cutoffMin)} jam</dd>
+            <dd>
+              COT {formatMinutes(gtrUltra.cutoffMin)} jam · {gtrUltra.cutoffClock} WIB
+            </dd>
           </div>
         </dl>
       </header>

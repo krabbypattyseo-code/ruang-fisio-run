@@ -10,12 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatMinutes, formatPace } from "@/lib/format";
+import { formatCutoffMargin, formatMinutes, formatPace } from "@/lib/format";
 import type { Scenario } from "@/lib/race";
 
 /** Tabel split per pos; skenario bisa ditukar tanpa memuat ulang halaman. */
 export function ScenarioSplits({ scenarios }: { scenarios: Scenario[] }) {
-  const [activeKey, setActiveKey] = useState(scenarios[1]?.key ?? scenarios[0].key);
+  const [activeKey, setActiveKey] = useState(
+    scenarios.find((scenario) => scenario.key === "disiplin")?.key ?? scenarios[0].key,
+  );
   const active = scenarios.find((scenario) => scenario.key === activeKey) ?? scenarios[0];
 
   return (
@@ -49,7 +51,7 @@ export function ScenarioSplits({ scenarios }: { scenarios: Scenario[] }) {
               <TableHead className="text-right">Waktu segmen</TableHead>
               <TableHead className="text-right">Total</TableHead>
               <TableHead className="text-right">Jam dinding</TableHead>
-              <TableHead className="text-right">Sisa ke cut-off</TableHead>
+              <TableHead className="text-right">Vs batas mundur</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -74,7 +76,7 @@ export function ScenarioSplits({ scenarios }: { scenarios: Scenario[] }) {
                       tight ? "font-medium text-destructive" : "text-muted-foreground"
                     }`}
                   >
-                    {formatMinutes(split.marginMin)}
+                    {formatCutoffMargin(split.marginMin, "batas")}
                   </TableCell>
                 </TableRow>
               );
