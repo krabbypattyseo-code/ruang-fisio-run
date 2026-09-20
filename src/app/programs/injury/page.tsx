@@ -70,7 +70,10 @@ export default function InjuryIndexPage() {
         <ul className="space-y-2.5">
           {injuries.map((injury) => (
             <li key={injury.id}>
-              <article className="overflow-hidden rounded-[14px] bg-background ring-1 ring-foreground/10">
+              <Link
+                href={`/programs/injury/${injury.id}`}
+                className="block overflow-hidden rounded-[14px] bg-background ring-1 ring-foreground/10 transition-shadow hover:shadow-sm"
+              >
                 <div className="flex gap-3 p-3">
                   <div className="grid size-14 shrink-0 place-items-center rounded-xl bg-[#e6f4f5] text-[12.5px] font-semibold text-[var(--brand-teal)]">
                     {injury.area.split(" ")[0]}
@@ -87,17 +90,14 @@ export default function InjuryIndexPage() {
                     </div>
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <ReviewBadge review={injury.review} />
-                      <Link
-                        href={`/programs/injury/${injury.id}`}
-                        className="inline-flex items-center gap-0.5 text-xs font-medium text-foreground hover:text-[var(--brand-teal)]"
-                      >
+                      <span className="inline-flex items-center gap-0.5 text-xs font-medium text-foreground">
                         Details
                         <ChevronRight className="size-3.5" />
-                      </Link>
+                      </span>
                     </div>
                   </div>
                 </div>
-              </article>
+              </Link>
             </li>
           ))}
         </ul>

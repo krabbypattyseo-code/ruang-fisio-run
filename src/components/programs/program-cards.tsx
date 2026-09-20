@@ -21,7 +21,10 @@ export function ProgramCard({
   const Icon = programIcons[program.icon as keyof typeof programIcons] ?? PersonStanding;
 
   return (
-    <article className="overflow-hidden rounded-[14px] bg-background ring-1 ring-foreground/10">
+    <Link
+      href={href}
+      className="block overflow-hidden rounded-[14px] bg-background ring-1 ring-foreground/10 transition-shadow hover:shadow-sm"
+    >
       <div className="flex gap-3 p-3">
         <div className="grid size-16 shrink-0 place-items-center rounded-xl bg-[#e6f4f5] text-[var(--brand-teal)]">
           <Icon className="size-7" strokeWidth={1.75} />
@@ -38,17 +41,14 @@ export function ProgramCard({
           </div>
           <div className="mt-2 flex items-center justify-between gap-2">
             <ReviewBadge review={program.review} />
-            <Link
-              href={href}
-              className="inline-flex items-center gap-0.5 text-xs font-medium text-foreground hover:text-[var(--brand-teal)]"
-            >
+            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-foreground">
               Details
               <ChevronRight className="size-3.5" />
-            </Link>
+            </span>
           </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
