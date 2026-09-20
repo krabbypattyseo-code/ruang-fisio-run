@@ -131,6 +131,24 @@ check(
     (await page.getByText("Currently Use").first().isVisible()),
 );
 
+// 4d. Programs: reviewer + Sport + modul.
+await page.goto(`${base}/`, { waitUntil: "networkidle" });
+await page.getByRole("link", { name: "Programs", exact: true }).click();
+await page.waitForURL(/\/programs\/?$/);
+await page.waitForSelector("text=Awalin Aulia Ramadhani");
+check("Programs: profil peninjau tampil", await page.getByText("Menunggu review fisio").first().isVisible());
+await page.getByRole("link", { name: /Sport/ }).first().click();
+await page.waitForURL(/\/programs\/sport\/?$/);
+await page.getByRole("link", { name: "Details" }).first().click();
+await page.waitForURL(/\/programs\/sport\/running/);
+check(
+  "Programs: detail Running",
+  await page.getByRole("heading", { name: "Running Programs" }).isVisible(),
+);
+await page.getByRole("link", { name: /Langkah untuk Pemula/ }).click();
+await page.waitForURL(/\/programs\/sport\/running\/pemula/);
+check("Programs: modul pemula", await page.getByText("Jadwal 12 minggu").isVisible());
+
 // 6. Proyeksi: kurva vs batas mundur dan pergantian skenario.
 await page.goto(`${base}/event/gtr-ultra-30k/proyeksi`, { waitUntil: "networkidle" });
 await page.waitForSelector("text=Kurva waktu tempuh vs batas mundur");

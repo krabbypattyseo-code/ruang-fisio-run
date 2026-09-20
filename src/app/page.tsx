@@ -94,6 +94,15 @@ export default function HomePage() {
           >
             Gear
           </Link>
+          <Link
+            href="/programs"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-12 rounded-4xl border-[var(--brand-teal)]/25 bg-white/80 text-base text-[var(--brand-teal)] hover:bg-white",
+            )}
+          >
+            Programs
+          </Link>
         </div>
 
         <div className="mt-auto flex items-center justify-center gap-5 pt-10">

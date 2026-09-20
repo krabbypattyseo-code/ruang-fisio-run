@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   BarChart3,
+  BookOpen,
   CalendarCheck2,
   ChevronUp,
   Home,
@@ -34,9 +35,13 @@ function isEvent(pathname: string) {
   return pathname === "/event" || pathname.startsWith("/event/");
 }
 
+function isPrograms(pathname: string) {
+  return pathname === "/programs" || pathname.startsWith("/programs/");
+}
+
 /**
  * Bottom nav sesuai sketsa: muncul setelah user masuk dari Home
- * lewat Dashboard Monitoring / Event Joined.
+ * lewat Dashboard Monitoring / Event Joined / Programs.
  */
 export function BottomNav() {
   const pathname = usePathname();
@@ -66,6 +71,7 @@ export function BottomNav() {
   const homeActive = isHome(pathname);
   const dashboardActive = isDashboard(pathname);
   const eventActive = isEvent(pathname);
+  const programsActive = isPrograms(pathname);
 
   return (
     <div ref={panelRef} className="relative z-40 shrink-0">
@@ -104,12 +110,12 @@ export function BottomNav() {
         aria-label="Navigasi utama"
         className="border-t border-foreground/10 bg-background pb-[max(0.35rem,env(safe-area-inset-bottom))]"
       >
-        <ul className="grid grid-cols-3 px-1 pt-1">
+        <ul className="grid grid-cols-4 px-0.5 pt-1">
           <li>
             <Link
               href="/"
               className={cn(
-                "flex flex-col items-center gap-0.5 rounded-xl px-2 py-2 text-[11px] transition-colors",
+                "flex flex-col items-center gap-0.5 rounded-xl px-1.5 py-2 text-[10px] transition-colors sm:text-[11px]",
                 homeActive
                   ? "text-[var(--brand-teal)]"
                   : "text-muted-foreground hover:text-foreground",
@@ -123,7 +129,7 @@ export function BottomNav() {
             <Link
               href="/dashboard"
               className={cn(
-                "flex flex-col items-center gap-0.5 rounded-xl px-2 py-2 text-[11px] transition-colors",
+                "flex flex-col items-center gap-0.5 rounded-xl px-1.5 py-2 text-[10px] transition-colors sm:text-[11px]",
                 dashboardActive
                   ? "text-[var(--brand-teal)]"
                   : "text-muted-foreground hover:text-foreground",
@@ -140,7 +146,7 @@ export function BottomNav() {
               aria-haspopup="menu"
               onClick={() => setEventOpen((open) => !open)}
               className={cn(
-                "flex w-full flex-col items-center gap-0.5 rounded-xl px-2 py-2 text-[11px] transition-colors",
+                "flex w-full flex-col items-center gap-0.5 rounded-xl px-1.5 py-2 text-[10px] transition-colors sm:text-[11px]",
                 eventActive || eventOpen
                   ? "text-[var(--brand-teal)]"
                   : "text-muted-foreground hover:text-foreground",
@@ -160,6 +166,20 @@ export function BottomNav() {
               </span>
               Event
             </button>
+          </li>
+          <li>
+            <Link
+              href="/programs"
+              className={cn(
+                "flex flex-col items-center gap-0.5 rounded-xl px-1.5 py-2 text-[10px] transition-colors sm:text-[11px]",
+                programsActive
+                  ? "text-[var(--brand-teal)]"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <BookOpen className="size-5" strokeWidth={programsActive ? 2.4 : 1.9} />
+              Programs
+            </Link>
           </li>
         </ul>
       </nav>
