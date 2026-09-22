@@ -130,6 +130,18 @@ check(
   (await page.getByRole("heading", { name: "Hoka Mach 2 Skyward Blue" }).isVisible()) &&
     (await page.getByText("Currently Use").first().isVisible()),
 );
+check(
+  "Gear product nav: harga + Check Shop",
+  (await page.getByRole("navigation", { name: "Navigasi produk gear" }).isVisible()) &&
+    (await page.getByRole("button", { name: "Check Shop" }).isVisible()) &&
+    (await page.getByText("Rp").first().isVisible()),
+);
+await page.goto(`${base}/gear`, { waitUntil: "networkidle" });
+check(
+  "Gear category: bottom nav biasa (bukan product nav)",
+  (await page.getByRole("navigation", { name: "Navigasi utama" }).isVisible()) &&
+    !(await page.getByRole("navigation", { name: "Navigasi produk gear" }).isVisible()),
+);
 
 // 4d. Programs: reviewer + Sport + modul.
 await page.goto(`${base}/`, { waitUntil: "networkidle" });

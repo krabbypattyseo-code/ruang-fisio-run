@@ -64,6 +64,9 @@ export default async function GearDetailPage({ params }: PageProps) {
           <h1 className="mt-1 font-heading text-2xl leading-tight font-semibold text-[var(--brand-teal)]">
             {item.nickname}
           </h1>
+          {item.price ? (
+            <p className="mt-2 text-lg font-semibold tabular-nums text-foreground">{item.price}</p>
+          ) : null}
         </div>
 
         {item.notes ? (
