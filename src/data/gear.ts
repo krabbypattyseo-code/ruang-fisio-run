@@ -54,15 +54,15 @@ export const gearItems: GearItem[] = [
   {
     id: "hoka-mach-2-skyward-blue",
     brand: "Hoka",
-    nickname: "Hoka Mach 2 Skyward Blue",
+    nickname: "Hoka Mach X2 Skyward Blue",
     type: "shoes",
     status: "currently-use",
     images: ["/gear/hoka-mach-2-skyward-blue-1.webp"],
     notes: "Sepatu road yang sedang dipakai untuk sesi Jakarta.",
     price: "Rp 2.499.000",
     shops: [
-      { id: "shopee", label: "Shopee", url: "" },
-      { id: "tiktok", label: "TikTok", url: "" },
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/yYbV4hMl" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/51Kt1YZR" },
     ],
   },
   {
@@ -82,15 +82,15 @@ export const gearItems: GearItem[] = [
   {
     id: "garmin-forerunner",
     brand: "Garmin",
-    nickname: "Garmin Forerunner",
+    nickname: "Garmin Forerunner 165",
     type: "watch",
     status: "currently-use",
     images: ["/gear/garmin-forerunner-1.webp"],
     notes: "Pantau kebugaran (VO2 Max) dan metrik recovery.",
-    price: "Rp 4.599.000",
+    price: "Rp 2.850.000",
     shops: [
-      { id: "shopee", label: "Shopee", url: "" },
-      { id: "tiktok", label: "TikTok", url: "" },
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/clEWjoYk" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/TDof1Lka" },
     ],
   },
   {
@@ -185,10 +185,10 @@ export const gearItems: GearItem[] = [
     status: "currently-use",
     images: ["/gear/cuktech-15-1.webp"],
     notes: "Powerbank 150W max — andalan charge jam dan HP di perjalanan.",
-    price: "Rp 799.000",
+    price: "Rp 979.000",
     shops: [
-      { id: "shopee", label: "Shopee", url: "" },
-      { id: "tiktok", label: "TikTok", url: "" },
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/RFDtBg1U" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/IDKfKJz1" },
     ],
   },
   {

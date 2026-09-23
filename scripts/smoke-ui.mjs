@@ -121,13 +121,13 @@ check("Event Joined: skor kesiapan terhitung", /^\d+\/100$/.test(scoreText), sco
 await page.goto(`${base}/`, { waitUntil: "networkidle" });
 await page.getByRole("link", { name: "Gear", exact: true }).click();
 await page.waitForURL(/\/gear\/?$/);
-await page.waitForSelector("text=Hoka Mach 2 Skyward Blue");
+await page.waitForSelector("text=Hoka Mach X2 Skyward Blue");
 check("Gear: kartu sepatu tampil", await page.getByText("Currently Use").first().isVisible());
 await page.getByRole("link", { name: "Details" }).first().click();
 await page.waitForURL(/\/gear\/hoka-mach-2-skyward-blue/);
 check(
   "Gear detail: nama & status",
-  (await page.getByRole("heading", { name: "Hoka Mach 2 Skyward Blue" }).isVisible()) &&
+  (await page.getByRole("heading", { name: "Hoka Mach X2 Skyward Blue" }).isVisible()) &&
     (await page.getByText("Currently Use").first().isVisible()),
 );
 check(
