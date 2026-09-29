@@ -111,11 +111,15 @@ check("Session Detail: tabel lap & running dynamics tampil", lapRows && dynamics
 await page.goto(`${base}/`, { waitUntil: "networkidle" });
 await page.getByRole("link", { name: "Event Joined" }).click();
 await page.waitForURL(/\/event\/?$/);
-await page.getByRole("link", { name: /Buka GTR Ultra/ }).click();
+await page.getByRole("link", { name: /Buka hasil|Buka GTR Ultra/ }).click();
 await page.waitForURL(/\/event\/gtr-ultra-30k\/?$/);
-await page.waitForSelector("text=Skor kesiapan");
-const scoreText = await page.locator("text=/^\\d+\\/100$/").first().innerText();
-check("Event Joined: skor kesiapan terhitung", /^\d+\/100$/.test(scoreText), scoreText);
+await page.waitForSelector("text=DNF");
+await page.waitForSelector("text=Anggaran waktu");
+check(
+  "Event Joined: tab Hasil DNF tampil",
+  (await page.getByText("Anggaran waktu").first().isVisible()) &&
+    (await page.getByText("1,47").first().isVisible()),
+);
 
 // 4c. Gear: daftar + detail sepatu Hoka.
 await page.goto(`${base}/`, { waitUntil: "networkidle" });

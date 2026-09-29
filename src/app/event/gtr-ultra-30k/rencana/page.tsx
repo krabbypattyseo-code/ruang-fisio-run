@@ -52,9 +52,16 @@ export default function PlanPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
+          <p className="rounded-xl border border-[var(--brand-clay)]/30 bg-[#f7eee6] px-3 py-2.5 text-sm leading-relaxed">
+            <span className="font-semibold text-[var(--brand-clay)]">Catatan pasca-lomba.</span>{" "}
+            Posisi WS di tabel ini estimasi, dan jarak kursus ternyata 31,09 km — cukup dekat
+            dengan asumsi 30 km. Yang meleset bukan rencananya, tapi eksekusinya: dikonversi ke
+            km kursus sebenarnya, batas mundur pribadi sudah terlewat sejak WS 1 dan selisihnya
+            melebar jadi 30 menit di WS 4.
+          </p>
           <p className="rounded-xl bg-primary/10 px-3 py-2.5 text-sm">
-            Taper dimulai sekarang. Semua uji perlengkapan terjadi di satu sesi terakhir —
-            Sabtu 19 September (long trail + headlamp sebelum subuh).
+            Arsip taper pra-lomba. Semua uji perlengkapan terjadi di satu sesi terakhir — Sabtu
+            19 September (long trail + headlamp sebelum subuh).
           </p>
           <ul className="space-y-2">
             {days.map((day) => (

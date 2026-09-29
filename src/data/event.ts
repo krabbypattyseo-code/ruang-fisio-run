@@ -1,7 +1,13 @@
 /**
  * Parameter lomba GTR Ultra 30K — sumber resmi race schedule & mandatory gear (18 Sep 2026).
+ * Hasil DNF 27 Sep 2026: docs/10-ruang-fisio-update-gtr-dnf.md.
  * Proyeksi: Riegel pada waktu bergerak sesi Bogor 11 Apr 2026; waktu berhenti skenario terpisah.
  */
+
+import { gtrUltraResult, type EventResult, type EventStatus } from "@/data/gtr-ultra-result";
+
+export type { EventResult, EventStatus } from "@/data/gtr-ultra-result";
+export { gtrUltraResult } from "@/data/gtr-ultra-result";
 
 export type Checkpoint = {
   name: string;
@@ -50,6 +56,8 @@ export type RaceEvent = {
   checkpoints: Checkpoint[];
   mandatoryGear: string[];
   schedule: RaceScheduleItem[];
+  status: EventStatus;
+  result?: EventResult;
 };
 
 export type CountdownDay = {
@@ -157,8 +165,10 @@ export const gtrUltra: RaceEvent = {
   elevLossM: 1800,
   cutoffMin: 600,
   targetFinishMin: 501,
+  status: "dnf",
+  result: gtrUltraResult,
   terrain:
-    "Kepadatan ~60 m/km — tanjakan terus-menerus. ~1.800 m naik. Start dini hari: ~2,5 jam pertama dalam gelap.",
+    "Kepadatan ~60 m/km — tanjakan terus-menerus. ~1.800 m naik. Start dini hari: ~2,5 jam pertama dalam gelap. Jarak resmi 31,09 km per GPX panitia. Jam tangan mencatat 33,19 km — bacaan jam memang meleset di trail bertutupan rapat.",
   checkpoints: [
     {
       name: "WS 1",
