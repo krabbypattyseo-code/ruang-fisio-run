@@ -205,6 +205,20 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "" },
     ],
   },
+  {
+    id: "kiprun-running-belt",
+    brand: "KIPRUN",
+    nickname: "KIPRUN Running Belt Hidrasi",
+    type: "accessory",
+    status: "currently-use",
+    images: ["/gear/kiprun-running-belt-1.webp"],
+    notes: "Belt hidrasi marathon Decathlon KIPRUN — softflask siap di pinggang.",
+    price: "Rp 280.000",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/LchaDzO1" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/YOs0qAd1" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
