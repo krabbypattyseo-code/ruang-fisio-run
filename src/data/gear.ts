@@ -150,17 +150,17 @@ export const gearItems: GearItem[] = [
     ],
   },
   {
-    id: "quechua-camp-tent",
+    id: "quechua-mh100-2p",
     brand: "Quechua",
-    nickname: "Quechua Camp Tent",
+    nickname: "Quechua Tenda MH100 2P",
     type: "tent",
     status: "currently-use",
     images: ["/gear/quechua-camp-tent-1.webp"],
-    notes: "Tenda camping untuk basecamp dan overnight trek.",
-    price: "Rp 1.899.000",
+    notes: "Tenda Decathlon Quechua MH100 2 person — overnight trek dan basecamp.",
+    price: "Rp 534.000",
     shops: [
-      { id: "shopee", label: "Shopee", url: "" },
-      { id: "tiktok", label: "TikTok", url: "" },
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/83ki5ybB" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/agO7HmHJ" },
     ],
   },
   {
