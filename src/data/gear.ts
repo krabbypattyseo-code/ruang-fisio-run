@@ -233,6 +233,20 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "https://atid.me/go/U9EqkJbm" },
     ],
   },
+  {
+    id: "ej-sport-orange",
+    brand: "EJ Sport",
+    nickname: "EJ Sport Orange 2 Pack",
+    type: "accessory",
+    status: "currently-use",
+    images: ["/gear/ej-sport-orange-1.webp"],
+    notes: "Gel energi orange (L-Carnitine + BCAA) — before & during sport, isi 5 sachet.",
+    price: "Rp 168.300",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/XYuhXW1v" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/fVgb3tOk" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
