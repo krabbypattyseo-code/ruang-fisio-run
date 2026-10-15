@@ -68,15 +68,15 @@ export const gearItems: GearItem[] = [
   {
     id: "coros-pace",
     brand: "COROS",
-    nickname: "COROS Pace",
+    nickname: "COROS Pace 3",
     type: "watch",
     status: "currently-use",
     images: ["/gear/coros-pace-1.webp"],
     notes: "Jam utama untuk track jarak, pace, dan rute lari.",
     price: "Rp 3.199.000",
     shops: [
-      { id: "shopee", label: "Shopee", url: "" },
-      { id: "tiktok", label: "TikTok", url: "" },
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/qyzI27Y8" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/rk77UA9k" },
     ],
   },
   {
