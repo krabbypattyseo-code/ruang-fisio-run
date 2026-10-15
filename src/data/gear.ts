@@ -289,6 +289,20 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "https://atid.me/go/FJlmkOca" },
     ],
   },
+  {
+    id: "greenforest-arvensis-10l",
+    brand: "Greenforest",
+    nickname: "Greenforest Arvensis 10L",
+    type: "backpack",
+    status: "currently-use",
+    images: ["/gear/greenforest-arvensis-10l-1.webp"],
+    notes: "Hydration pack 10L reflektif — daypack trail ringan dengan mesh depan.",
+    price: "Rp 265.000",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/kre4yxbk" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/qCdUdRXY" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
