@@ -275,6 +275,20 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "https://atid.me/go/0r4PHSs0" },
     ],
   },
+  {
+    id: "quechua-hiking-pole",
+    brand: "Quechua",
+    nickname: "Quechua Tongkat Hiking",
+    type: "accessory",
+    status: "currently-use",
+    images: ["/gear/quechua-hiking-pole-1.webp"],
+    notes: "Tongkat hiking telescopic Decathlon Quechua — penopang di tanjakan dan turunan.",
+    price: "Rp 138.000",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/9hy5ej5Y" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/FJlmkOca" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
