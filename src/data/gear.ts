@@ -247,6 +247,20 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "https://atid.me/go/fVgb3tOk" },
     ],
   },
+  {
+    id: "quechua-arpenaz-1p",
+    brand: "Quechua",
+    nickname: "Quechua Arpenaz 1P",
+    type: "tent",
+    status: "currently-use",
+    images: ["/gear/quechua-arpenaz-1p-1.webp"],
+    notes: "Tenda kemah Decathlon Quechua Arpenaz 1 orang — basecamp ringan.",
+    price: "Rp 404.000",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/0z7I2X6M" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/VOL1aRGL" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
