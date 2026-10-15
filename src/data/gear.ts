@@ -164,20 +164,6 @@ export const gearItems: GearItem[] = [
     ],
   },
   {
-    id: "popup-sun-shelter",
-    brand: "Quechua",
-    nickname: "Pop-up Sun Shelter",
-    type: "tent",
-    status: "currently-use",
-    images: ["/gear/quechua-sun-shelter-1.webp"],
-    notes: "Shelter lipat untuk naungan di pantai atau area terbuka.",
-    price: "Rp 599.000",
-    shops: [
-      { id: "shopee", label: "Shopee", url: "" },
-      { id: "tiktok", label: "TikTok", url: "" },
-    ],
-  },
-  {
     id: "cuktech-15",
     brand: "CUKTECH",
     nickname: "CUKTECH 15 20000mAh",
@@ -253,8 +239,11 @@ export const gearItems: GearItem[] = [
     nickname: "Quechua Arpenaz 1P",
     type: "tent",
     status: "currently-use",
-    images: ["/gear/quechua-arpenaz-1p-1.webp"],
-    notes: "Tenda kemah Decathlon Quechua Arpenaz 1 orang — basecamp ringan.",
+    images: [
+      "/gear/quechua-arpenaz-1p-1.webp",
+      "/gear/quechua-sun-shelter-1.webp",
+    ],
+    notes: "Tenda kemah Decathlon Quechua Arpenaz 1P — basecamp ringan / naungan di area terbuka.",
     price: "Rp 404.000",
     shops: [
       { id: "shopee", label: "Shopee", url: "https://atid.me/go/0z7I2X6M" },
