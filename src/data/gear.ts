@@ -261,6 +261,20 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "https://atid.me/go/VOL1aRGL" },
     ],
   },
+  {
+    id: "ugreen-nexode-160w",
+    brand: "UGREEN",
+    nickname: "UGREEN Nexode GaN Pro 160W",
+    type: "accessory",
+    status: "currently-use",
+    images: ["/gear/ugreen-nexode-160w-1.webp"],
+    notes: "Charger GaN 160W PD/QC — charge laptop, jam, dan HP sekaligus.",
+    price: "Rp 1.000.000",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/Al3ZjP2Y" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/0r4PHSs0" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
