@@ -270,8 +270,12 @@ export const gearItems: GearItem[] = [
     nickname: "Greenforest Arvensis 10L",
     type: "backpack",
     status: "currently-use",
-    images: ["/gear/greenforest-arvensis-10l-1.webp"],
-    notes: "Hydration pack 10L reflektif — daypack trail ringan dengan mesh depan.",
+    images: [
+      "/gear/greenforest-arvensis-10l-1.webp",
+      "/gear/trail-daypack-1.webp",
+      "/gear/city-daypack-bottle-1.webp",
+    ],
+    notes: "Hydration pack 10L reflektif — daypack trail ringan untuk hiking dan jalan kota.",
     price: "Rp 265.000",
     shops: [
       { id: "shopee", label: "Shopee", url: "https://atid.me/go/kre4yxbk" },
