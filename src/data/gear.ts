@@ -219,6 +219,20 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "https://atid.me/go/YOs0qAd1" },
     ],
   },
+  {
+    id: "prolink-mifi",
+    brand: "Prolink",
+    nickname: "Prolink MiFi Hotspot 4G LTE",
+    type: "accessory",
+    status: "currently-use",
+    images: ["/gear/prolink-mifi-1.webp"],
+    notes: "Modem WiFi hotspot 4G LTE unlock all operator — cadangan internet di trail dan travel.",
+    price: "Rp 799.000",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "https://atid.me/go/tZqLiaSc" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/U9EqkJbm" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
