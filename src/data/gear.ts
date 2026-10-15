@@ -170,11 +170,11 @@ export const gearItems: GearItem[] = [
     type: "accessory",
     status: "currently-use",
     images: ["/gear/onpoint-breeze-wipe-1.webp"],
-    notes: "Wet wipe cooling mint untuk recovery setelah sesi.",
-    price: "Rp 15.000",
+    notes: "Wet wipe cooling mint untuk recovery setelah sesi — varian 2 multipack.",
+    price: "Rp 78.400",
     shops: [
-      { id: "shopee", label: "Shopee", url: "" },
-      { id: "tiktok", label: "TikTok", url: "" },
+      { id: "shopee", label: "Shopee", url: "https://s.shopee.co.id/9fLgTaGlLJ" },
+      { id: "tiktok", label: "TikTok", url: "https://atid.me/go/YbemCLzA" },
     ],
   },
   {
