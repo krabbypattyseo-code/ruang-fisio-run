@@ -122,20 +122,6 @@ export const gearItems: GearItem[] = [
     ],
   },
   {
-    id: "trail-hiking-pack",
-    brand: "Trail",
-    nickname: "Hiking Pack",
-    type: "backpack",
-    status: "currently-use",
-    images: ["/gear/trail-daypack-1.webp", "/gear/city-daypack-bottle-1.webp"],
-    notes: "Pack trail untuk hiking berkabut dan jalan kota.",
-    price: "Rp 459.000",
-    shops: [
-      { id: "shopee", label: "Shopee", url: "" },
-      { id: "tiktok", label: "TikTok", url: "" },
-    ],
-  },
-  {
     id: "life-vest-travel",
     brand: "Boevboo",
     nickname: "Life Vest Travel",
