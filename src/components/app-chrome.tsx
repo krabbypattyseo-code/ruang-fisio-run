@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { BottomNav } from "@/components/bottom-nav";
 import { GearProductNav } from "@/components/gear-product-nav";
-import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getGear } from "@/data/gear";
 
@@ -27,7 +26,6 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       {isHome ? null : <SiteHeader />}
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain" data-app-scroll>
         <main className="flex min-h-full flex-col">{children}</main>
-        {isHome ? null : <SiteFooter />}
       </div>
       {isHome ? null : isGearProduct && gearProduct ? (
         <GearProductNav item={gearProduct} />
