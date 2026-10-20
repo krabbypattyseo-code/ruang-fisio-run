@@ -69,7 +69,10 @@ npm run import:sessions
 Hasilnya ditulis ke `src/data/sessions.generated.ts`. Field yang tidak ada di sumber
 tetap `null` — tidak digenerate.
 
-Untuk menambah workout baru: ganti/tambah file Excel di `data/raw/`, sesuaikan path di
+Sesi COROS tambahan (JSON arsip, Sep–Okt 2026) ada di `data/raw/coros-extra-sep-oct-2026.json`
+dan digabung via `src/data/sessions.manual.ts` — tidak ditimpa saat impor Excel.
+
+Untuk menambah workout baru dari Excel: ganti/tambah file di `data/raw/`, sesuaikan path di
 `scripts/import-sessions.py` bila nama file berubah, lalu jalankan ulang impor.
 
 Inventori gear (sepatu, jam, vest) ada di `src/data/gear.ts` + foto di `public/gear/`.
