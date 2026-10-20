@@ -18,8 +18,12 @@ export const formatPaceUnit = (secPerKm: number) => `${formatPace(secPerKm)} /km
 
 /** 5076 → "1j 24m" */
 export function formatDuration(totalSec: number) {
-  const hours = Math.floor(totalSec / 3600);
-  const minutes = Math.round((totalSec % 3600) / 60);
+  let hours = Math.floor(totalSec / 3600);
+  let minutes = Math.round((totalSec % 3600) / 60);
+  if (minutes === 60) {
+    hours += 1;
+    minutes = 0;
+  }
   if (hours === 0) return `${minutes}m`;
   return `${hours}j ${String(minutes).padStart(2, "0")}m`;
 }
