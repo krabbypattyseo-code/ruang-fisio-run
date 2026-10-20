@@ -300,6 +300,25 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "" },
     ],
   },
+  {
+    id: "lexar-sl500-afa",
+    brand: "Lexar",
+    nickname: "Lexar SL500 AFA Edition 1TB",
+    type: "accessory",
+    status: "currently-use",
+    images: [
+      "/gear/lexar-sl500-afa-1.webp",
+      "/gear/lexar-sl500-afa-2.webp",
+      "/gear/lexar-sl500-afa-3.webp",
+    ],
+    notes:
+      "Portable SSD SL500 AFA World Cup Edition — hingga 2000 MB/s, kapasitas 1TB, case softshell.",
+    price: "Rp 3.114.020",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "" },
+      { id: "tiktok", label: "TikTok", url: "" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
