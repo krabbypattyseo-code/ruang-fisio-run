@@ -282,6 +282,24 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "https://atid.me/go/qCdUdRXY" },
     ],
   },
+  {
+    id: "momax-1world-gan-140w",
+    brand: "Momax",
+    nickname: "Momax 1-World GaN 140W",
+    type: "accessory",
+    status: "currently-use",
+    images: [
+      "/gear/momax-1world-gan-140w-1.webp",
+      "/gear/momax-1world-gan-140w-2.webp",
+      "/gear/momax-1world-gan-140w-3.webp",
+    ],
+    notes:
+      "Travel adapter universal GaN 140W — colokan USA/AUS, UK, EU + USB-A/C PD untuk laptop dan HP.",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "" },
+      { id: "tiktok", label: "TikTok", url: "" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
