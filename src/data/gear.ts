@@ -319,6 +319,21 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "" },
     ],
   },
+  {
+    id: "alltrek-camper-mug",
+    brand: "ALLTREK",
+    nickname: "ALLTREK Camper Mug Cup 250 ml",
+    type: "accessory",
+    status: "currently-use",
+    images: ["/gear/alltrek-camper-mug-1.webp", "/gear/alltrek-camper-mug-2.webp"],
+    notes:
+      "Gelas camping polypropylene 250 ml — ringan, tahan pecah, stackable, ada outdoor cord untuk gantung di tas.",
+    price: "Rp 73.301",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "" },
+      { id: "tiktok", label: "TikTok", url: "" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
