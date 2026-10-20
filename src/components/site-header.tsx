@@ -28,6 +28,7 @@ const navTree: NavNode[] = [
         href: gtrBase,
         label: `${gtrUltra.name} ${gtrUltra.category}`,
         children: [
+          { href: `${gtrBase}/dokumentasi`, label: "Dokumentasi" },
           { href: `${gtrBase}/proyeksi`, label: "Proyeksi" },
           { href: `${gtrBase}/rencana`, label: "Rencana" },
           { href: `${gtrBase}/strategi`, label: "Strategi" },

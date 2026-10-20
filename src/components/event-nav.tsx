@@ -9,16 +9,24 @@ const base = `/event/${gtrUltra.slug}`;
 
 const items = [
   { href: base, label: "Hasil", exact: true },
+  { href: `${base}/dokumentasi`, label: "Dokumentasi" },
   { href: `${base}/kesiapan`, label: "Kesiapan" },
   { href: `${base}/proyeksi`, label: "Proyeksi" },
   { href: `${base}/rencana`, label: "Rencana" },
   { href: `${base}/strategi`, label: "Strategi" },
 ];
 
+const archiveHrefs = new Set(
+  items.filter((item) => ["Kesiapan", "Proyeksi", "Rencana", "Strategi"].includes(item.label)).map(
+    (item) => item.href,
+  ),
+);
+
 export function EventNav() {
   const pathname = usePathname();
-  const onHasil = pathname === base || pathname === `${base}/`;
-  const showArchive = !onHasil;
+  const showArchive = [...archiveHrefs].some(
+    (href) => pathname === href || pathname.startsWith(`${href}/`),
+  );
 
   return (
     <div className="space-y-2">

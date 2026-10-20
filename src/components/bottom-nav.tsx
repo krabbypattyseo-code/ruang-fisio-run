@@ -18,6 +18,7 @@ const gtrBase = `/event/${gtrUltra.slug}`;
 
 const eventLinks = [
   { href: gtrBase, label: "GTR Ultra" },
+  { href: `${gtrBase}/dokumentasi`, label: "Dokumentasi" },
   { href: `${gtrBase}/proyeksi`, label: "Proyeksi" },
   { href: `${gtrBase}/rencana`, label: "Rencana" },
   { href: `${gtrBase}/strategi`, label: "Strategi" },
