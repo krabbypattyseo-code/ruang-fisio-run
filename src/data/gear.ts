@@ -192,6 +192,24 @@ export const gearItems: GearItem[] = [
     ],
   },
   {
+    id: "kiprun-bandana-abu-putih",
+    brand: "KIPRUN",
+    nickname: "KIPRUN Bandana Lari Serbaguna Abu-Putih",
+    type: "accessory",
+    status: "currently-use",
+    images: [
+      "/gear/kiprun-bandana-abu-putih-1.webp",
+      "/gear/kiprun-bandana-abu-putih-2.webp",
+    ],
+    notes:
+      "Bandana lari multifungsi Decathlon KIPRUN (ref. 8913269) — bisa jadi headband, neck warmer, atau topi; poliester ringan breathable.",
+    price: "Rp 62.000",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "" },
+      { id: "tiktok", label: "TikTok", url: "" },
+    ],
+  },
+  {
     id: "prolink-mifi",
     brand: "Prolink",
     nickname: "Prolink MiFi Hotspot 4G LTE",
