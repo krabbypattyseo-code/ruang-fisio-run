@@ -5,7 +5,8 @@ export type GearType =
   | "backpack"
   | "tent"
   | "powerbank"
-  | "accessory";
+  | "accessory"
+  | "creator";
 
 export type GearStatus = "currently-use" | "retired";
 
@@ -39,6 +40,7 @@ export const gearTypeLabel: Record<GearType, string> = {
   tent: "Tent",
   powerbank: "Powerbank",
   accessory: "Accessory",
+  creator: "Creator",
 };
 
 export const gearStatusLabel: Record<GearStatus, string> = {
@@ -347,6 +349,21 @@ export const gearItems: GearItem[] = [
     notes:
       "Gelas camping polypropylene 250 ml — ringan, tahan pecah, stackable, ada outdoor cord untuk gantung di tas.",
     price: "Rp 73.301",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "" },
+      { id: "tiktok", label: "TikTok", url: "" },
+    ],
+  },
+  {
+    id: "dji-osmo-mobile-8p",
+    brand: "DJI",
+    nickname: "DJI Osmo Mobile 8P",
+    type: "creator",
+    status: "currently-use",
+    images: ["/gear/dji-osmo-mobile-8p-1.webp"],
+    notes:
+      "Gimbal smartphone 3-axis foldable — FrameTap remote layar, ActiveTrack 8.0, extension rod + tripod bawaan (Standard Combo).",
+    price: "Rp 2.038.000",
     shops: [
       { id: "shopee", label: "Shopee", url: "" },
       { id: "tiktok", label: "TikTok", url: "" },

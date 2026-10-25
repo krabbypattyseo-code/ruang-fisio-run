@@ -28,6 +28,7 @@ const typeOptions: { key: TypeFilter; label: string }[] = [
   { key: "tent", label: "Tent" },
   { key: "powerbank", label: "Powerbank" },
   { key: "accessory", label: "Accessory" },
+  { key: "creator", label: "Creator" },
 ];
 
 const statusOptions: { key: StatusFilter; label: string }[] = [
