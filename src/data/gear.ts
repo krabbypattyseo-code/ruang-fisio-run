@@ -369,6 +369,21 @@ export const gearItems: GearItem[] = [
       { id: "tiktok", label: "TikTok", url: "" },
     ],
   },
+  {
+    id: "dji-mic-mini-2",
+    brand: "DJI",
+    nickname: "DJI Mic Mini 2",
+    type: "creator",
+    status: "currently-use",
+    images: ["/gear/dji-mic-mini-2-1.webp"],
+    notes:
+      "Mic wireless TX ringan + windscreen — auto limiting anti-clip, OsmoAudio, cocok buat vlog solo (paket 1 TX + 1 RX).",
+    price: "Rp 887.000",
+    shops: [
+      { id: "shopee", label: "Shopee", url: "" },
+      { id: "tiktok", label: "TikTok", url: "" },
+    ],
+  },
 ];
 
 export function getGear(id: string) {
