@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/dashboard",
     "/event",
+    "/event/jakim-2027",
     "/event/gtr-ultra-30k",
     "/event/gtr-ultra-30k/dokumentasi",
     "/event/gtr-ultra-30k/kesiapan",

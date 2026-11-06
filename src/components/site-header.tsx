@@ -8,6 +8,7 @@ import { ChevronDown, Menu, X } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { Button } from "@/components/ui/button";
 import { gtrUltra } from "@/data/event";
+import { jakim2027 } from "@/data/jakim";
 
 type NavNode = {
   href: string;
@@ -24,6 +25,10 @@ const navTree: NavNode[] = [
     href: "/event",
     label: "Event",
     children: [
+      {
+        href: `/event/${jakim2027.slug}`,
+        label: `${jakim2027.shortName} ${jakim2027.category}`,
+      },
       {
         href: gtrBase,
         label: `${gtrUltra.name} ${gtrUltra.category}`,

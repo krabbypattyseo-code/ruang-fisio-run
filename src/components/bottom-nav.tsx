@@ -12,11 +12,13 @@ import {
 } from "lucide-react";
 
 import { gtrUltra } from "@/data/event";
+import { jakim2027 } from "@/data/jakim";
 import { cn } from "@/lib/utils";
 
 const gtrBase = `/event/${gtrUltra.slug}`;
 
 const eventLinks = [
+  { href: `/event/${jakim2027.slug}`, label: jakim2027.shortName },
   { href: gtrBase, label: "GTR Ultra" },
   { href: `${gtrBase}/dokumentasi`, label: "Dokumentasi" },
   { href: `${gtrBase}/proyeksi`, label: "Proyeksi" },
