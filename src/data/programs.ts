@@ -1185,9 +1185,9 @@ export function getProgram(id: string) {
 export function getModule(programId: string, moduleId: string) {
   const program = getProgram(programId);
   if (!program) return undefined;
-  const module = program.modules.find((item) => item.id === moduleId);
-  if (!module) return undefined;
-  return { program, module };
+  const programModule = program.modules.find((item) => item.id === moduleId);
+  if (!programModule) return undefined;
+  return { program, module: programModule };
 }
 
 export function getInjury(id: string) {

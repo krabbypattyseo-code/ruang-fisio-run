@@ -46,19 +46,18 @@ function isPrograms(pathname: string) {
  */
 export function BottomNav() {
   const pathname = usePathname();
-  const [eventOpen, setEventOpen] = useState(false);
+  // Simpan path saat panel dibuka: pindah halaman otomatis menutup panel
+  // tanpa setState di dalam effect.
+  const [openPath, setOpenPath] = useState<string | null>(null);
+  const eventOpen = openPath === pathname;
   const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setEventOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!eventOpen) return;
     const onPointer = (event: MouseEvent | TouchEvent) => {
       const target = event.target as Node | null;
       if (panelRef.current && target && !panelRef.current.contains(target)) {
-        setEventOpen(false);
+        setOpenPath(null);
       }
     };
     document.addEventListener("mousedown", onPointer);
@@ -88,7 +87,7 @@ export function BottomNav() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    onClick={() => setEventOpen(false)}
+                    onClick={() => setOpenPath(null)}
                     className={cn(
                       "flex items-center justify-between px-3.5 py-3 text-sm transition-colors",
                       index > 0 ? "border-t border-foreground/8" : "",
@@ -145,7 +144,7 @@ export function BottomNav() {
               type="button"
               aria-expanded={eventOpen}
               aria-haspopup="menu"
-              onClick={() => setEventOpen((open) => !open)}
+              onClick={() => setOpenPath(eventOpen ? null : pathname)}
               className={cn(
                 "flex w-full flex-col items-center gap-0.5 rounded-xl px-1.5 py-2 text-[10px] transition-colors sm:text-[11px]",
                 eventActive || eventOpen

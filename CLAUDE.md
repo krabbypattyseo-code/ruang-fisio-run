@@ -7,9 +7,7 @@
 - Kalau pemilik minta update website (tambah/edit/hapus produk, teks, dll.),
   **commit dan push langsung ke `main`**. Tidak perlu PR atau branch terpisah.
 - Sebelum push, jalankan `npm run build` dulu (membuat tipe `PageProps`/`LayoutProps`),
-  baru `npm run typecheck`. Keduanya wajib lolos supaya Production tidak rusak.
-  `npm run lint` masih punya 2 error lama (`bottom-nav.tsx`, `programs.ts`); pastikan saja
-  tidak ada error lint baru.
+  baru `npm run typecheck` dan `npm run lint`. Semuanya wajib lolos supaya Production tidak rusak.
 - Sesi lari COROS baru: simpan file mentah di `data/raw/`, lalu tambahkan sesinya
   di bagian atas `src/data/sessions.manual.ts` dengan format yang sama.
 - Produk Gear ada di `src/data/gear.ts`, fotonya disimpan sebagai `.webp` di `public/gear/`.
